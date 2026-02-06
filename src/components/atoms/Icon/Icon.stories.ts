@@ -26,3 +26,27 @@ export const Home: Story ={
         className:"",
     }
 }
+
+export const Search: Story ={
+    args:{
+        name:"search",
+        size:2,
+        className:"",
+    }
+}
+
+export const User: Story ={
+    args:{
+        name:"user",
+        size:2,
+        className:"",
+    }
+}
+
+export const Settings: Story ={
+    args:{
+        name:"settings",
+        size:2,
+        className:"",
+    }
+}

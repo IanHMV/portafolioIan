@@ -5,7 +5,7 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 
-type iconsTypes = "home" | "search" | "user" | "settings";
+export type iconsTypes = "home" | "search" | "user" | "settings";
 
 type iconProps = {
   name: iconsTypes;
@@ -19,6 +19,7 @@ const HeroIcons: Record<iconsTypes, React.ElementType> = {
   user: UserCircleIcon,
   settings: WrenchScrewdriverIcon,
 };
+
 
 const Icon = ({ name, size=24, className }: iconProps) => {
   const Icon = HeroIcons[name];

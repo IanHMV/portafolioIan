@@ -14,16 +14,17 @@ type ButtonProps = {
 };
 
 const variantStyles: Record<ButtonVariant, string> = {
-  Primary: "bg-blue-500 text-white hover:bg-blue-600",
-  Secondary: "bg-gray-500 text-white hover:bg-gray-600",
-  Danger: "bg-red-500 text-white hover:bg-red-600",
+  Primary: "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer disable:bg-",
+  Secondary: "bg-gray-500 text-white hover:bg-gray-600 cursor-pointer",
+  Danger: "bg-red-500 text-white hover:bg-red-600 cursor-pointer",
+
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: "px-2 py-1 text-sm",
   md: "px-4 py-2 text-base",
   lg: "px-6 py-3 text-lg",
-};
+}; 
 
 const Button = ({
   children,
@@ -39,7 +40,12 @@ const Button = ({
       type={htmlType}
       disabled={disabled}
       onClick={onClick}
-      className={`rounded font-bold transition-colors ${variantStyles[variant]} ${sizeStyles[size]} ${className ?? ""}`}
+      className={`
+        rounded font-bold transition-colors
+        ${disabled ? "cursor-not-allowed opacity-50" :  ""}  
+        ${variantStyles[variant]} 
+        ${sizeStyles[size]} 
+        ${className ?? ""}`}
     >
       {children}
     </button>

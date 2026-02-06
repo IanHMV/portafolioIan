@@ -1,13 +1,19 @@
 
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Inicio from "./pages/Inicio"
+import LayInicio from "./Layout/LayInicio"
 
 function App() {
 
   return (
-    <>
-      <div className="text-7xl font-bold underline">
-        hola
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LayInicio/>}>
+          <Route  index element={<Inicio/>}/>
+        </Route>
+
+      </Routes>
+    </BrowserRouter>
   )
 }
 
