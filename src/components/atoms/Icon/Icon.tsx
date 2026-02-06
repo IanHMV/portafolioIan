@@ -5,15 +5,15 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 
-export type iconsTypes = "home" | "search" | "user" | "settings";
+export type IconsTypes = "home" | "search" | "user" | "settings";
 
-type iconProps = {
-  name: iconsTypes;
+export type IconProps = {
+  name: IconsTypes;
   size?: number;
   className?: string;
 };
 
-const HeroIcons: Record<iconsTypes, React.ElementType> = {
+const HeroIcons: Record<IconsTypes, React.ElementType> = {
   home: HomeIcon,
   search: MagnifyingGlassCircleIcon,
   user: UserCircleIcon,
@@ -21,9 +21,9 @@ const HeroIcons: Record<iconsTypes, React.ElementType> = {
 };
 
 
-const Icon = ({ name, size=24, className }: iconProps) => {
+const Icon = ({ name, size=24, className }: IconProps) => {
   const Icon = HeroIcons[name];
-  return <Icon className={`w-${size} h-${size} ${className ?? ""}`} />;
+  return <Icon className={`${className ?? ""}`} style={{ width: size, height: size }} />;
 };
 
 export default Icon;

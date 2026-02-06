@@ -12,5 +12,5 @@ type Story = StoryObj<typeof Navbar>
 
 
 export const Default: Story ={
-
+    
 }

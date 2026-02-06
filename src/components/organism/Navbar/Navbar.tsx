@@ -1,28 +1,25 @@
 import Image from "../../atoms/Image/Image";
 import Text from "../../atoms/Text/Text";
 import Button from "../../atoms/Button/Button";
-import Icon from "../../atoms/Icon/Icon";
-import type { iconsTypes } from "../../atoms/Icon/Icon";
+import NavItem from "../../molecules/NavItem/NavItem";
+import type { LiArrayObj } from "../../molecules/NavItem/NavItem";
 
-type NavItem = {
-    icon:iconsTypes;
-    label:string;
-}
+const liElements:LiArrayObj[] = [
+    {icon:"home", text:"Home"},
+    {icon:"search", text:"Search"},
+    {icon:"user", text:"User"},
+    {icon:"settings", text:"Settings"},
+];
 
 const baseStyles = "w-full bg-white shadow px-6 py-3 flex items-center justify-between";
 
-const liElements :NavItem[] = [
-    {icon:"home", label:"Home"},
-    {icon:"search", label:"Search"},
-    {icon:"user", label:"User"},
-    {icon:"settings", label:"Settings"},
-] as const;
+
 
 const Navbar = () =>{
     return(
         <nav className={baseStyles}>
             {/* Logo */}
-            <div className="w-full bg-white shadow flex items-center gap-2">
+            <div className="flex items-center gap-2">
                 <Image src="./vite.svg" alt="Logo" size={30}/>
                 <Text variant="h3" className="ml-2" >
                     IanMartinez
@@ -30,12 +27,8 @@ const Navbar = () =>{
             </div>
 
             <ul className="flex gap-6 items-center">
-                {liElements.map((item,i) =>(
-                    <li key={i} className="flex items-center gap-1 cursor-pointer">
-                        <Icon name={item.icon} size={25}/>
-                        <Text variant="span">{item.label}</Text>
-                    </li>
-                ) )}
+                <NavItem liObj={liElements} />
+                <Button size="sm">Cerrar Sesion</Button>
             </ul>
 
         </nav>
