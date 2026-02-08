@@ -22,7 +22,7 @@ type Story = StoryObj<typeof Icon>;
 export const Home: Story ={
     args:{
         name:"home",
-        size:2,
+        size:100,
         className:"",
     }
 }
@@ -30,7 +30,7 @@ export const Home: Story ={
 export const Search: Story ={
     args:{
         name:"search",
-        size:2,
+        size:100,
         className:"",
     }
 }
@@ -38,7 +38,7 @@ export const Search: Story ={
 export const User: Story ={
     args:{
         name:"user",
-        size:2,
+        size:100,
         className:"",
     }
 }
@@ -46,7 +46,7 @@ export const User: Story ={
 export const Settings: Story ={
     args:{
         name:"settings",
-        size:2,
+        size:100,
         className:"",
     }
 }

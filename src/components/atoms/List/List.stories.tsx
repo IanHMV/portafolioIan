@@ -15,6 +15,7 @@ type Story = StoryObj<typeof List>;
 
 export const Default: Story ={
     args:{
-        className:""
+        className:"",
+        children:<li>item1</li>,
     }
 }
