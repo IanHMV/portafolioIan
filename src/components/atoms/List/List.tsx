@@ -1,6 +1,6 @@
 import type React from "react";
 
-type ListProps ={
+export type ListProps ={
     children:React.ReactNode;
     className?:string;
 }

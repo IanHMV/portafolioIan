@@ -13,17 +13,14 @@ export default meta;
 
 type Story = StoryObj <typeof NavItem>
 
-export const Default: Story ={
-    args:{
-        liObj:[
-            {
-                icon:"home",
-                text:"Home"
-            },
-            {
-                icon:"search",
-                text:"Search"
-            }
-        ]
-    }
-}
+export const Default: Story = {
+  args: {
+    className: "flex items-center gap-2 cursor-pointer",
+    liObj: [
+      {
+        icon: { name: "home", size: 24, className: "" },
+        text: { variant: "label", children: "Hola", className: "" },
+      },
+    ],
+  },
+};

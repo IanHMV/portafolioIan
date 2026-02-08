@@ -1,21 +1,20 @@
 import Image from "../../atoms/Image/Image"
 import Text from "../../atoms/Text/Text"
+import type { TextProps } from "../../atoms/Text/Text"
+import type { ImageProps } from "../../atoms/Image/Image"
 
-type ImageTextProps = {
-    label:string;
-    src:string;
-    alt:string;
-    size?:number;
-    className?:string;
+export type ImageTextProps = {
+  className:string;
+  text:TextProps
+  image:ImageProps
 }
 
-const baseStyle = "flex gap-2 items-center"
 
-const ImageText = ({label, src, alt, size=25, className}:ImageTextProps) => {
+const ImageText = ({text, image, className}:ImageTextProps) => {
   return (
-    <div className={`${baseStyle} ${className ?? ""}`}>
-        <Image src={src} alt={alt} size={size}/>
-        <Text variant="h3">{label}</Text>
+    <div className={`${className ?? ""}`}>
+        <Image {...image}/>
+        <Text {...text}>{text.children}</Text>
     </div>
   )
 }

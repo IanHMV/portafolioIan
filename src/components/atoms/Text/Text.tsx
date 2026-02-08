@@ -1,22 +1,15 @@
 
 
-type TextVariant = "h1" | "h2" | "h3" | "p" | "label" | "span";
+export type TextVariant = "h1" | "h2" | "h3" | "p" | "label" | "span";
 
-type TextProps = {
+export type TextProps = {
   children: React.ReactNode;
   variant?: TextVariant;
   className?: string;
   htmlFor?: string;
 };
 
-const variantStyles: Record<TextVariant, string> = {
-  h1: "text-4xl font-bold",
-  h2: "text-3xl font-semibold",
-  h3: "text-2xl font-medium",
-  p: "text-base",
-  label: "text-sm font-medium",
-  span: "text-base",
-};
+
 
 const Text = ({ children, variant = "p", className, htmlFor }: TextProps) => {
 
@@ -24,7 +17,7 @@ const Text = ({ children, variant = "p", className, htmlFor }: TextProps) => {
     return (
       <label
         htmlFor={htmlFor}
-        className={`${variantStyles[variant]} ${className ?? ""}`}
+        className={`${className ?? ""}`}
       >
         {children}
       </label>
@@ -33,7 +26,7 @@ const Text = ({ children, variant = "p", className, htmlFor }: TextProps) => {
 
   const Tag = variant;
   return (
-    <Tag className={`${variantStyles[variant]} ${className ?? ""}`}>
+    <Tag className={`${className ?? ""}`}>
       {children}
     </Tag>
   );
