@@ -22,7 +22,7 @@ export const Heading1: Story = {
     args:{
         children:"Heading 1",
         variant: "h1",
-        className:""
+        className:"text-4xl font-bold"
     }
 }
 
@@ -30,7 +30,7 @@ export const Heading2: Story = {
     args:{
         children:"Heading 2",
         variant: "h2",
-        className:""
+        className:"text-3xl font-semibold"
     }
 }
 
@@ -39,7 +39,7 @@ export const Heading3: Story = {
     args:{
         children:"Heading 3",
         variant: "h3",
-        className:""
+        className:"text-2xl font-medium"
     }
 }
 
@@ -48,7 +48,7 @@ export const Paragraph: Story = {
     args:{
         children:"This is a paragraph",
         variant: "p",   
-        className:""
+        className:"text-base"
     }
 }
 
@@ -57,6 +57,14 @@ export const Span: Story = {
     args:{
         children:"Span text",
         variant: "span",
-        className:""
+        className:"text-base"
+    }
+}
+
+export const Label: Story = {
+    args:{
+        children:"Label text",
+        variant: "label",
+        className:"text-sm font-medium"
     }
 }

@@ -1,7 +1,7 @@
 
 type InputTypes = "text" | "number" | "password" | "email";
 
-type InputProps = {
+export type InputProps = {
     id:string;
     type?: InputTypes;
     placeholder?: string;
@@ -10,7 +10,6 @@ type InputProps = {
     className?:string;
 };
 
-const baseStyles = "border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 const Input = ({type, placeholder, value, onChange, className, id}:InputProps) => {
   return (
@@ -20,7 +19,7 @@ const Input = ({type, placeholder, value, onChange, className, id}:InputProps) =
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className={`${baseStyles} ${className || ""}`}
+      className={`${className ?? ""}`}
     />
   )
 }

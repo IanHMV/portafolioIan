@@ -25,7 +25,7 @@ export const Text: Story ={
         type:"text",
         value:"",
         placeholder:"Ingresa el texto aqui",
-        className:"",
+        className:"border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     }
 }
 
@@ -35,7 +35,7 @@ export const Number: Story ={
         type:"number",
         value:"",
         placeholder:"123456",
-        className:"",
+        className:"border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     }
 }
 
@@ -44,6 +44,6 @@ export const Password: Story ={
         type:"password",
         value:"",
         placeholder:"********",
-        className:"",
+        className:"border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     }
 }

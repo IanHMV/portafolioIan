@@ -6,10 +6,8 @@ const meta: Meta <typeof ImageText> ={
     title:"Molecules/ImageText",
     component:ImageText,
     argTypes:{
-        label:{control:"text"},
-        src:{control:"text"},
-        alt:{control:"text"},
-        size:{control:"number"},
+        image:{ control: "object" },
+        text:{ control: "object" },
     }
 } satisfies Meta<typeof ImageText>
 
@@ -19,9 +17,19 @@ type Story = StoryObj<typeof ImageText>
 
 export const Default: Story = {
     args:{
-        label:"IanMartinez",
-        src:"./vite.svg",
-        alt:"Logo",
-        size:25
+        className:"flex gap-2",
+        image:{
+            alt:"Logo",
+            rounded:false,
+            size:25,
+            src:"./vite.svg",
+            className:""
+        },
+        text:{
+            className:"",
+            children:"Texto",
+            htmlFor:"",
+            variant:"p"
+        }
     }
 }
