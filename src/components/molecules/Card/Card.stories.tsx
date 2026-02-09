@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import Card from "./Card";
 
 const meta: Meta<typeof Card> = {
-    title: "Organism/Card",
+    title: "Molecules/Card",
     component: Card,
     argTypes: {
     }
@@ -14,7 +14,7 @@ type Story = StoryObj<typeof Card>
 
 export const Default: Story = {
     args: {
-        className: "p-5 w-3/9 bg-gray-500",
+        className: "p-5 bg-gray-500 w-10/12 sm:w-4/12 md:w-4/12 lg:w-3/12 ",
         imageText: {
             className: " flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
             image: {

@@ -42,10 +42,10 @@ export const Hero: Story ={
 
             ]
         },
-        containerButtons:" flex gap-10 justify-center items-center mt-5",
+        containerButtons:"flex flex-col gap-4 justify-center items-center mt-5 sm:flex-col md:flex-row md:gap-10 ",
         links:[
-            {children: "Ver proyectos", href: "#proyectos", className:"bg-blue-100 w-2/12 px-2 py-5 rounded-sm text-center"},
-            {children: "Experiencia", href: "#experiencia", className:"bg-blue-100 w-2/12 px-2 py-5 rounded-md text-center"}
+            {children: "Ver proyectos", href: "#proyectos", className:"bg-blue-100 w-6/12 sm:w-6/12 md:w-4/12 lg:w-2/12 px-2 py-5 rounded-sm text-center"},
+            {children: "Experiencia", href: "#experiencia", className:"bg-blue-100 w-6/12 sm:w-6/12 md:w-4/12 lg:w-2/12 px-2 py-5 rounded-md text-center"}
         ]
 
     }

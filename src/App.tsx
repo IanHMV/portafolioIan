@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Inicio from "./pages/Inicio"
 import LayInicio from "./Layout/LayInicio"
 

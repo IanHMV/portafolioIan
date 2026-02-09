@@ -1,12 +1,11 @@
-import ImageText from "../../molecules/ImageText/ImageText"
-import type { ImageTextProps } from "../../molecules/ImageText/ImageText"
-import type { TextProps } from "../../atoms/Text/Text";
+import ImageText from "../ImageText/ImageText"
+import type { ImageTextProps } from "../ImageText/ImageText"
 
-type CardProps = {
+
+export type CardProps = {
     className?: string;
     classNameDivText?: string;
     imageText: ImageTextProps;
-    text: TextProps[];
 };
 
 const Card = ({ className, imageText,  }: CardProps) => {

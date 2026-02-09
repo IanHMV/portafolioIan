@@ -25,11 +25,11 @@ export const Default: Story = {
             src:"./vite.svg",
             className:""
         },
-        text:{
+        text:[{
             className:"",
             children:"Texto",
             htmlFor:"",
             variant:"p"
-        }
+        }]
     }
 }
