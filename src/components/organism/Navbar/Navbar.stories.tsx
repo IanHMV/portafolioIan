@@ -35,11 +35,11 @@ export const Default: Story = {
     classNameRightDiv: "flex gap-5",
     imageText: {
       className: "flex gap-2",
-      text: {
+      text: [{
         variant: "label",
         children: "IanMartinez",
         className: "",
-      },
+      }],
       image: {
         src: "./vite.svg",
         alt: "Logo",
