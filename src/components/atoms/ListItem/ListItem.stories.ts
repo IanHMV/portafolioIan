@@ -7,7 +7,7 @@ const meta:Meta<typeof ListItem> = {
     argTypes:{
         className:{control:"text"}
     }
-};
+} satisfies Meta<typeof ListItem>;
 
 export default meta;
 
