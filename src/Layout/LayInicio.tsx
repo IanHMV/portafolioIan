@@ -6,14 +6,14 @@ const LayInicio = () => {
   const navbarporps: NavbarProps = {
     className: "w-full bg-white shadow px-6 py-3 flex items-center justify-between",
     classNameLeftDiv: "",
-    classNameRightDiv: "flex gap-5",
+    classNameRightDiv: "flex gap-5 items-center",
     imageText: {
       className: "flex gap-2",
-      text: {
+      text: [{
         variant: "label",
         children: "IanMartinez",
         className: "",
-      },
+      }],
       image: {
         src: "./vite.svg",
         alt: "Logo",
