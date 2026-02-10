@@ -6,7 +6,7 @@ const LayInicio = () => {
   const navbarporps: NavbarProps = {
     className: "w-full bg-white shadow px-6 py-3 flex items-center justify-between",
     classNameLeftDiv: "",
-    classNameRightDiv: "flex gap-5 items-center",
+    classNameRightDiv: "flex justify-center items-center gap-5",
     imageText: {
       className: "flex gap-2",
       text: [{
@@ -19,33 +19,36 @@ const LayInicio = () => {
         alt: "Logo",
         size: 25,
       },
-    },
+    }
+    ,
     navItem: {
       liObj: [
         {
-          icon: { name: "home", className: "", size: 25 },
-          text: { children: "Home", className: "", htmlFor: "", variant: "span" },
-        },
-        {
-          icon: { name: "search", className: "", size: 25 },
-          text: { children: "Search", className: "", htmlFor: "", variant: "span" },
-        },
-        {
-          icon: { name: "settings", className: "", size: 25 },
-          text: { children: "Settings", className: "", htmlFor: "", variant: "span" },
-        },
-        {
-          icon: { name: "user", className: "", size: 25 },
-          text: { children: "User", className: "", htmlFor: "", variant: "span" },
-        },
+        link:{href:"#hero", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "home", size: 24, className: "" },
+        text: { variant: "p", children: "Inicio", className: "" },
+      },
+      {
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "user", size: 24, className: "" },
+        text: { variant: "p", children: "User", className: "" },
+      },
+      {
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "settings", size: 24, className: "" },
+        text: { variant: "p", children: "Settings", className: "" },
+      },
+      {
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "search", size: 24, className: "" },
+        text: { variant: "p", children: "Search", className: "" },
+      },
       ],
-      className: "flex gap-2",
     },
     button: {
       children: "Cerrar Sesión",
       disabled: false,
-      className:
-        "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer",
+      className: "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer disable:bg- "
     },
   };
 

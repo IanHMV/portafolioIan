@@ -1,14 +1,14 @@
 import Icon from "../../atoms/Icon/Icon";
 import Text from "../../atoms/Text/Text";
-import LinkInt from "../../atoms/LinkInt/LinkInt";
-import type { LinkIntProps } from "../../atoms/LinkInt/LinkInt";
+import LinkWithA from "../../atoms/LinkWithA/LinkWithA";
+import type { LinkWithAProps } from "../../atoms/LinkWithA/LinkWithA";
 import type { TextProps } from "../../atoms/Text/Text";
 import type { IconProps } from "../../atoms/Icon/Icon";
 
 export type LiArrayObj = {
   icon: IconProps;
   text: TextProps;
-  link:LinkIntProps;
+  link:LinkWithAProps;
 };
 
 export type ListItemProps = {
@@ -20,10 +20,10 @@ const NavItem = ({ liObj  }: ListItemProps) => {
   return (
     <>
       {liObj.map((item, i) => (
-        <LinkInt key={i} {...item.link}>
+        <LinkWithA key={i} {...item.link}>
           <Icon {...item.icon} />
           <Text {...item.text}>{item.text.children}</Text>
-        </LinkInt>
+        </LinkWithA>
       ))}
     </>
   );

@@ -1,23 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import LinkInt from "./LinkInt";
+import LinkWithA from "./LinkWithA";
 
-const meta: Meta <typeof LinkInt> = {
-    title:"Atoms/LinkInt",
-    component:LinkInt,
+const meta: Meta <typeof LinkWithA> = {
+    title:"Atoms/LinkWithA",
+    component:LinkWithA,
     argTypes:{
         href:{control:"text"},
         className:{control:"text"},
     }
 
-} satisfies Meta<typeof LinkInt>;
+} satisfies Meta<typeof LinkWithA>;
 
 export default meta;
 
-type Story = StoryObj <typeof LinkInt>;
+type Story = StoryObj <typeof LinkWithA>;
 
 export const Default: Story ={
     args:{
-        children:"Link a cualquier pagina dentro de mi proyecto",
+        children:"LinkWithA a Github",
         href:"#",
         className:"text-xl"
     }

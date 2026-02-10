@@ -1,18 +1,31 @@
 
 
-export type MainTemplateProps ={
-    children:React.ReactNode;
-
-    className?:string;
+export type MainTemplateProps = {
+    heroSection?: React.ReactNode;
+    aboutSection?: React.ReactNode;
+    experienceSection?: React.ReactNode;
+    technologiesSection?: React.ReactNode;
+    projectsSection?: React.ReactNode;
+    contactFooter?: React.ReactNode;
 }
 
-const MainTemplate = ({children,className}:MainTemplateProps) =>{
-    return(
-        <>
-        <main className={`${className ?? ""}`}>
-            {children}
-        </main>
-        </>
+const MainTemplate = ({
+    heroSection,
+    aboutSection,
+    experienceSection,
+    technologiesSection,
+    projectsSection,
+    contactFooter
+}: MainTemplateProps) => {
+    return (
+        <div className="home-template">
+            {heroSection}
+            {aboutSection}
+            {experienceSection}
+            {technologiesSection}
+            {projectsSection}
+            {contactFooter}
+        </div>
     );
 }
 
