@@ -1,16 +1,15 @@
 import type React from "react";
 
-
-export type LinkProps = {
+export type LinkExtProps = {
     href:string;
     className?:string;
     children:React.ReactNode;
 }
 
-const Link = ({children, href,className}:LinkProps) =>{
+const LinkExt = ({children, href,className}:LinkExtProps) =>{
     return (
         <a href={href} className={`${className ?? ""}`}>{children}</a>
     );
 }
 
-export default Link;
+export default LinkExt;

@@ -6,10 +6,7 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
-    // Elimina estos si dan problemas:
-    // "@storybook/addon-docs",
-    // "@storybook/addon-onboarding",
-    // "@storybook/addon-essentials"
+    "storybook-addon-remix-react-router", // 
   ],
   framework: "@storybook/react-vite",
 };

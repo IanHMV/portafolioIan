@@ -23,7 +23,7 @@ export const Home: Story ={
     args:{
         name:"home",
         size:100,
-        className:"",
+        className:"text-blue-500",
     }
 }
 

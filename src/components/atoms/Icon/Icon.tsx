@@ -1,10 +1,3 @@
-import {
-  HomeIcon,
-  MagnifyingGlassCircleIcon,
-  UserCircleIcon,
-  WrenchScrewdriverIcon,
-} from "@heroicons/react/24/solid";
-
 export type IconsTypes = "home" | "search" | "user" | "settings";
 
 export type IconProps = {
@@ -13,17 +6,22 @@ export type IconProps = {
   className?: string;
 };
 
-const HeroIcons: Record<IconsTypes, React.ElementType> = {
-  home: HomeIcon,
-  search: MagnifyingGlassCircleIcon,
-  user: UserCircleIcon,
-  settings: WrenchScrewdriverIcon,
+const BootstrapIcons: Record<IconsTypes, string> = {
+  home: "bi-house-door-fill",
+  search: "bi-search",
+  user: "bi-person-fill",
+  settings: "bi-gear-fill",
 };
 
+const Icon = ({ name, size = 24, className }: IconProps) => {
+  const icon = BootstrapIcons[name];
 
-const Icon = ({ name, size=24, className }: IconProps) => {
-  const Icon = HeroIcons[name];
-  return <Icon className={`${className ?? ""}`} style={{ width: size, height: size }} />;
+  return (
+    <i
+      className={`bi ${icon} ${className ?? ""}`}
+      style={{ fontSize: size }}
+    />
+  );
 };
 
 export default Icon;

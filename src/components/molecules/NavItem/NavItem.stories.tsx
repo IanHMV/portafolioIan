@@ -5,7 +5,6 @@ const meta: Meta <typeof NavItem> = {
     title:"Molecules/NavItem",
     component:NavItem,
     argTypes:{
-        className:{control:"text"}
     }
 } satisfies Meta <typeof NavItem>
 
@@ -15,11 +14,11 @@ type Story = StoryObj <typeof NavItem>
 
 export const Default: Story = {
   args: {
-    className: "flex items-center gap-2 cursor-pointer",
     liObj: [
       {
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
         icon: { name: "home", size: 24, className: "" },
-        text: { variant: "label", children: "Hola", className: "" },
+        text: { variant: "p", children: "Hola", className: "" },
       },
     ],
   },

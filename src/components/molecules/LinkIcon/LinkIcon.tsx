@@ -1,18 +1,18 @@
-import Link from "../../atoms/Link/Link"
+import LinkExt from "../../atoms/LinkExt/LinkExt"
 import Icon from "../../atoms/Icon/Icon"
-import type { LinkProps } from "../../atoms/Link/Link"
+import type { LinkExtProps} from "../../atoms/LinkExt/LinkExt"
 import type { IconProps } from "../../atoms/Icon/Icon"
 
 export type LinkIconProps ={
-    link:LinkProps;
+    link:LinkExtProps;
     icon:IconProps;
 }
 
 const LinkIcon = ({link, icon}: LinkIconProps) => {
   return (
-    <Link {...link}>
+    <LinkExt {...link}>
         <Icon {...icon}/>
-    </Link>
+    </LinkExt>
   )
 }
 
