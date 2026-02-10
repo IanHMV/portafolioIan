@@ -12,8 +12,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.18",
+    "bootstrap-icons": "^1.13.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0",
@@ -40,6 +40,7 @@
     "globals": "^16.5.0",
     "playwright": "^1.58.1",
     "storybook": "^10.2.8",
+    "storybook-addon-remix-react-router": "^6.0.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",

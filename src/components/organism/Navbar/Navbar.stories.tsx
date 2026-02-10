@@ -32,7 +32,7 @@ export const Default: Story = {
   args: {
     className: "w-full bg-white shadow px-6 py-3 flex items-center justify-between",
     classNameLeftDiv: "",
-    classNameRightDiv: "flex gap-5",
+    classNameRightDiv: "flex justify-center items-center gap-5",
     imageText: {
       className: "flex gap-2",
       text: [{
@@ -48,59 +48,28 @@ export const Default: Story = {
     }
     ,
     navItem: {
-      liObj: [{
-        icon: {
-          name: "home",
-          className: "",
-          size: 25
-        },
-        text: {
-          children: "Home",
-          className: "",
-          htmlFor: "",
-          variant: "span"
-        }
+      liObj: [
+        {
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "home", size: 24, className: "" },
+        text: { variant: "p", children: "Hola", className: "" },
       },
       {
-        icon: {
-          name: "search",
-          className: "",
-          size: 25
-        },
-        text: {
-          children: "Search",
-          className: "",
-          htmlFor: "",
-          variant: "span"
-        }
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "user", size: 24, className: "" },
+        text: { variant: "p", children: "User", className: "" },
       },
       {
-        icon: {
-          name: "settings",
-          className: "",
-          size: 25
-        },
-        text: {
-          children: "Settings",
-          className: "",
-          htmlFor: "",
-          variant: "span"
-        }
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "settings", size: 24, className: "" },
+        text: { variant: "p", children: "Settings", className: "" },
       },
       {
-        icon: {
-          name: "user",
-          className: "",
-          size: 25
-        },
-        text: {
-          children: "User",
-          className: "",
-          htmlFor: "",
-          variant: "span"
-        }
-      }],
-      className: "flex gap-2"
+        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        icon: { name: "search", size: 24, className: "" },
+        text: { variant: "p", children: "Search", className: "" },
+      },
+      ],
     },
     button: {
       children: "Cerrar Sesión",

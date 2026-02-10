@@ -1,7 +1,10 @@
 import type { Preview } from '@storybook/react-vite'
 import "../src/styles/index.css";
+import { withRouter } from 'storybook-addon-remix-react-router';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const preview: Preview = {
+  decorators: [withRouter],
   parameters: {
     layout: 'fullscreen',
     controls: {

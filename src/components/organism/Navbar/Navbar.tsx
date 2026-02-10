@@ -29,10 +29,10 @@ const Navbar = ({
         <ImageText {...imageText}  />
       </div>
 
-      <ul className={classNameRightDiv}>
+      <div className={classNameRightDiv}>
         <NavItem {...navItem} />
         <Button {...button}>{button.children}</Button>
-      </ul>
+      </div>
     </nav>
   );
 };
