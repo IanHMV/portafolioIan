@@ -1,11 +1,9 @@
-
-
 export type MainTemplateProps = {
     heroSection?: React.ReactNode;
     aboutSection?: React.ReactNode;
     experienceSection?: React.ReactNode;
     technologiesSection?: React.ReactNode;
-    projectsSection?: React.ReactNode;
+    proyectsSection?: React.ReactNode;
     contactFooter?: React.ReactNode;
 }
 
@@ -14,7 +12,7 @@ const MainTemplate = ({
     aboutSection,
     experienceSection,
     technologiesSection,
-    projectsSection,
+    proyectsSection,
     contactFooter
 }: MainTemplateProps) => {
     return (
@@ -23,7 +21,7 @@ const MainTemplate = ({
             {aboutSection}
             {experienceSection}
             {technologiesSection}
-            {projectsSection}
+            {proyectsSection}
             {contactFooter}
         </div>
     );

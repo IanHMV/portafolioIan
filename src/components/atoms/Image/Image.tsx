@@ -1,19 +1,19 @@
 
 export type ImageProps = {
-    src:string;
+    src: string;
     alt: string;
-    className?:string;
-    rounded?:boolean;
-    size?:number;
+    className?: string;
+    rounded?: boolean;
+    size?: number; // Mantener para retrocompatibilidad
 }
 
-
-const Image = ({src,alt, className,rounded,size=25}:ImageProps) =>{
+const Image = ({ src, alt, className, rounded, size }: ImageProps) => {
     return (
-        <img src={src}
-        alt={alt}
-        className={`${rounded ? "rounded-full" : "rounded"} object-cover ${className ?? ""} `}
-        style={{width:size, height:size }}
+        <img 
+            src={src}
+            alt={alt}
+            className={`${rounded ? "rounded-full" : "rounded"} object-cover ${className ?? ""}`}
+            style={size ? { width: size, height: size } : undefined} 
         />
     )
 }
