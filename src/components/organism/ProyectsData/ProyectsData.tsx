@@ -1,7 +1,7 @@
 import CardProyectList from "../../molecules/CardProyectList/CardProyectList";
 import type { CardProyectListProps } from "../../molecules/CardProyectList/CardProyectList";
 
-type ProyectsDataProps ={
+export type ProyectsDataProps ={
     id:string;
     className?:string;
     cardList:CardProyectListProps[];

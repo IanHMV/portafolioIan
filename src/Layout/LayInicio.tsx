@@ -29,7 +29,7 @@ const LayInicio = () => {
         text: { variant: "p", children: "Inicio", className: "" },
       },
       {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        link:{href:"#aboutMe", children:"", className:"flex gap-2 items-center "},
         icon: { name: "user", size: 24, className: "" },
         text: { variant: "p", children: "User", className: "" },
       },
