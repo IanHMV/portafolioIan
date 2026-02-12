@@ -23,7 +23,7 @@ export const Default: Story = {
           {
             className: "",
             image: {
-              src: "./Me.svg",
+              src: "./img/Me.svg",
               alt: "Me",
               className: "rounded-md",
               rounded: false,
@@ -83,7 +83,7 @@ export const Default: Story = {
           {
             className: "",
             image: {
-              src: "./Me.svg",
+              src: "./img/Me.svg",
               alt: "Me",
               className: "rounded-md",
               rounded: false,

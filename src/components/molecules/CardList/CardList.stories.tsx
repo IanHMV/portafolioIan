@@ -19,13 +19,12 @@ export const Default: Story = {
             {
                 className: "p-5 bg-gray-500",
                 imageText: {
-                    className: "flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                    className: " flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
                     image: {
                         alt: "Image",
-                        src: "./vite.svg",
+                        src: "./imgStack/react.svg",
                         className: "",
                         rounded: false,
-                        size: 200,
                     },
                     text: [
                         {
@@ -43,10 +42,9 @@ export const Default: Story = {
                     className: " flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
                     image: {
                         alt: "Image",
-                        src: "./vite.svg",
+                        src: "./imgStack/react.svg",
                         className: "",
                         rounded: false,
-                        size: 200,
                     },
                     text: [
                         {

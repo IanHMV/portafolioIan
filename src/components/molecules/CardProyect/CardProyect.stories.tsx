@@ -16,7 +16,7 @@ export const Default: Story = {
     args: {
         className: "",
         image: {
-            src: "./Me.svg",
+            src: "./img/Me.svg",
             alt: "Me",
             className: "rounded-md",
             rounded: false,

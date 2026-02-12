@@ -34,9 +34,9 @@ const LayInicio = () => {
         text: { variant: "p", children: "User", className: "" },
       },
       {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
+        link:{href:"#stackArea", children:"", className:"flex gap-2 items-center "},
         icon: { name: "settings", size: 24, className: "" },
-        text: { variant: "p", children: "Settings", className: "" },
+        text: { variant: "p", children: "Stack", className: "" },
       },
       {
         link:{href:"/#", children:"", className:"flex gap-2 items-center "},
