@@ -22,7 +22,7 @@ export const Hero: Story ={
             image:{
                 className:"",
                 alt:"Me",
-                src:"./Me.svg",
+                src:"./img/Me.svg",
                 rounded:true,
                 size:100
             },

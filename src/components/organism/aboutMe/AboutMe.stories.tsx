@@ -33,7 +33,7 @@ export const Default: Story = {
                 
                 classNameImg: "order-1 md:order-2 lg:w-1/2 lg:flex lg:justify-center",
                 image: {
-                    src: "./imgAboutMe.svg",
+                    src: "./img/imgAboutMe.svg",
                     alt: "AboutMe",
                     // 👇 Imagen fluida que crece pero con max-width
                     className: "w-full sm:max-w-[300px] md:max-w-[300px] lg:max-w-[400px] h-auto",
