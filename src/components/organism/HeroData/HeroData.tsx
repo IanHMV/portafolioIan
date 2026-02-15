@@ -1,6 +1,5 @@
 import ImageText from "../../molecules/ImageText/ImageText";
-import LinkWithLink from "../../atoms/LinkWithLink/LinkWithLink";
-import type { LinkWithLinkProps } from "../../atoms/LinkWithLink/LinkWithLink";
+import LinkWithA, {type LinkWithAProps}from "../../atoms/LinkWithA/LinkWithA";
 import type { ImageTextProps } from "../../molecules/ImageText/ImageText";
 
 export type HeroDataProps = {
@@ -9,7 +8,7 @@ export type HeroDataProps = {
     containerImgText?: string;
     containerButtons?:string;
     imageText: ImageTextProps;
-    links:LinkWithLinkProps[];
+    links:LinkWithAProps[];
 }
 
 const HeroData = ({ className,id,imageText,containerImgText,containerButtons,links }: HeroDataProps) => {
@@ -24,9 +23,9 @@ const HeroData = ({ className,id,imageText,containerImgText,containerButtons,lin
 
             <div className={`${containerButtons ?? ""}`}>
                 {links.map((item, i) =>(
-                    <LinkWithLink key={i} {...item}>
+                    <LinkWithA key={i} {...item}>
                         {item.children}
-                    </LinkWithLink>
+                    </LinkWithA>
                 ))}
             </div>
 

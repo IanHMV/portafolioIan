@@ -10,7 +10,7 @@ export default meta;
 
 type Story = StoryObj<typeof ToggleDiv>;
 
-export const Heading1: Story = {
+export const Default: Story = {
   args: {
     className: "w-full p-2 shadow-sm rounded-md",
 

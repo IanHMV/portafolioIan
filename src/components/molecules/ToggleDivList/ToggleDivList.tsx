@@ -1,60 +1,57 @@
-
 import { useState } from 'react'
+import Text, { type TextProps } from '../../atoms/Text/Text';
 
 type ToggleItemProps = {
-    title: string;
-    details: string;
+    className?: string;
+    classNamePre?: string;
+    classNameInfo?: string;
+    title: TextProps[];
+    info: TextProps[];
     isOpen: boolean;
     onClick: () => void;
 }
 
-type ToggleDivListProps = {
-    items: ItemsProps[];
+export type ToggleDivListProps = {
+    toggleItems: ToggleItemProps[];
 };
 
-
-type ItemsProps = {
-    title: string;
-    details: string;
-}
-
-const ToggleItem: React.FC<ToggleItemProps> = ({ title, details, isOpen, onClick }) => {
+const ToggleItem: React.FC<ToggleItemProps> = ({ className, classNamePre, classNameInfo, title, info, isOpen, onClick }) => {
     return (
-        <div className='w-full max-w-md border rounded mb-2'>
-
-            <div className='border flex justify-between p-2 cursor-pointer' onClick={onClick}>
-                <h2>{title}</h2>
+        <div className={`${className ?? ""}`}>
+            <div className={`${classNamePre ?? ""}`} onClick={onClick}>
+                <div>
+                    {title.map((item, i) => (
+                        <Text key={i} {...item} />
+                    ))}
+                </div>
                 <span>{isOpen ? "▲" : "▼"}</span>
             </div>
 
-            <div className={`overflow-hidden transition-all duration-500 ease-in-out 
-                    ${isOpen ? "max-h-40 opacity-100 p-2" : "max-h-0 opacity-0"}`} >
-                <p>{details}</p>
-
+            <div className={` 
+                ${isOpen ? "max-h-96 opacity-100 p-2" : "max-h-0 opacity-0"}
+                ${classNameInfo ?? ""}`
+            }>
+                {info.map((item, i) => (
+                    <Text key={i} {...item} />
+                ))}
             </div>
-
-
         </div>
     )
 }
 
-const ToggleDivList: React.FC<ToggleDivListProps> = ({ items }) => {
+const ToggleDivList: React.FC<ToggleDivListProps> = ({ toggleItems }) => {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
-    
 
     return (
         <div className='space-y-2'>
-
-            {items.map((item, i) => (
+            {toggleItems.map((item, i) => (
                 <ToggleItem
                     key={i}
-                    title={item.title}
-                    details={item.details}
-                    isOpen={openIndex === i}
+                    {...item}
                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    isOpen={openIndex === i} 
                 />
             ))}
-
         </div>
     )
 }
