@@ -1,4 +1,4 @@
-export type IconsTypes = "home" | "search" | "user" | "settings";
+export type IconsTypes = "home" | "search" | "user" | "settings" | "github" | "linkedin";
 
 export type IconProps = {
   name: IconsTypes;
@@ -11,9 +11,11 @@ const BootstrapIcons: Record<IconsTypes, string> = {
   search: "bi-search",
   user: "bi-person-fill",
   settings: "bi-gear-fill",
+  github: "bi-github",
+  linkedin:"bi-linkedin"
 };
 
-const Icon = ({ name, size = 24, className }: IconProps) => {
+const Icon = ({ name, size, className }: IconProps) => {
   const icon = BootstrapIcons[name];
 
   return (
