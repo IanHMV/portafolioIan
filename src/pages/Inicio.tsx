@@ -1,13 +1,9 @@
 import MainTemplate from "../components/template/MainTemplate";
-import HeroData from "../components/organism/HeroData/HeroData";
-import AboutMe from "../components/organism/AboutMe/AboutMe";
-import ProyectsData from "../components/organism/ProyectsData/ProyectsData";
-import StackArea from "../components/organism/StackArea/StackArea";
-
-import type { AboutMeProps } from "../components/organism/AboutMe/AboutMe";
-import type { HeroDataProps } from "../components/organism/HeroData/HeroData";
-import type { ProyectsDataProps } from "../components/organism/ProyectsData/ProyectsData";
-import type { StackAreaProps } from "../components/organism/StackArea/StackArea";
+import HeroData, {type HeroDataProps } from "../components/organism/HeroData/HeroData";
+import AboutMe, {type  AboutMeProps } from "../components/organism/AboutMe/AboutMe";
+import ProyectsData, {type ProyectsDataProps }  from "../components/organism/ProyectsData/ProyectsData";
+import StackArea, {type StackAreaProps } from "../components/organism/StackArea/StackArea";
+import ExperienceArea,{type ExperienceAreaProps } from "../components/organism/ExperienceArea/ExperienceArea";
 
 
 const hero: HeroDataProps = {
@@ -41,7 +37,7 @@ const hero: HeroDataProps = {
     containerButtons: "flex flex-col gap-4 justify-center items-center mt-5 sm:flex-col md:flex-row md:gap-10 ",
     links: [
         { children: "Ver proyectos", href: "#proyectos", className: "bg-blue-100 w-6/12 sm:w-6/12 md:w-4/12 lg:w-2/12 px-2 py-5 rounded-sm text-center" },
-        { children: "Experiencia", href: "#experiencia", className: "bg-blue-100 w-6/12 sm:w-6/12 md:w-4/12 lg:w-2/12 px-2 py-5 rounded-md text-center" }
+        { children: "Experiencia", href: "#experienceArea", className: "bg-blue-100 w-6/12 sm:w-6/12 md:w-4/12 lg:w-2/12 px-2 py-5 rounded-md text-center" }
     ]
 
 }
@@ -376,6 +372,94 @@ const stackArea:StackAreaProps ={
         ]
     }
 
+
+const experienceArea:ExperienceAreaProps = {
+    className: "",
+    id: "experienceArea",
+    toggleList: {
+      toggleItems: [
+        {
+          className: "w-full p-2 shadow-sm rounded-md",
+
+          classNamePre: "flex justify-between cursor-pointer",
+          title: [{
+            children: "Programador Junior",
+            className: "text-xl font-bold text-indigo-600",
+            variant: "h2"
+          }, {
+            children: "FORENTEC",
+            className: " font-bold text-gray-500",
+            variant: "h3"
+          }],
+          classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
+          info: [
+            {
+              children: "Js",
+              className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "Ruby",
+              className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "CSS",
+              className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
+              className: "mt-2 text-justify text-sm font-bold",
+              variant: "p"
+            }
+          ],
+          isOpen: false,
+          onClick: () => { },
+        },
+        {
+          className: "w-full p-2 shadow-sm rounded-md",
+
+          classNamePre: "flex justify-between cursor-pointer",
+          title: [{
+            children: "Programador Junior",
+            className: "text-xl font-bold text-indigo-600",
+            variant: "h2"
+          }, {
+            children: "FORENTEC",
+            className: " font-bold text-gray-500",
+            variant: "h3"
+          }],
+          classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
+          info: [
+            {
+              children: "Js",
+              className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "Ruby",
+              className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "CSS",
+              className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
+              variant: "span"
+            },
+            {
+              children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
+              className: "mt-2 text-justify text-sm font-bold",
+              variant: "p"
+            }
+          ],
+          isOpen: false,
+          onClick: () => { },
+        },
+      ]
+    }
+  }
+
 const Inicio = () => {
 
     return (
@@ -389,7 +473,7 @@ const Inicio = () => {
                     <AboutMe {...aboutMe}/>
                 </>
             }
-            experienceSection={<></>}
+            experienceSection={<ExperienceArea {...experienceArea}/>}
             technologiesSection={<StackArea {...stackArea}/>}
             proyectsSection={<></>}
             contactFooter={<></>}
