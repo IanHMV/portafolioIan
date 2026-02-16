@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import ExperienceArea from "./ExperienceArea";
 
 const meta: Meta<typeof ExperienceArea> = {
-  title: "Molecules/ExperienceArea",
+  title: "Organism/ExperienceArea",
   component: ExperienceArea,
 } satisfies Meta<typeof ExperienceArea>;
 

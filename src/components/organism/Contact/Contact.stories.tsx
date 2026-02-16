@@ -14,7 +14,7 @@ export const Default: Story = {
     args: {
         id: "",
         className: "bg-gray-200 rounded-md py-10 px-5",
-        classNameDivTextIcon: "bg-gray-100 rounded-lg py-5 flex flex-col gap-4",
+        classNameDivTextIcon: "bg-gray-100 rounded-lg py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-center lg:w-1/2 lg:m-auto lg:py-10 lg:gap-20",
 
         classNameDivText: "",
         text: {

@@ -8,30 +8,45 @@ import type { ListItemProps } from "../../molecules/NavItem/NavItem";
 export type NavbarProps = {
   className?: string;
   classNameLeftDiv?: string;
-  classNameRightDiv?: string;
+  classNameNavItems?: string;
+  classNameButtons?: string;
   imageText:ImageTextProps;
   navItem:ListItemProps;
-  button: ButtonProps;
+  buttonNight: ButtonProps;
+  toggleButton: ButtonProps;
+  isMenuOpen:boolean;
 };
 
 const Navbar = ({
   className,
   classNameLeftDiv,
-  classNameRightDiv,
+  classNameNavItems,
+  classNameButtons,
   imageText,
   navItem ,
-  button,
+  buttonNight,
+  toggleButton,
+  isMenuOpen,
 }: NavbarProps) => {
   return (
     <nav className={`${className ?? ""}`}>
       {/* Logo */}
       <div className={classNameLeftDiv ?? ""}>
         <ImageText {...imageText}  />
+        <div className={`${classNameButtons??""}`}>
+          <Button {...toggleButton} className="md:hidden "></Button>
+          <Button {...buttonNight}  className="md:hidden rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer" ></Button>
+        </div>
       </div>
 
-      <div className={classNameRightDiv}>
-        <NavItem {...navItem} />
-        <Button {...button}>{button.children}</Button>
+      <div className={`${classNameNavItems??""}` }>
+        <div className="hidden md:block md:flex md:items-center gap-2">
+          <NavItem {...navItem} />
+          <Button {...buttonNight}></Button>
+        </div>
+
+        {isMenuOpen && (<NavItem {...navItem} /> )}
+        
       </div>
     </nav>
   );
