@@ -8,6 +8,8 @@ import type { ImageProps } from "../../atoms/Image/Image";
 export type CardProyectProps = {
     className?: string;
     classNameOverlay?: string;
+    classNameBgBlack?: string;
+    classNameLinkText?: string;
     classNameIcons?: string;
     classNameTec?: string;
     image: ImageProps;
@@ -16,19 +18,19 @@ export type CardProyectProps = {
     tecnologias: TextProps[];
 }
 
-const CardProyect = ({ className, classNameOverlay, classNameIcons, classNameTec, image, title, linkIcons, tecnologias }: CardProyectProps) => {
+const CardProyect = ({ className, classNameOverlay, classNameBgBlack, classNameLinkText, classNameIcons, classNameTec, image, title, linkIcons, tecnologias }: CardProyectProps) => {
     return (
-        <div className={`group w-fit relative overflow-hidden ${className ?? ""}`}>
-            <Image className={"w-full h-auto object-cover block"} {...image} />
+        <div className={`${className ?? ""}`}>
+            <Image className={""} {...image} />
 
             {/* Overlay dividido en dos capas */}
-            <div className={`absolute inset-0 pointer-events-none ${classNameOverlay ?? ""}`}>
+            <div className={`${classNameOverlay ?? ""}`}>
 
                 {/* Capa de fondo oscuro */}
-                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
+                <div className={`${classNameBgBlack ?? ""}`} />
 
                 {/* Capa de contenido (sin opacity heredada) */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
+                <div className={`${classNameLinkText ?? ""}`}>
 
                     <Text {...title} className={`text-white text-xl font-bold mb-2 ${title.className ?? ""}`} />
 
@@ -45,6 +47,7 @@ const CardProyect = ({ className, classNameOverlay, classNameIcons, classNameTec
                     </div>
 
                 </div>
+
             </div>
 
         </div>

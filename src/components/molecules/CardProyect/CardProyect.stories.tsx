@@ -14,21 +14,25 @@ type Story = StoryObj<typeof CardProyect>
 
 export const Default: Story = {
     args: {
-        className: "",
+        className: "group w-fit relative overflow-hidden ",
         image: {
             src: "./img/Me.svg",
             alt: "Me",
-            className: "rounded-md",
+            className: "rounded-md w-full h-auto object-cover block",
             rounded: false,
             size: 300
         },
 
-        classNameOverlay: "",
+        classNameOverlay: "absolute inset-0 pointer-events-none ",
         title: {
             children: "Proyecto",
             variant: "p",
             className: ""
         },
+
+        classNameBgBlack:"absolute inset-0 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-300",
+
+        classNameLinkText:"absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto",
 
         classNameIcons: "",
         linkIcons: [

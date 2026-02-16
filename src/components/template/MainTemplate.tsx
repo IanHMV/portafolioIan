@@ -20,8 +20,8 @@ const MainTemplate = ({
             {heroSection}
             {aboutSection}
             {experienceSection}
-            {technologiesSection}
             {proyectsSection}
+            {technologiesSection}
             {contactFooter}
         </div>
     );
