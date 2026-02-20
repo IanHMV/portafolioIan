@@ -30,9 +30,13 @@ type Story = StoryObj<typeof Navbar>;
 
 export const Default: Story = {
   args: {
-    className: "w-full bg-white shadow px-6 py-3 flex items-center justify-between",
-    classNameLeftDiv: "",
-    classNameRightDiv: "flex justify-center items-center gap-5",
+    className: "w-full flex flex-col items-center  justify-between bg-white shadow px-6 py-3 fixed z-50 md:flex-row",
+
+    classNameLeftDiv: "w-full flex justify-between items-center",
+    classNameButtons:"flex items-center gap-4",
+
+    classNameNavItems: "flex flex-col md:flex-row justify-center items-center mt-4",
+    
     imageText: {
       className: "flex gap-2",
       text: [{
@@ -50,31 +54,44 @@ export const Default: Story = {
     navItem: {
       liObj: [
         {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
-        icon: { name: "home", size: 24, className: "" },
-        text: { variant: "p", children: "Hola", className: "" },
-      },
-      {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
-        icon: { name: "user", size: 24, className: "" },
-        text: { variant: "p", children: "User", className: "" },
-      },
-      {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
-        icon: { name: "settings", size: 24, className: "" },
-        text: { variant: "p", children: "Settings", className: "" },
-      },
-      {
-        link:{href:"/#", children:"", className:"flex gap-2 items-center "},
-        icon: { name: "search", size: 24, className: "" },
-        text: { variant: "p", children: "Search", className: "" },
-      },
+          link: { href: "#hero", children: "", className: "flex gap-2 items-center " },
+          icon: { name: "home", size: 24, className: "" },
+          text: { variant: "p", children: "Inicio", className: "" },
+        },
+        {
+          link: { href: "#aboutMe", children: "", className: "flex gap-2 items-center " },
+          icon: { name: "user", size: 24, className: "" },
+          text: { variant: "p", children: "User", className: "" },
+        },
+        {
+          link: { href: "#stackArea", children: "", className: "flex gap-2 items-center " },
+          icon: { name: "settings", size: 24, className: "" },
+          text: { variant: "p", children: "Stack", className: "" },
+        },
+        {
+          link: { href: "#experienceArea", children: "", className: "flex gap-2 items-center " },
+          icon: { name: "search", size: 24, className: "" },
+          text: { variant: "p", children: "Experience", className: "" },
+        },
+        {
+          link: { href: "#contact", children: "", className: "flex gap-2 items-center " },
+          icon: { name: "phone", size: 24, className: "" },
+          text: { variant: "p", children: "Contact", className: "" },
+        },
       ],
     },
-    button: {
-      children: "Cerrar Sesión",
+    buttonNight: {
+      isDark:false,
+      className: "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer  ",
+      onToggle:()=>{},
+      disabled:false,
+      htmlType:'button'
+    },
+    toggleButton: {
+      children:"",
+      onClick:()=>{},
       disabled: false,
-      className: "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer disable:bg- "
+      className: "block md:hidden"
     },
   },
 };

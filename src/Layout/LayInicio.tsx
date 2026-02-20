@@ -2,20 +2,8 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar, { type NavbarProps } from "../components/organism/Navbar/Navbar";
 import Icon, { type IconProps } from "../components/atoms/Icon/Icon";
+import { useDarkMode } from "../hooks/UseDark";
 
-
-
-const sun: IconProps = {
-  name: "sun",
-  size: 25,
-  className: ""
-}
-
-const moon: IconProps = {
-  name: "moon",
-  size: 25,
-  className: ""
-}
 
 const bar: IconProps = {
   name: "bars",
@@ -26,13 +14,8 @@ const bar: IconProps = {
 
 
 const LayInicio = () => {
+    const { isDark, toggle } = useDarkMode()
 
-  const [night, setNight] = useState(false);
-
-  const buttonNight = () => {
-    setNight(!night);
-
-  }
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -94,10 +77,11 @@ const LayInicio = () => {
       ],
     },
     buttonNight: {
-      children: night ? <Icon {...sun} /> : <Icon {...moon} />,
-      onClick: buttonNight,
-      disabled: false,
-      className: "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer  "
+      isDark:isDark,
+      className: "rounded font-bold transition-colors bg-blue-500 text-white px-4 py-2 text-base hover:bg-blue-600 cursor-pointer  ",
+      onToggle:toggle,
+      disabled:false,
+      htmlType:'button'
     },
     toggleButton: {
       children:<Icon {...bar}/>,
