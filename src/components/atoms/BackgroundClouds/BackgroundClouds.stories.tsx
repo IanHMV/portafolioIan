@@ -13,7 +13,12 @@ type Story = StoryObj<typeof BackgroundClouds>;
 export const Primary: Story = {
     args:{
         classNameDivPrimary:"scene",
-        classNameDivSecondary:"clouds clouds-1 ",
-        classNameDivTertiary:""
+        classNameDivSecondary:"clouds-wrapper ",
+        classNameDivTertiary:"clouds-track ",
+        img:{
+           src:"./img/cloud.png",
+           alt:"",
+           className:"cloud", 
+        }
     }
 }
