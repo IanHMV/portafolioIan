@@ -16,7 +16,7 @@ const MainTemplate = ({
     contactFooter
 }: MainTemplateProps) => {
     return (
-        <div className="home-template">
+        <div className="home-template bg-bgMain">
             {heroSection}
             {aboutSection}
             {experienceSection}
