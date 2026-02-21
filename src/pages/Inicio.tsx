@@ -1,6 +1,6 @@
 import MainTemplate from "../components/template/MainTemplate";
 import HeroData, { type HeroDataProps } from "../components/organism/HeroData/HeroData";
-import AboutMe, { type AboutMeProps } from "../components/organism/AboutMe/AboutMe";
+import AboutMe, { type AboutMeProps } from "../components/organism/aboutMe/AboutMe";
 import ProyectsData, { type ProyectsDataProps } from "../components/organism/ProyectsData/ProyectsData";
 import StackArea, { type StackAreaProps } from "../components/organism/StackArea/StackArea";
 import ExperienceArea, { type ExperienceAreaProps } from "../components/organism/ExperienceArea/ExperienceArea";
@@ -44,22 +44,22 @@ const hero: HeroDataProps = {
 
 const aboutMe: AboutMeProps = {
     id: "aboutMe",
-    className: "text-center px-4 py-16 md:py-20 md:px-8 lg:py-24 lg:px-16 lg:w-5/7 lg:m-auto",
+    className: "bg-bgSection rounded-md mx-3 mb-5 px-4 py-16 md:py-20 md:px-8 lg:mb-5 lg:py-24 lg:px-16 lg:w-5/7 lg:m-auto",
     title: {
         children: "About Me",
-        className: "text-3xl md:text-4xl lg:text-5xl py-5 font-bold",
+        className: "text-text-primary text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
         variant: "h2"
     },
     classNameDivTextImg: "flex flex-col items-center gap-6 md:flex-row md:gap-8 lg:flex lg:justify-center  ",
 
-    classNameParagraph: "text-sm text-justify md:text-base md:text-left md:flex-1 lg:text-lg lg:w-1/2",
+    classNameParagraph: "lg:w-1/2 md:flex-1",
     paragraph: {
         children: "Hi! I'm a Junior Frontend Developer with experience in React and Tailwind CSS, and solid JavaScript and CSS fundamentals. Focused on building clean, reusable, and flexible interfaces following Atomic Design principles. Constantly learning through documentation, courses, and personal projects. Currently seeking a remote Junior Frontend position.",
-        className: "leading-relaxed",
+        className: "leading-relaxed text-justify text-text-primary text-sm  md:text-base lg:text-lg  ",
         variant: "p"
     },
 
-    classNameImg: "order-1 md:order-2 lg:w-1/2 lg:flex lg:justify-center",
+    classNameImg: "order-1 md:order-2 lg:w-1/2 lg:flex lg:justify-center ",
     image: {
         src: "./img/imgAboutMe.svg",
         alt: "AboutMe",
@@ -68,9 +68,101 @@ const aboutMe: AboutMeProps = {
     }
 }
 
+const experienceArea: ExperienceAreaProps = {
+    id: "experienceArea",
+    className: "bg-bgSection rounded-md mx-3 mb-5 px-4 py-16 md:py-20 lg:mb-5 lg:py-24 lg:w-5/7 lg:m-auto",
+    title:{
+        children:"Experience",
+        className: "text-text-primary text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
+        variant: "h2"
+    },
+    toggleList: {
+        toggleItems: [
+            {
+                className: "w-full bg-barExperience  p-2 shadow-sm rounded-md ",
+
+                classNamePre: " flex justify-between cursor-pointer",
+                title: [{
+                    children: "Programador Junior",
+                    className: "text-text-primary text-xl font-bold ",
+                    variant: "h2"
+                }, {
+                    children: "FORENTEC",
+                    className: "text-text-secondary font-bold",
+                    variant: "h3"
+                }],
+                classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
+                info: [
+                    {
+                        children: "Js",
+                        className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "Ruby",
+                        className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "CSS",
+                        className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
+                        className: "text-text-primary mt-2 text-justify text-sm font-bold",
+                        variant: "p"
+                    }
+                ],
+                isOpen: false,
+                onClick: () => { },
+            },
+            {
+                className: "w-full bg-barExperience  p-2 shadow-sm rounded-md",
+
+                classNamePre: "flex justify-between cursor-pointer",
+                title: [{
+                    children: "Programador Junior",
+                    className: "text-text-primary text-xl font-bold ",
+                    variant: "h2"
+                }, {
+                    children: "FORENTEC",
+                    className: "text-text-secondary font-bold",
+                    variant: "h3"
+                }],
+                classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
+                info: [
+                    {
+                        children: "Js",
+                        className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "Ruby",
+                        className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "CSS",
+                        className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
+                        variant: "span"
+                    },
+                    {
+                        children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
+                        className: "text-text-primary mt-2 text-justify text-sm font-bold",
+                        variant: "p"
+                    }
+                ],
+                isOpen: false,
+                onClick: () => { },
+            },
+        ]
+    }
+}
+
 const proyectsData: ProyectsDataProps = {
     id: "proyectArea",
-    className: "w-full px-4 py-16 md:py-20 lg:py-24 lg:w-5/7 lg:m-auto",
+    className: "bg-bgSection rounded-md mx-3 mb-5 px-4 py-16 md:py-20 md:px-8 lg:mb-5 lg:py-24 lg:px-16 lg:w-5/7 lg:m-auto",
     title:{
         children:"Projects",
         className: "text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
@@ -215,10 +307,10 @@ const proyectsData: ProyectsDataProps = {
 
 const stackArea: StackAreaProps = {
     id: "stackArea",
-    className: "w-full px-4 py-16 md:py-20 lg:py-24 lg:w-5/7 lg:m-auto",
+    className: "bg-bgSection rounded-md mx-3 mb-5 px-4 py-16 md:py-20 md:px-8 lg:mb-5 lg:py-24 lg:px-16 lg:w-5/7 lg:m-auto",
     title:{
         children:"Stack",
-        className: "text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
+        className: "text-text-primary text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
         variant: "h2"
     },
     cards: [
@@ -226,9 +318,9 @@ const stackArea: StackAreaProps = {
             className: "grid m-auto grid-cols-1 w-7/10 gap-4 sm:grid-cols-2 sm:w-full md:grid-cols-3 lg:grid-cols-4",
             cardList: [
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard  rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/react.svg",
@@ -238,7 +330,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "React",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -246,9 +338,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/ts.svg",
@@ -258,7 +350,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "TypeScript",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -266,9 +358,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/js.svg",
@@ -278,7 +370,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "JavaScript",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -286,9 +378,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/mongodb.svg",
@@ -298,7 +390,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "MongoDB",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -306,9 +398,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/node.svg",
@@ -318,7 +410,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "Node",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -326,9 +418,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/git.svg",
@@ -338,7 +430,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "Git",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -346,9 +438,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/html.svg",
@@ -358,7 +450,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "HTML",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -366,9 +458,9 @@ const stackArea: StackAreaProps = {
                     },
                 },
                 {
-                    className: "flex justify-center rounded-lg p-5 bg-gray-500 md:w-9/10",
+                    className: "flex justify-center rounded-lg p-5 bg-bgCard md:w-9/10",
                     imageText: {
-                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-gray-200 rounded-sm",
+                        className: "w-8/10 flex flex-col p-2 items-center gap-3 bg-bgInsideCard rounded-sm",
                         image: {
                             alt: "Image",
                             src: "./imgStack/css.svg",
@@ -378,7 +470,7 @@ const stackArea: StackAreaProps = {
                         text: [
                             {
                                 children: "CSS",
-                                className: "text-2xl text-center p-1",
+                                className: "text-text-primary text-2xl font-semibold text-center p-1",
                                 variant: "p",
                                 htmlFor: ""
                             }
@@ -390,115 +482,23 @@ const stackArea: StackAreaProps = {
     ]
 }
 
-const experienceArea: ExperienceAreaProps = {
-    id: "experienceArea",
-    className: "w-full px-4 py-16 md:py-20 lg:py-24 lg:w-5/7 lg:m-auto",
-    title:{
-        children:"Experience",
-        className: "text-3xl text-center md:text-4xl lg:text-5xl py-5 font-bold",
-        variant: "h2"
-    },
-    toggleList: {
-        toggleItems: [
-            {
-                className: "w-full p-2 shadow-sm rounded-md ",
-
-                classNamePre: "flex justify-between cursor-pointer",
-                title: [{
-                    children: "Programador Junior",
-                    className: "text-xl font-bold text-indigo-600",
-                    variant: "h2"
-                }, {
-                    children: "FORENTEC",
-                    className: " font-bold text-gray-500",
-                    variant: "h3"
-                }],
-                classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
-                info: [
-                    {
-                        children: "Js",
-                        className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "Ruby",
-                        className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "CSS",
-                        className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
-                        className: "mt-2 text-justify text-sm font-bold",
-                        variant: "p"
-                    }
-                ],
-                isOpen: false,
-                onClick: () => { },
-            },
-            {
-                className: "w-full p-2 shadow-sm rounded-md",
-
-                classNamePre: "flex justify-between cursor-pointer",
-                title: [{
-                    children: "Programador Junior",
-                    className: "text-xl font-bold text-indigo-600",
-                    variant: "h2"
-                }, {
-                    children: "FORENTEC",
-                    className: " font-bold text-gray-500",
-                    variant: "h3"
-                }],
-                classNameInfo: "transition-all ease-in-out duration-500 ml-4 mt-2 md:w-8/10 lg:w-6/10",
-                info: [
-                    {
-                        children: "Js",
-                        className: "inline-block rounded-md bg-yellow-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "Ruby",
-                        className: "inline-block rounded-md bg-red-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "CSS",
-                        className: "inline-block rounded-md bg-blue-200 w-2/10 py-1 mr-2 text-center",
-                        variant: "span"
-                    },
-                    {
-                        children: "Led the creation of a system for a political party, using Ruby on Rails and JavaScript, which improved data management efficiency by 25%, facilitating access and organization of real-time information.",
-                        className: "mt-2 text-justify text-sm font-bold",
-                        variant: "p"
-                    }
-                ],
-                isOpen: false,
-                onClick: () => { },
-            },
-        ]
-    }
-}
-
 const contact: ContactProps = {
     id: "contact",
-    className: "bg-gray-200 px-4 rounded-md py-16 md:py-20 lg:py-24",
-    classNameDivTextIcon: "bg-gray-100 rounded-lg py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-center lg:w-1/2 lg:m-auto lg:py-10 lg:gap-20",
+    className: "bg-bgSection px-4 rounded-md py-16 md:py-20 lg:py-10",
+    classNameDivTextIcon: "bg-bgContact shadow-xl border-4 border-boderContact rounded-lg py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-center lg:w-1/2 lg:m-auto lg:py-10 lg:gap-20",
 
     classNameDivText: "",
     text: {
         variant: "h2",
         children: "Contact with Me!",
-        className: "text-3xl text-center font-bold",
+        className: "text-text-terthary text-shadow-lg text-3xl text-center font-bold",
     },
     classNameDivIcons: "flex gap-3 justify-center",
     listIcons: [
         {
             icon: {
                 name: "github",
-                className: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl", // Responsive
+                className: "text-text-terthary text-shadow-lg text-2xl sm:text-3xl md:text-4xl lg:text-5xl", // Responsive
             },
             link: {
                 href: "https://github.com/IanHMV",
@@ -509,7 +509,7 @@ const contact: ContactProps = {
         {
             icon: {
                 name: "linkedin",
-                className: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl", // Responsive
+                className: "text-text-terthary text-shadow-lg text-2xl sm:text-3xl md:text-4xl lg:text-5xl", // Responsive
             },
             link: {
                 href: "https://www.linkedin.com/in/ianhmv/",
