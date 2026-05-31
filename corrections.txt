@@ -1,0 +1,61 @@
+ Aquí está el análisis completo. Veo que corrections.txt ya tenía un análisis previo — algunos puntos fueron corregidos (el ?? en ButtonIcon, los className sin default, el typo W-1/2), pero quedan varios sin resolver. Además encontré nuevos problemas:                            
+                                                                                                                                                                                                                                                                                        
+  ---                                                                                                                                                                                                                                                                                   
+  Bugs activos (Alta prioridad)                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                        
+  1. Props que no hacen nada — 3 componentes:                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                        
+  - Input.tsx:17 → ${error ? "" : ""} — nunca cambia nada                                                                                                                                                                                                                             
+  - Label.tsx:12 → ${disabled ? "" : ""} — igual
+  - Textarea.tsx:18 → ${error ? "" : ""} — igual
+
+  Los tres aceptan la prop pero no aplican ninguna clase. Ejemplo de lo que deberían hacer:
+  // Input / Textarea:
+  ${error ? "border-red-500" : "border-gray-300"}
+
+  // Label:
+  ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+
+  2. Redundancia en Button.tsx:7 (variante icon):
+  icon: "rounded-md bg-transparent p-2 rounded-full hover:bg-gray-100",
+  //     ^^^^^^^^^                        ^^^^^^^^^^^^  ← conflicto
+  rounded-full sobrescribe a rounded-md — uno de los dos sobra.
+
+  ---
+  Tipos incorrectos con la implementación (Media prioridad)
+
+  Estas props son requeridas en el tipo pero tienen default en el componente — TypeScript acepta el código pero la firma miente al consumidor:
+
+  ┌─────────────────────┬─────────────────────┬───────────────────────────────────────────────────┐
+  │       Archivo       │        Prop         │                        Fix                        │
+  ├─────────────────────┼─────────────────────┼───────────────────────────────────────────────────┤
+  │ Text.types.ts:5     │ weight: TextWeight  │ weight?: TextWeight                               │
+  ├─────────────────────┼─────────────────────┼───────────────────────────────────────────────────┤
+  │ Textarea.types.ts:8 │ disabled: boolean   │ disabled?: boolean                                │
+  ├─────────────────────┼─────────────────────┼───────────────────────────────────────────────────┤
+  │ Textarea.types.ts:9 │ error: boolean      │ error?: boolean                                   │
+  ├─────────────────────┼─────────────────────┼───────────────────────────────────────────────────┤
+  │ Button.types.ts:13  │ onClick: () => void │ onClick?: () => void (para botones type="submit") │
+  └─────────────────────┴─────────────────────┴───────────────────────────────────────────────────┘
+
+  FormTextarea.types.ts hereda disabled y error de TextareaProps via Pick, entonces al corregir Textarea.types.ts eso se arregla solo.
+
+  ---
+  Redundancias (Media prioridad)
+
+  iconMap duplicado — Icon.tsx:3-7 y ButtonIcon.tsx:4-8 definen exactamente el mismo objeto. Lo mismo con IconType en ambos archivos de tipos. Si agregas un icono tienes que cambiarlo en dos lugares.
+
+  Solución: extraer a src/components/atoms/Icon/iconMap.ts y que ButtonIcon lo importe.
+
+  ---
+  Nombre confuso (Baja prioridad)
+
+  PresentationCard.types.ts extiende LabelProps + InputProps — es un campo de formulario con etiqueta, no una tarjeta de presentación. El nombre probablemente debería ser FormInput (igual que existe FormTextarea).
+
+  ---
+  ¿Quieres que corrija todos estos puntos o prefieres empezar por los bugs de alta prioridad?
+
+✻ Sautéed for 1m 58s
+
+※ recap: Analyzing portfolio components for bugs and improvements. Found active bugs where error/disabled props do nothing, type mismatches, and a duplicated iconMap. Next: confirm which issues to fix first. (disable recaps in /config)                                             
+  
