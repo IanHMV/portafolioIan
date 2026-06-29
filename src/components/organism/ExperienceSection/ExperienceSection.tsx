@@ -1,3 +1,4 @@
+import styles from "./ExperienceSection.module.css";
 import Text from "../../atoms/Text/Text";
 import Heading from "../../atoms/Heading/Heading";
 import ExpCardGroup from "../../molecules/ExpCardGroup/ExpCardGroup";
@@ -11,13 +12,13 @@ const ExperienceSection = ({
   className = ""
 }: ExperienceSectionProps) => {
   return (
-    <section className={`${className}`}>
-      <div className="px-2">
+    <section className={`${styles.section} ${className}`}>
+      <div className={styles.header}>
         <Heading {...title} />
         <Text {...description} />
       </div>
 
-      <div className="px-2">
+      <div className={styles.content}>
         <ExpCardGroup {...expCards} />
       </div>
     </section>

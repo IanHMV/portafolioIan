@@ -1,4 +1,5 @@
 
+import styles from "./HeroSection.module.css";
 import type { HeroSectionProps } from "./HeroSection.types";
 import Badge from "../../atoms/Badge/Badge";
 import Heading from "../../atoms/Heading/Heading";
@@ -15,7 +16,7 @@ const HeroSection = ({
   className
 }: HeroSectionProps) => {
   return (
-    <section className={`${className}`}>
+    <section className={`${styles.section} ${className}`}>
       <Badge {...badge} />
       <Heading {...heading} />
       <Text {...description} />

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { ProjectSectionProps } from "./ProjectSection.types";
 
 import ProjectSection from "./ProjectSection";
 
@@ -13,33 +14,58 @@ export default meta;
 
 type Story = StoryObj<typeof ProjectSection>;
 
-export const Default: Story = {
-  args: {
-    className: "h-screen px-2",
-    heading: {
-      as: "h3",
-      size: "text-3xl",
-      className: "py-5",
-      children: "Projects Section"
-    },
-    description: {
-      className: "py-5",
-      children: "This are my projects"
-    },
-    cards: {
-      className: "flex gap-4",
-      cards: [
-        {
-          title: { children: "Proyecto 1", as: "h3" },
-          description: { children: "Descripción del proyecto" },
-          img: { src: "/img/image2.jpg", alt: "Proyecto 1" }
+const baseArgs: ProjectSectionProps = {
+  description: {
+    children: "This is the section area",
+    className: ""
+  },
+  heading: {
+    children: "Project Section",
+    as: "h1",
+    className: "",
+    size: "text-2xl"
+  },
+  cards: {
+    cards: [
+      {
+        img: {
+          src: "/img/image2.jpg",
+          alt: "Screenshot del proyecto",
         },
-        {
-          title: { children: "Proyecto 2", as: "h3" },
-          description: { children: "Descripción del proyecto" },
-          img: { src: "/img/image2.jpg", alt: "Proyecto 2" }
-        }
-      ]
-    }
-  }
+        description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
+        title: "Portafolio Web",
+        footer: "2024 · React + TS",
+        githubUrl: "https://github.com/IanHMV",
+        backColor: "#151515",
+      },
+      {
+        img: {
+          src: "/img/image2.jpg",
+          alt: "Screenshot del proyecto",
+        },
+        description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
+        title: "Portafolio Web",
+        footer: "2024 · React + TS",
+        githubUrl: "https://github.com/IanHMV",
+        backColor: "#151515",
+      },
+      {
+        img: {
+          src: "/img/image2.jpg",
+          alt: "Screenshot del proyecto",
+        },
+        description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
+        title: "Portafolio Web",
+        footer: "2024 · React + TS",
+        githubUrl: "https://github.com/IanHMV",
+        backColor: "#151515",
+      }
+    ],
+    className: ""
+  },
+
+}
+
+export const Default: Story = {
+  args: baseArgs
 };
