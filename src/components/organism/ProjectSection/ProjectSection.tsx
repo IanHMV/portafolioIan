@@ -1,9 +1,9 @@
+import styles from "./ProjectSection.module.css";
 import type { ProjectSectionProps } from "./ProjectSection.types";
 
 import Text from "../../atoms/Text/Text";
 import Heading from "../../atoms/Heading/Heading";
-import CardGroup from "../../molecules/CardGroup/CardGroup";
-
+import CardProjectGroup from "../../molecules/CardProjectGroup/CardProjectGroup";
 
 const ProjectSection = ({
   description,
@@ -12,16 +12,15 @@ const ProjectSection = ({
   cards
 }: ProjectSectionProps) => {
   return (
-    <section className={`${className}`}>
-      <div className="">
+    <section className={`${styles.section} ${className}`}>
+      <div className={styles.header}>
         <Heading {...heading} />
         <Text {...description} />
       </div>
 
-      <div className="">
-        <CardGroup {...cards} />
+      <div className={styles.content}>
+        <CardProjectGroup {...cards} />
       </div>
-
     </section>
   );
 }
