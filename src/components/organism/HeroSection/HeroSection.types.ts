@@ -1,15 +1,17 @@
-
-import type { BadgeProps } from "../../atoms/Badge/Badge.types";
 import type { HeadingProps } from "../../atoms/Heading/Heading.types";
 import type { TextProps } from "../../atoms/Text/Text.types";
-import type { ActionButtonsProps } from "../../molecules/ActionButtons/ActionButtons.types";
-import type { StatGroupProps } from "../../molecules/StatGroup/StatGroup.types";
+import type { ImageProps } from "../../atoms/Image/Image.types";
+
+export interface HeroAction {
+  label: string
+  href: string
+}
 
 export interface HeroSectionProps {
-  badge: Pick<BadgeProps, "label" | "color" | "className">
+  logo: Pick<ImageProps, "src" | "alt">
   heading: Pick<HeadingProps, "children" | "className" | "size">
   description: Pick<TextProps, "children" | "className">
-  actions: ActionButtonsProps
-  stats: StatGroupProps
-  className: string
+  primaryAction: HeroAction
+  secondaryAction?: HeroAction
+  className?: string
 }

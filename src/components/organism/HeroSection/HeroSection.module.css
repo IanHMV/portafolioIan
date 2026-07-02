@@ -3,18 +3,101 @@
     opacity: 0;
     transform: translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.section > * {
+@keyframes float {
+  0%,
+  100% {
+    transform: rotateX(12deg) rotateY(-18deg) translateY(0);
+  }
+
+  50% {
+    transform: rotateX(16deg) rotateY(-10deg) translateY(-16px);
+  }
+}
+
+/* Wireframe-terrain backdrop (canvas) with a soft vignette so the mesh
+   fades out toward the edges and the content stays in focus. */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.content>* {
   animation: fadeInUp 0.6s ease-out both;
 }
 
-.section > *:nth-child(1) { animation-delay: 0s; }
-.section > *:nth-child(2) { animation-delay: 0.1s; }
-.section > *:nth-child(3) { animation-delay: 0.2s; }
-.section > *:nth-child(4) { animation-delay: 0.3s; }
-.section > *:nth-child(5) { animation-delay: 0.4s; }
+.content>*:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.content>*:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.content>*:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stage {
+  perspective: 1000px;
+  animation: fadeInUp 0.8s ease-out both;
+}
+
+.glow {
+  position: absolute;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.35), transparent 70%);
+  filter: blur(40px);
+}
+
+.tilt {
+  position: relative;
+  width: min(340px, 70vw);
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  animation: float 7s ease-in-out infinite;
+}
+
+/* Each layer paints the logo silhouette (SVG used as a mask) at increasing
+   depth; the last one is the front face. */
+.layer {
+  position: absolute;
+  inset: 0;
+  background: hsl(145 65% calc(12% + var(--i) * 2.5%));
+  -webkit-mask: var(--logo-url) center / contain no-repeat;
+  mask: var(--logo-url) center / contain no-repeat;
+  transform: translateZ(calc(var(--i) * 3px));
+}
+
+.layer:last-child {
+  background: linear-gradient(160deg, #fafafa 45%, #4ade80);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .content>*,
+  .stage {
+    animation: none;
+  }
+
+  .tilt {
+    animation: none;
+    transform: rotateX(12deg) rotateY(-18deg);
+  }
+}

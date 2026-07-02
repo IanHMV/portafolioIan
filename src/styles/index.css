@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 .outfit {
   font-family: "Outfit", sans-serif;
   font-optical-sizing: auto;

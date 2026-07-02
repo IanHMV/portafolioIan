@@ -9,7 +9,7 @@ const Label = ({
   size = "text-base"
 }: LabelProps) => {
   return (
-    <label htmlFor={htmlFor} className={`${size} ${disabled ? "" : ""} ${className}`}>
+    <label htmlFor={htmlFor} className={`${size} ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}>
       {text}
       {required && <span className="text-red-500 ml-1">*</span>}
     </label>

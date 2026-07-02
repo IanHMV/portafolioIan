@@ -113,7 +113,7 @@ const Card = ({
     <div
       ref={refElement}
       style={glare ? GLARE_CONTAINER_VARS : undefined}
-      className={`relative text-white  cursor-pointer shadow-xl group h-96 roudnded[perspective:600px] ${className}`}
+      className={`relative text-white cursor-pointer shadow-xl group h-96 [perspective:600px] ${className}`}
       onPointerMove={glare ? handlePointerMove : undefined}
       onPointerEnter={glare ? handlePointerEnter : undefined}
       onPointerLeave={glare ? handlePointerLeave : undefined}

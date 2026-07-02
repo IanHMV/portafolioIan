@@ -6,6 +6,7 @@ import Input from "../../atoms/Input/Input";
 
 const InputField = ({
   id,
+  name,
   text,
   className = "",
   required = false,
@@ -24,11 +25,13 @@ const InputField = ({
         htmlFor={id}
         text={text}
         required={required}
+        disabled={disabled}
         className={labelClassName}
       />
 
       <Input
         id={id}
+        name={name}
         type={type}
         value={value}
         error={error}
