@@ -3,6 +3,7 @@
     opacity: 0;
     transform: translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -11,6 +12,7 @@
 
 .section {
   padding: 4rem 2rem;
+  overflow-x: clip;
 }
 
 .header {
@@ -23,11 +25,66 @@
   display: block;
   width: 2rem;
   height: 2px;
-  background-color: #dec800;
+  background-color: #4ade80;
   border-radius: 1px;
   margin-bottom: 1rem;
 }
 
 .content {
   animation: fadeInUp 0.5s ease-out 0.12s both;
+}
+
+/* 3D stage: the cards live in a shared perspective so the side slots can
+   curve toward the viewer like an arc. The browser depth-sorts them via
+   preserve-3d, so no z-index juggling is needed. */
+.stage {
+  position: relative;
+  height: 22rem;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+
+/* Each slot is centered on the stage; the RAF loop in the component drives
+   its transform/opacity every frame, so it must NOT have CSS transitions
+   (they would lag behind and fight the per-frame updates). */
+.slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  will-change: transform, opacity;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  color: white;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.arrow:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .header,
+  .content {
+    animation: none;
+  }
 }

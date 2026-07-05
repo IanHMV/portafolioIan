@@ -1,22 +1,61 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ProjectSectionProps } from "./ProjectSection.types";
+import type { HeroSectionProps } from "../components/organism/HeroSection/HeroSection.types"
+import type { AboutMeProps } from "../components/organism/AboutMe/AboutMe.types"
+import type { ProjectSectionProps } from "../components/organism/ProjectSection/ProjectSection.types"
 
-import ProjectSection from "./ProjectSection";
-
-const meta: Meta<typeof ProjectSection> = {
-  title: "Organism/ProjectSection",
-  component: ProjectSection,
-  parameters: {
-    layout: "fullscreen",
+export const hero: HeroSectionProps = {
+  logo: {
+    src: "/img/Logo.svg",
+    alt: "Ian Martinez logo",
   },
-  argTypes: {},
-} satisfies Meta<typeof ProjectSection>;
+  heading: {
+    children: "Ian Martinez",
+    size: "text-5xl",
+    className: "sm:text-6xl md:text-7xl",
+  },
+  description: {
+    children:
+      "Frontend Developer building clean, modern interfaces that are fast, accessible, and a joy to use.",
+  },
+  primaryAction: {
+    label: "View projects",
+    href: "#projects",
+  },
+  secondaryAction: {
+    label: "Contact me",
+    href: "#contact",
+  },
+};
 
-export default meta;
+export const aboutMe: AboutMeProps = {
+  id: "about",
+  coverImage: {
+    src: "/img/imgAboutMe.svg",
+    alt: "Scenic cover for the about me section",
+  },
+  coverTitle: {
+    children: "About Me",
+    size: "text-5xl",
+    className: "sm:text-6xl md:text-7xl",
+  },
+  heading: {
+    children: "Hi, I'm Ian",
+    size: "text-3xl",
+    className: "md:text-4xl",
+  },
+  paragraphs: [
+    "I'm a frontend developer passionate about building interfaces that feel effortless: clean layouts, thoughtful motion and details that make people want to stay.",
+    "My everyday stack is TypeScript, React and Tailwind CSS. I structure my components with Atomic Design and document every piece in Storybook, so each atom, molecule and organism stays reusable and easy to test.",
+    "When I'm not coding you'll find me exploring new UI trends, polishing this portfolio or learning something new to push my craft further.",
+  ],
+  contentImage: {
+    src: "/img/Me.svg",
+    alt: "Portrait of Ian Martinez",
+  },
+};
 
-type Story = StoryObj<typeof ProjectSection>;
-
-const baseArgs: ProjectSectionProps = {
+export const projectSection: ProjectSectionProps = {
+  id: "projects",
+  className: "bg-zinc-950",
   heading: {
     children: "Projects",
     as: "h2",
@@ -86,8 +125,4 @@ const baseArgs: ProjectSectionProps = {
       backColor: "#134e4a",
     },
   ],
-};
-
-export const Default: Story = {
-  args: baseArgs,
 };
