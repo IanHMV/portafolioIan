@@ -1,7 +1,8 @@
 import HeroSection from "../components/organism/HeroSection/HeroSection";
 import AboutMe from "../components/organism/AboutMe/AboutMe";
 import ProjectSection from "../components/organism/ProjectSection/ProjectSection";
-import { hero, aboutMe, projectSection } from "./data";
+import ExperienceSection from "../components/organism/ExperienceSection/ExperienceSection";
+import { hero, aboutMe, projectSection, experienceSection } from "./data";
 
 const Inicio = () => {
   return (
@@ -11,6 +12,8 @@ const Inicio = () => {
       <AboutMe {...aboutMe} />
 
       <ProjectSection {...projectSection} />
+
+      <ExperienceSection {...experienceSection} />
 
       {/* Sección destino del botón "Contact me". Placeholder mientras
           construimos el organismo de contacto. */}

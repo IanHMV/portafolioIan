@@ -1,10 +1,39 @@
 import type { TextProps } from "../../atoms/Text/Text.types";
 import type { HeadingProps } from "../../atoms/Heading/Heading.types";
-import type { ExpCardGroupProps } from "../../molecules/ExpCardGroup/ExpCardGroup.types";
+
+export interface ExperienceFolder {
+  /** Texto visible en la pestaña de la carpeta */
+  label: string
+  /** Color de la carpeta como valor CSS válido — ej. "#2b4bdb" */
+  color: string
+  /** Franja que se asoma al pasar el mouse por la carpeta */
+  preview: {
+    /** Código corto de archivo — ej. "16B" */
+    code: string
+    /** Nota breve de una o dos líneas */
+    note: string
+    /** Fecha o periodo — ej. "Dec 13, 2024" */
+    date: string
+  }
+  /** Hoja que se despliega al hacer click en la carpeta */
+  sheet: {
+    /** Número de expediente — ej. "Nº 01" */
+    fileNo: string
+    /** Título de la hoja — puesto, empresa o proyecto */
+    heading: string
+    /** Periodo — ej. "2024 — presente" */
+    period: string
+    /** Párrafos con el detalle de la experiencia */
+    paragraphs: string[]
+  }
+}
 
 export interface ExperienceSectionProps {
+  id?: string
   className?: string
-  title: HeadingProps
-  description: TextProps
-  expCards: ExpCardGroupProps
+  /** Índice de la carpeta que aparece abierta al cargar (default: 0, la primera) */
+  defaultOpenIndex?: number
+  title: Pick<HeadingProps, "as" | "children" | "className" | "size">
+  description: Pick<TextProps, "as" | "children" | "className" | "size" | "weight">
+  folders: ExperienceFolder[]
 }
