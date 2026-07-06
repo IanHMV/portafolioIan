@@ -2,6 +2,7 @@ import type { HeroSectionProps } from "../components/organism/HeroSection/HeroSe
 import type { AboutMeProps } from "../components/organism/AboutMe/AboutMe.types"
 import type { ProjectSectionProps } from "../components/organism/ProjectSection/ProjectSection.types"
 import type { ExperienceSectionProps } from "../components/organism/ExperienceSection/ExperienceSection.types";
+import type { SkillsSectionProps } from "@/components/organism/SkillsSection/SkillsSection.types";
 
 export const hero: HeroSectionProps = {
   logo: {
@@ -70,35 +71,35 @@ export const projectSection: ProjectSectionProps = {
   },
   projects: [
     {
-      img: { src: "/img/image2.jpg", alt: "Portfolio website screenshot" },
-      description: "Personal portfolio built with React, TypeScript and Tailwind CSS.",
-      title: "Portafolio Web",
-      footer: "2024 · React + TS",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/tecNew.png", alt: "Project - TecNews" },
+      description: "This was my fist project. I lern to develop webpages with HTML and CSS",
+      title: "TecNews",
+      footer: "CSS + HTML",
+      githubUrl: "https://github.com/IanHMV/TecNews",
       backColor: "#151515",
     },
     {
-      img: { src: "/img/laptop.png", alt: "Project two screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Two",
-      footer: "2024 · React",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/finestra.png", alt: "Project - Finestra" },
+      description: "Project for a small Gelato shop made during my internship.",
+      title: "Finestra Website",
+      footer: "HTML + CSS",
+      githubUrl: "https://github.com/IanHMV/Gelato",
       backColor: "#0f2027",
     },
     {
-      img: { src: "/img/imgAboutMe.svg", alt: "Project three screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Three",
-      footer: "2025 · TypeScript",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/testpiscometrico.png", alt: "Project - TestPsicometrico" },
+      description: "Project developed for one of my classes in my university.",
+      title: "TestPsicometrico",
+      footer: "HTML + CSS",
+      githubUrl: "https://github.com/IanHMV/TestPsicometrico",
       backColor: "#1e293b",
     },
     {
-      img: { src: "/img/image2.jpg", alt: "Project four screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Four",
-      footer: "2025 · Node.js",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/bootstrap.png", alt: "Project - Bootstrap course" },
+      description: "Project that i develop for learn about Bootstrap",
+      title: "Project Bootstrap",
+      footer: "HTML + BOOTSTRAP",
+      githubUrl: "https://github.com/IanHMV/cursoBoostrap",
       backColor: "#14532d",
     },
     {
@@ -150,16 +151,16 @@ export const experienceSection: ExperienceSectionProps = {
       color: "#8f2d56",
       preview: {
         code: "01A",
-        note: "Placeholder role. Swap with your real experience.",
-        date: "2024 — present",
+        note: "My first experience working whith a company",
+        date: "2020 — My first job",
       },
       sheet: {
         fileNo: "Nº 01",
         heading: "Frontend Developer",
-        period: "2024 — present · Remote",
+        period: "2020 — Past",
         paragraphs: [
-          "Placeholder description — replace with what you built, the stack you used and the impact it had.",
-          "A second paragraph can cover collaboration, tooling or anything worth telling.",
+          "This was my first experience working with a company that wanted to develop a website for its gelato store.",
+          "I joined this company as part of my internship, where I was given the opportunity to design and develop its website to promote the business and help attract more customers.",
         ],
       },
     },
@@ -230,6 +231,83 @@ export const experienceSection: ExperienceSectionProps = {
           "Placeholder description — the first project, the first bug and the moment you got hooked.",
         ],
       },
+    },
+  ],
+};
+
+
+export const skillSection: SkillsSectionProps = {
+  className: "bg-zinc-950",
+  title: {
+    as: "h2",
+    size: "text-4xl",
+    className: "text-white font-bold tracking-tight",
+    children: "My Skills",
+  },
+  description: {
+    as: "p",
+    size: "text-base",
+    weight: "font-normal",
+    className: "text-gray-400 max-w-xl py-3",
+    children:
+      "The tools I work with every day. Hover a logo to stop the wheel and read what I do with it.",
+  },
+  skills: [
+    {
+      name: "JavaScript",
+      icon: { src: "/imgStack/js.svg", alt: "JavaScript logo" },
+      description:
+        "The language behind everything I build — from DOM logic to async data flows.",
+      color: "#f7df1e",
+    },
+    {
+      name: "TypeScript",
+      icon: { src: "/imgStack/ts.svg", alt: "TypeScript logo" },
+      description:
+        "My default for every project: typed props, safer refactors and self-documenting code.",
+      color: "#3178c6",
+    },
+    {
+      name: "React",
+      icon: { src: "/imgStack/react.svg", alt: "React logo" },
+      description:
+        "Component-driven UIs with hooks, following Atomic Design and documented in Storybook.",
+      color: "#61dafb",
+    },
+    {
+      name: "Node.js",
+      icon: { src: "/imgStack/node.svg", alt: "Node.js logo" },
+      description:
+        "APIs, tooling and scripts on the server side of JavaScript.",
+      color: "#83cd29",
+    },
+    {
+      name: "MongoDB",
+      icon: { src: "/imgStack/mongodb.svg", alt: "MongoDB logo" },
+      description:
+        "Document databases for flexible, fast-moving data models.",
+      color: "#4faa41",
+    },
+    {
+      name: "CSS",
+      icon: { src: "/imgStack/css.svg", alt: "CSS logo" },
+      description:
+        "Layouts, animation and responsive design — lately with Tailwind CSS v4.",
+      color: "#1572b6",
+    },
+    {
+      name: "HTML",
+      icon: { src: "/imgStack/html.svg", alt: "HTML5 logo" },
+      description:
+        "Semantic, accessible markup as the foundation of every interface.",
+      color: "#e34f26",
+    },
+    {
+      name: "Git",
+      icon: { src: "/imgStack/git.svg", alt: "Git logo" },
+      description:
+        "Version control with clean branches and readable history on GitHub.",
+      color: "#f05033",
     },
   ],
 };
