@@ -17,10 +17,13 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.1.18",
     "bootstrap-icons": "^1.13.1",
+    "clsx": "^2.1.1",
+    "motion": "^12.42.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

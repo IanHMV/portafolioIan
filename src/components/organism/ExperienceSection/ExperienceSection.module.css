@@ -3,6 +3,7 @@
     opacity: 0;
     transform: translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -11,6 +12,7 @@
 
 .section {
   padding: 4rem 2rem;
+  overflow-x: clip;
 }
 
 .header {
@@ -23,11 +25,171 @@
   display: block;
   width: 2rem;
   height: 2px;
-  background-color: #dec800;
+  background-color: #4ade80;
   border-radius: 1px;
   margin-bottom: 1rem;
 }
 
 .content {
   animation: fadeInUp 0.5s ease-out 0.12s both;
+}
+
+/* ── Área de fólders flotantes ─────────────────────────── */
+/* Escenario donde las carpetas flotan; también es el límite contra el
+   que rebotan al arrastrarlas (containerRef del DraggableCardBody) */
+.stage {
+  position: relative;
+  height: 30rem;
+  margin-bottom: 1.5rem;
+}
+
+.floatFolder {
+  cursor: grab;
+  outline: none;
+}
+
+.floatFolder:active {
+  cursor: grabbing;
+}
+
+.floatFolder:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Pestaña trapezoidal: costados inclinados con skew, esquina superior
+   externa redondeada — misma receta que el archivero anterior */
+.floatTab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  margin-left: 22px;
+  padding: 0 16px;
+  background: var(--folder-color);
+  color: white;
+  font-size: 0.85rem;
+}
+
+.floatTab::before,
+.floatTab::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 22px;
+  height: 100%;
+  background: var(--folder-color);
+}
+
+.floatTab::before {
+  left: -11px;
+  transform: skewX(-16deg);
+  border-top-left-radius: 9px;
+}
+
+.floatTab::after {
+  right: -11px;
+  transform: skewX(16deg);
+  border-top-right-radius: 9px;
+}
+
+/* Cuerpo del fólder con la info de la vista previa encima */
+.floatBody {
+  position: relative;
+  height: 8.5rem;
+  margin-top: -2px;
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  background: var(--folder-color);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.75);
+}
+
+.floatMeta {
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.85;
+}
+
+.floatNote {
+  line-height: 1.6;
+}
+
+/* ── Hoja desplegable al click ─────────────────────────── */
+/* grid-template-rows 0fr→1fr anima hacia la altura natural del contenido */
+.sheetWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s ease;
+}
+
+.sheetWrap[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.sheetInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* La hoja de papel enmarcada por el color del fólder al que pertenece */
+.sheet {
+  position: relative;
+  background: #f4f1e8;
+  color: #2a2723;
+  padding: 2.5rem 2.75rem 3.5rem;
+  border: 10px solid var(--folder-color);
+  border-radius: 8px;
+}
+
+.fileTag {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.75rem;
+  padding: 2px 10px;
+  border: 1.5px solid #2b4bdb;
+  color: #2b4bdb;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  transform: rotate(-1.5deg);
+}
+
+.sheetHeading {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.sheetPeriod {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color: #6b6357;
+  margin-bottom: 1.5rem;
+}
+
+.sheetParagraph {
+  max-width: 60ch;
+  line-height: 1.7;
+}
+
+.sheetParagraph+.sheetParagraph {
+  margin-top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .header,
+  .content {
+    animation: none;
+  }
+
+  .sheetWrap {
+    transition: none;
+  }
 }
