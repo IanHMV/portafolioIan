@@ -3,7 +3,8 @@ import AboutMe from "../components/organism/AboutMe/AboutMe";
 import ProjectSection from "../components/organism/ProjectSection/ProjectSection";
 import ExperienceSection from "../components/organism/ExperienceSection/ExperienceSection";
 import SkillsSection from "@/components/organism/SkillsSection/SkillsSection";
-import { hero, aboutMe, projectSection, experienceSection, skillSection } from "./data";
+import Footer from "@/components/organism/Footer/Footer";
+import { hero, aboutMe, projectSection, experienceSection, skillSection, footer } from "./data";
 
 const Inicio = () => {
   return (
@@ -18,14 +19,7 @@ const Inicio = () => {
 
       <SkillsSection {...skillSection} />
 
-      {/* Sección destino del botón "Contact me". Placeholder mientras
-          construimos el organismo de contacto. */}
-      <section
-        id="contact"
-        className="flex min-h-svh items-center justify-center bg-black"
-      >
-        <p className="text-gray-600 text-lg">Contact — coming soon</p>
-      </section>
+      <Footer {...footer} />
     </>
   );
 };
