@@ -1,7 +1,9 @@
+
 import type { HeroSectionProps } from "../components/organism/HeroSection/HeroSection.types"
 import type { AboutMeProps } from "../components/organism/AboutMe/AboutMe.types"
 import type { ProjectSectionProps } from "../components/organism/ProjectSection/ProjectSection.types"
 import type { ExperienceSectionProps } from "../components/organism/ExperienceSection/ExperienceSection.types";
+import type { FooterProps } from "../components/organism/Footer/Footer.types";
 import type { SkillsSectionProps } from "@/components/organism/SkillsSection/SkillsSection.types";
 
 export const hero: HeroSectionProps = {
@@ -31,7 +33,7 @@ export const hero: HeroSectionProps = {
 export const aboutMe: AboutMeProps = {
   id: "about",
   coverImage: {
-    src: "/img/imgAboutMe.svg",
+    src: "/img/space.gif",
     alt: "Scenic cover for the about me section",
   },
   coverTitle: {
@@ -46,7 +48,7 @@ export const aboutMe: AboutMeProps = {
   },
   paragraphs: [
     "I'm a frontend developer passionate about building interfaces that feel effortless: clean layouts, thoughtful motion and details that make people want to stay.",
-    "My everyday stack is TypeScript, React and Tailwind CSS. I structure my components with Atomic Design and document every piece in Storybook, so each atom, molecule and organism stays reusable and easy to test.",
+    "My everyday stack is TypeScript, React and Tailwind CSS. I structure my components with Atomic Design and document in storybook, so each atom, molecule and organism stays reusable and easy to test.",
     "When I'm not coding you'll find me exploring new UI trends, polishing this portfolio or learning something new to push my craft further.",
   ],
   contentImage: {
@@ -66,13 +68,13 @@ export const projectSection: ProjectSectionProps = {
   },
   description: {
     children:
-      "Some of the things I've built while polishing my craft. Hover a card to pause the carousel and flip it over.",
+      "Some of the things I've created while perfecting my technique, studying, or working. Hover over a card to pause the carousel and flip it.",
     className: "text-gray-400 max-w-xl",
   },
   projects: [
     {
       img: { src: "/img/tecNew.png", alt: "Project - TecNews" },
-      description: "This was my fist project. I lern to develop webpages with HTML and CSS",
+      description: "This was my fist project. I lern to develop webpages with HTML and CSS.",
       title: "TecNews",
       footer: "CSS + HTML",
       githubUrl: "https://github.com/IanHMV/TecNews",
@@ -96,34 +98,34 @@ export const projectSection: ProjectSectionProps = {
     },
     {
       img: { src: "/img/bootstrap.png", alt: "Project - Bootstrap course" },
-      description: "Project that i develop for learn about Bootstrap",
+      description: "Project that i develop for learn about Bootstrap.",
       title: "Project Bootstrap",
       footer: "HTML + BOOTSTRAP",
       githubUrl: "https://github.com/IanHMV/cursoBoostrap",
       backColor: "#14532d",
     },
     {
-      img: { src: "/img/laptop.png", alt: "Project five screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Five",
-      footer: "2025 · MongoDB",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/sesaecol.png", alt: "Sesaecol" },
+      description: "This was the first project that i develop for my work in government.",
+      title: "Sesaecol",
+      footer: "REACT + TAILWIND CSS",
+      githubUrl: "https://sesaecol-gob.com/",
       backColor: "#3b0764",
     },
     {
-      img: { src: "/img/imgAboutMe.svg", alt: "Project six screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Six",
-      footer: "2025 · Tailwind CSS",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/pdecolima.png", alt: "Pdecolima" },
+      description: "This was my second project, i developed this page for centralize the others projects that i run up in my work.",
+      title: "PDECOLIMA",
+      footer: "REACT + TS + DOCKER",
+      githubUrl: "https://pdecolima.mx/",
       backColor: "#7c2d12",
     },
     {
-      img: { src: "/img/image2.jpg", alt: "Project seven screenshot" },
-      description: "Placeholder project — swap this card with a real one.",
-      title: "Project Seven",
-      footer: "2025 · Storybook",
-      githubUrl: "https://github.com/IanHMV",
+      img: { src: "/img/s5.png", alt: "System 5" },
+      description: "I developed this system for my work, It's a project that helps you report a public official.",
+      title: "System 5 for reporting public official",
+      footer: "REACT + TS + DOCKER",
+      githubUrl: "https://pdecolima.mx/s5",
       backColor: "#134e4a",
     },
   ],
@@ -141,9 +143,9 @@ export const experienceSection: ExperienceSectionProps = {
     as: "p",
     size: "text-base",
     weight: "font-normal",
-    className: "text-gray-400 max-w-xl py-3",
+    className: "text-gray-400 max-w-xl py-3 whitespace-pre-line",
     children:
-      "A file cabinet of the places and projects that shaped me. Hover a folder to peek inside; click it to pull out the full sheet.",
+      "A file cabinet of the places and projects that shaped me.\n - Do click for open a folder.\n - Press again for close the folder.\n - Press and hold the click button to drag the folder.",
   },
   folders: [
     {
@@ -151,12 +153,12 @@ export const experienceSection: ExperienceSectionProps = {
       color: "#8f2d56",
       preview: {
         code: "01A",
-        note: "My first experience working whith a company",
+        note: "Finestra Gelato",
         date: "2020 — My first job",
       },
       sheet: {
         fileNo: "Nº 01",
-        heading: "Frontend Developer",
+        heading: "Freelance Developer",
         period: "2020 — Past",
         paragraphs: [
           "This was my first experience working with a company that wanted to develop a website for its gelato store.",
@@ -165,76 +167,61 @@ export const experienceSection: ExperienceSectionProps = {
       },
     },
     {
-      label: "Freelance Projects",
+      label: "Fontend Developer",
       color: "#e4572e",
       preview: {
         code: "02B",
-        note: "Client work and personal commissions.",
+        note: "TECNM Colima",
         date: "2023 — 2024",
       },
       sheet: {
         fileNo: "Nº 02",
-        heading: "Freelance Projects",
-        period: "2023 — 2024 · Remote",
+        heading: "Institude Project",
+        period: "2023 — 2024",
         paragraphs: [
-          "Placeholder description — landing pages, small apps and everything in between.",
+          "I worked for my academic institude for developing a system for psicometric tests. I made the frontend for this page and i worked with another partners and they made the backend in that moment.",
+          "It was a good first experience working with another people, and i learned to use github deeper."
         ],
       },
     },
     {
-      label: "Open Source",
+      label: "Frontend Developer",
       color: "#0f8a5f",
       preview: {
         code: "03C",
-        note: "Contributions and experiments in public.",
-        date: "2023",
+        note: "FORENTEC.",
+        date: "2024-2025",
       },
       sheet: {
         fileNo: "Nº 03",
-        heading: "Open Source",
-        period: "2023 · GitHub",
+        heading: "FORENTEC",
+        period: "2024",
         paragraphs: [
-          "Placeholder description — issues, pull requests and the lessons that came with them.",
+          "I worked with another partner in a company of cybersecurity, we develop web pages for companies and government. We developed pages for voting systems, data graphing and localitation of specific zones.",
+          "I managed the graphication of the differents zones, i made that with json files and google."
+
         ],
       },
     },
     {
-      label: "Studies & Certifications",
+      label: "Pdecolima Manager",
       color: "#2b4bdb",
       preview: {
         code: "04D",
-        note: "Formal education and self-directed learning.",
-        date: "2021 — 2023",
+        note: "Manager of different systems for the National Digital Platform",
+        date: "2025 — 2026",
       },
       sheet: {
         fileNo: "Nº 04",
-        heading: "Studies & Certifications",
-        period: "2021 — 2023",
+        heading: "Government EmployeePlatform",
+        period: "2025 — 2026",
         paragraphs: [
-          "Placeholder description — degrees, courses and certifications that back your craft.",
-        ],
-      },
-    },
-    {
-      label: "First Steps in Code",
-      color: "#5b2a86",
-      preview: {
-        code: "05E",
-        note: "Where it all started.",
-        date: "2020",
-      },
-      sheet: {
-        fileNo: "Nº 05",
-        heading: "First Steps in Code",
-        period: "2020",
-        paragraphs: [
-          "Placeholder description — the first project, the first bug and the moment you got hooked.",
+          "I worked in government managment the diferent systems of the National Digital Plataform. I worked with a physical server and run up different servers there for my government institute, some systems are from the National Digital Plataform and i only adapt this systems. And others systems i developed them from scratch.",
         ],
       },
     },
   ],
 };
-
 
 export const skillSection: SkillsSectionProps = {
   className: "bg-zinc-950",
@@ -310,4 +297,38 @@ export const skillSection: SkillsSectionProps = {
       color: "#f05033",
     },
   ],
+};
+
+export const footer: FooterProps = {
+  id: "contact",
+  logo: { src: "/img/Logo.svg", alt: "Ian Martinez logo" },
+  heading: {
+    as: "h2",
+    size: "text-2xl",
+    className: "text-white font-bold tracking-tight",
+    children: "Let's build something together",
+  },
+  description: {
+    as: "p",
+    size: "text-base",
+    weight: "font-normal",
+    className: "text-gray-400",
+    children:
+      "Frontend developer based in Colima, México. Open to new projects and collaborations — pick a slice and say hi.",
+  },
+  links: [
+    { label: "About", href: "#about" },
+    { label: "Projects", href: "#projects" },
+    { label: "Contact", href: "#contact" },
+  ],
+  // OJO: revisa estas URLs. La de GitHub la tomé de tus proyectos (IanHMV),
+  // pero en SocialDial.stories.tsx aparece IanVazquez418; las de LinkedIn,
+  // X e Instagram vienen de esa misma story y no pude comprobar que existan.
+  social: [
+    { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
+    { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
+    { id: "x", href: "https://x.com/ianvazquez", label: "X" },
+    { id: "instagram", href: "https://instagram.com/ianvazquez", label: "Instagram" },
+  ],
+  copyright: "© 2026 Ian Martinez",
 };
