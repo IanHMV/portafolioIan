@@ -13,7 +13,7 @@ const Footer = ({ id,
   description,
   links = [],
   social,
-  dialSize = 210,
+  dial,
   copyright,
   className = "",
 }: FooterProps) => {
@@ -44,9 +44,11 @@ const Footer = ({ id,
           )}
         </div>
 
+        {/* `dial` va primero: lo de abajo no se puede sobreescribir desde data */}
         <SocialDial
+          size={210}
+          {...dial}
           items={social}
-          size={dialSize}
           ariaLabel="Redes sociales"
           className={styles.dial}
         />

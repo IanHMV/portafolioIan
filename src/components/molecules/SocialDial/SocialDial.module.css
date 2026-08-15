@@ -11,6 +11,7 @@
   --gap: 5px;
   --push: 20px;
   --rise: 38px;
+  --iconPos: 0.31;
   /* Diámetro EFECTIVO: --size es el que pide el componente, pero en pantallas
      angostas el disco (que ocupa 1.64x su diámetro) no cabría y un ancestro
      con overflow lo cortaría. Todo el resto del CSS mide contra --d, así que
@@ -150,51 +151,24 @@
   transform-style: preserve-3d;
 }
 
+/* Cada porción ocupa el disco ENTERO y se recorta a su sector con clip-path
+   (lo calcula el componente según cuántas redes haya). Antes eran cuadrantes
+   de 50%x50% posicionados en las esquinas, lo que ataba el componente a
+   exactamente 4 items. */
 .slice {
   position: absolute;
-  width: 50%;
-  height: 50%;
+  inset: 0;
   transform-style: preserve-3d;
   text-decoration: none;
   outline: none;
+  /* Como la caja del <a> es el disco completo, las 3-4 porciones se solapan y
+     la de arriba robaría el hover de todas. El puntero lo recibe `.face`, que
+     sí está recortada al sector; el :hover igualmente sube hasta el <a>. */
+  pointer-events: none;
   transform: translate3d(calc(var(--dx) * var(--gap)),
       calc(var(--dy) * var(--gap)),
       0);
   transition: transform 0.42s cubic-bezier(0.22, 1.2, 0.36, 1);
-}
-
-/* cuartos de disco: la esquina "redonda al 100%" es el arco exterior,
-   la esquina opuesta apunta al centro del pastel */
-.tl {
-  top: 0;
-  left: 0;
-  --dx: -0.707;
-  --dy: -0.707;
-  border-radius: 100% 3px 7px 3px;
-}
-
-.tr {
-  top: 0;
-  right: 0;
-  --dx: 0.707;
-  --dy: -0.707;
-  border-radius: 3px 100% 3px 7px;
-}
-
-.br {
-  bottom: 0;
-  right: 0;
-  --dx: 0.707;
-  --dy: 0.707;
-  border-radius: 7px 3px 100% 3px;
-}
-
-.bl {
-  bottom: 0;
-  left: 0;
-  --dx: -0.707;
-  --dy: 0.707;
-  border-radius: 3px 7px 3px 100%;
 }
 
 .slice:hover,
@@ -204,11 +178,22 @@
       var(--rise));
 }
 
+/* El sector = disco redondo ∩ polígono. El border-radius dibuja el arco
+   exterior (siempre liso, sin importar cuántos vértices tenga el polígono) y
+   el clip-path corta los dos radios rectos.
+   OJO: clip-path fuerza `transform-style: flat` en el elemento que lo lleva,
+   por eso va en las hojas y NO en `.slice`, que necesita preserve-3d para
+   apilar las capas en Z. */
+.layer,
+.face {
+  border-radius: 50%;
+  clip-path: var(--clip, none);
+}
+
 /* cada capa = 1px de grosor real en Z; apiladas simulan un sólido extruido */
 .layer {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   background: var(--edge);
   transform: translateZ(calc(var(--i) * -1px));
   transition: background 0.3s ease;
@@ -217,11 +202,12 @@
 .face {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   display: grid;
   place-items: center;
   background: var(--face);
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.55) inset;
+  /* el único elemento clicable de la porción (ver `.slice`) */
+  pointer-events: auto;
   transition: background 0.3s ease, filter 0.3s ease;
 }
 
@@ -229,10 +215,11 @@
   width: calc(var(--d) * 0.135);
   height: calc(var(--d) * 0.135);
   fill: var(--brand);
-  /* se desplaza hacia la zona ancha de la porción y se contra-rota en Z
-     para quedar derecho sobre el plano inclinado */
-  transform: translate(calc(var(--dx) * var(--d) * 0.1),
-      calc(var(--dy) * var(--d) * 0.1)) rotateZ(calc(-1 * var(--spin)));
+  /* parte del centro del disco (la cara ya no es un cuadrante) y se desplaza
+     por la bisectriz del sector; se contra-rota en Z para quedar derecho
+     sobre el plano inclinado */
+  transform: translate(calc(var(--dx) * var(--d) * var(--iconPos)),
+      calc(var(--dy) * var(--d) * var(--iconPos))) rotateZ(calc(-1 * var(--spin)));
   transition: fill 0.3s ease;
 }
 

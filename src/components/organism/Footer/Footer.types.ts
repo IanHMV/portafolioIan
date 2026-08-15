@@ -1,7 +1,7 @@
 import type { HeadingProps } from "../../atoms/Heading/Heading.types"
 import type { TextProps } from "../../atoms/Text/Text.types"
 import type { ImageProps } from "../../atoms/Image/Image.types"
-import type { SocialDialItems } from "../../molecules/SocialDial/SocialDial"
+import type { SocialDialItems, SocialDialProps } from "../../molecules/SocialDial/SocialDial"
 
 export interface FooterLink {
   label: string
@@ -18,12 +18,17 @@ export interface FooterProps {
   /** Enlaces rápidos a las secciones de la página */
   links?: FooterLink[]
   /**
-   * Redes del SocialDial. El tipo obliga a exactamente 4 porque el disco
-   * tiene 4 porciones — si pasas 3 o 5, TypeScript lo marca en compilación.
+   * Redes del SocialDial. El disco se parte en tantas porciones como redes
+   * pases (mínimo 1): 3 redes = 3 porciones de 120°.
    */
   social: SocialDialItems
-  /** Diámetro del disco en px (default 210) */
-  dialSize?: number
+  /**
+   * Ajustes visuales del disco: todo lo de `SocialDial` menos los datos
+   * (`items`) y lo que decide el propio Footer (`ariaLabel`, `className`).
+   * Lo que no pases se queda en el default del componente, salvo `size`,
+   * que el Footer baja a 210px para que quepa junto al texto.
+   */
+  dial?: Omit<SocialDialProps, "items" | "ariaLabel" | "className">
   /** Línea inferior — ej. "© 2026 Ian Martinez" */
   copyright: string
 }
