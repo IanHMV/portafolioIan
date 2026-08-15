@@ -6,8 +6,13 @@ import styles from "./SocialDial.module.css";
 /** Permite pasar custom properties dentro de `style` sin castear a `any`. */
 type CSSVars = CSSProperties & Record<`--${string}`, string | number>;
 
-/** Las 4 posiciones del pastel: arriba-izq, arriba-der, abajo-der, abajo-izq. */
-type SlicePosition = "tl" | "tr" | "br" | "bl";
+const DEG = Math.PI / 180;
+
+/** Un vértice cada ~24° deja el arco liso sin inflar el polígono. */
+const MAX_SEGMENT_DEG = 24;
+
+/** Enlaces que no deben abrirse en pestaña nueva (mailto:, tel:, anclas). */
+const SAME_TAB_PROTOCOL = /^(mailto:|tel:|#)/;
 
 const cx = (...values: Array<string | false | undefined>) =>
   values.filter(Boolean).join(" ");
@@ -19,23 +24,69 @@ export interface SocialDialItem {
   label: string;
 }
 
-/** Exactamente 4 items: el pastel tiene 4 porciones. */
-export type SocialDialItems = readonly [
-  SocialDialItem,
-  SocialDialItem,
-  SocialDialItem,
-  SocialDialItem,
-];
+/**
+ * Al menos una red. El disco se reparte en tantas porciones como items haya:
+ * 3 items = 3 porciones de 120°, 5 items = 5 de 72°, etc.
+ */
+export type SocialDialItems = readonly [SocialDialItem, ...SocialDialItem[]];
 
-/** Empareja cada item con su porción usando índices literales (type-safe). */
+interface DialSlice {
+  item: SocialDialItem;
+  /** Bisectriz del sector como vector unitario (eje Y hacia abajo, como CSS). */
+  dx: number;
+  dy: number;
+  /** Recorte del sector; `none` cuando hay una sola red (disco completo). */
+  clip: string;
+}
+
+/**
+ * Recorta un sector circular. El polígono solo define los dos cortes rectos:
+ * el arco exterior lo dibuja el `border-radius: 50%` de la porción, así que
+ * los vértices se colocan MÁS lejos que el radio (50%) para que ninguna
+ * cuerda del polígono se coma el borde redondeado.
+ */
+const sectorClip = (fromDeg: number, sweepDeg: number): string => {
+  const segments = Math.max(2, Math.ceil(sweepDeg / MAX_SEGMENT_DEG));
+  const stepDeg = sweepDeg / segments;
+  const reach = (50 / Math.cos((stepDeg / 2) * DEG)) * 1.05;
+
+  const points = ["50% 50%"];
+  for (let i = 0; i <= segments; i += 1) {
+    const angle = (fromDeg + i * stepDeg) * DEG;
+    const x = 50 + reach * Math.cos(angle);
+    const y = 50 + reach * Math.sin(angle);
+    points.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+  }
+
+  return `polygon(${points.join(", ")})`;
+};
+
+/**
+ * Reparte los items en sectores iguales. El primer corte sale a las 12 en el
+ * plano del disco (antes de aplicar `spin`), así que con 4 items caen los
+ * mismos cuadrantes de siempre.
+ */
 const toSlices = (
   items: SocialDialItems,
-): ReadonlyArray<{ item: SocialDialItem; position: SlicePosition }> => [
-    { item: items[0], position: "tl" },
-    { item: items[1], position: "tr" },
-    { item: items[2], position: "br" },
-    { item: items[3], position: "bl" },
-  ];
+  startAngle: number,
+): readonly DialSlice[] => {
+  const sweep = 360 / items.length;
+  /* Con una sola porción no hay bisectriz útil: el sector es el disco entero,
+     así que ni se separa del centro ni se desplaza el icono. */
+  const single = items.length === 1;
+
+  return items.map((item, index) => {
+    const from = -90 + startAngle + index * sweep;
+    const mid = (from + sweep / 2) * DEG;
+
+    return {
+      item,
+      dx: single ? 0 : Math.cos(mid),
+      dy: single ? 0 : Math.sin(mid),
+      clip: single ? "none" : sectorClip(from, sweep),
+    };
+  });
+};
 
 export interface SocialDialProps {
   items: SocialDialItems;
@@ -45,12 +96,16 @@ export interface SocialDialProps {
   tilt?: number;
   /** Giro del pastel sobre su propio plano, en grados. */
   spin?: number;
+  /** Rota el reparto de porciones sin mover el disco, en grados. */
+  startAngle?: number;
   /** Grosor extruido de cada porción en px (1 capa = 1px). */
   thickness?: number;
   /** Cuánto se eleva la porción en hover/focus, en px. */
   rise?: number;
   /** Cuánto se separa la porción del centro en hover, en px. */
   push?: number;
+  /** Distancia del icono al centro, como fracción del radio (0 = centro). */
+  iconRadius?: number;
   /** Desactiva la animación de flotado. */
   floating?: boolean;
   /** Abre los enlaces en una pestaña nueva. */
@@ -65,9 +120,11 @@ export const SocialDial = ({
   size = 260,
   tilt = 52,
   spin = 45,
+  startAngle = 0,
   thickness = 16,
   rise = 38,
   push = 20,
+  iconRadius = 0.62,
   floating = true,
   newTab = true,
   ariaLabel = "Redes sociales",
@@ -83,6 +140,8 @@ export const SocialDial = ({
     "--thick": `${thickness}px`,
     "--rise": `${rise}px`,
     "--push": `${push}px`,
+    /* el CSS multiplica por --d (diámetro), de ahí la mitad */
+    "--iconPos": iconRadius / 2,
   };
 
   return (
@@ -104,9 +163,13 @@ export const SocialDial = ({
           </span>
 
           <div className={styles.pie}>
-            {toSlices(items).map(({ item, position }) => {
+            {toSlices(items, startAngle).map(({ item, dx, dy, clip }) => {
               const brand = SOCIAL_DIAL_BRANDS[item.id];
+              const external = newTab && !SAME_TAB_PROTOCOL.test(item.href);
               const sliceStyle: CSSVars = {
+                "--dx": dx.toFixed(4),
+                "--dy": dy.toFixed(4),
+                "--clip": clip,
                 "--brand": brand.brand,
                 "--brandFace": brand.brandFace ?? brand.brand,
                 "--edge": brand.edge,
@@ -117,12 +180,12 @@ export const SocialDial = ({
               return (
                 <a
                   aria-label={item.label}
-                  className={cx(styles.slice, styles[position])}
+                  className={styles.slice}
                   href={item.href}
                   key={item.id}
-                  rel={newTab ? "noopener noreferrer" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
                   style={sliceStyle}
-                  target={newTab ? "_blank" : undefined}
+                  target={external ? "_blank" : undefined}
                 >
                   {layers.map((i) => (
                     <span

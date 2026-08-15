@@ -4,10 +4,9 @@ import Footer from "./Footer";
 import type { SocialDialItems } from "../../molecules/SocialDial/SocialDial";
 
 const social: SocialDialItems = [
+  { id: "gmail", href: "mailto:ianvazquez418@gmail.com", label: "Gmail" },
   { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
-  { id: "linkedin", href: "https://linkedin.com/in/ianvazquez", label: "LinkedIn" },
-  { id: "x", href: "https://x.com/ianvazquez", label: "X" },
-  { id: "instagram", href: "https://instagram.com/ianvazquez", label: "Instagram" },
+  { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
 ];
 
 const meta: Meta<typeof Footer> = {
@@ -17,7 +16,9 @@ const meta: Meta<typeof Footer> = {
     layout: "fullscreen",
   },
   argTypes: {
-    dialSize: { control: { type: "range", min: 150, max: 300, step: 10 } },
+    /* las perillas sueltas (tilt, spin, startAngle…) tienen sliders en
+       Molecules/SocialDial; aquí se edita el objeto completo */
+    dial: { control: { type: "object" } },
   },
 } satisfies Meta<typeof Footer>;
 
@@ -69,7 +70,7 @@ export const Minimal: Story = {
       children: "Frontend Developer",
     },
     social,
-    dialSize: 170,
+    dial: { size: 170 },
     copyright: "© 2026 Ian Martinez",
   },
 };

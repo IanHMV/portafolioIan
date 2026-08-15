@@ -314,21 +314,31 @@ export const footer: FooterProps = {
     weight: "font-normal",
     className: "text-gray-400",
     children:
-      "Frontend developer based in Colima, México. Open to new projects and collaborations — pick a slice and say hi.",
+      "Frontend developer based in México. Open to new projects and collaborations — pick a slice and say hi.",
   },
   links: [
     { label: "About", href: "#about" },
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
   ],
-  // OJO: revisa estas URLs. La de GitHub la tomé de tus proyectos (IanHMV),
-  // pero en SocialDial.stories.tsx aparece IanVazquez418; las de LinkedIn,
-  // X e Instagram vienen de esa misma story y no pude comprobar que existan.
+  // El disco se parte en tantas porciones como redes haya aquí.
   social: [
+    { id: "gmail", href: "mailto:ianvazquez418@gmail.com", label: "Gmail" },
     { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
     { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
-    { id: "x", href: "https://x.com/ianvazquez", label: "X" },
-    { id: "instagram", href: "https://instagram.com/ianvazquez", label: "Instagram" },
   ],
+  // Todo el aspecto del disco se ajusta desde aquí; borra la línea que no
+  // quieras tocar y se queda con su default.
+  dial: {
+    size: 270,        // diámetro en px (en móvil se autolimita a 40vw)
+    tilt: 60,         // inclinación: 0 = de frente, 70 = casi de canto
+    spin: 60,         // gira el disco sobre su propio plano
+    startAngle: 0,    // rota solo el reparto de porciones
+    thickness: 30,    // grosor extruido, en px
+    rise: 20,         // cuánto sube la porción en hover
+    push: 0,         // cuánto se aparta del centro en hover
+    iconRadius: 0.62, // posición del icono, en fracción del radio
+    floating: true,   // animación de flotado
+  },
   copyright: "© 2026 Ian Martinez",
 };
