@@ -23,10 +23,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      statements: 80,
-      branches: 80,
-      functions: 80,
-      lines: 80
+      // en Vitest 4 los mínimos van dentro de `thresholds`; sueltos rompen `tsc -b`
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80
+      }
     }
   }
 });

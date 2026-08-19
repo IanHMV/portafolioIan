@@ -1,0 +1,20 @@
+# Levantar en local:      docker compose up --build
+# Levantar en el server:  docker compose up -d --build
+services:
+  web:
+    build:
+      context: .
+    image: portafolio-ian:latest
+    container_name: portafolio-ian
+    restart: unless-stopped
+    ports:
+      # host:contenedor — 8080 para no chocar con nada que ya use el 80.
+      # Si esta va a ser LA página principal del servidor y no hay un proxy
+      # inverso delante, cámbialo a "80:80" (y añade el 443 con TLS).
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

@@ -28,6 +28,9 @@ storybook-static
 
 node_modules/
 .cache/
-package-lock.json
+
+# package-lock.json SÍ se versiona: el Dockerfile usa `npm ci`, que exige el
+# lockfile y es lo que hace que el build del servidor instale exactamente las
+# mismas versiones que tú tienes en local.
 
 .claude

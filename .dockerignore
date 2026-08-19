@@ -1,0 +1,23 @@
+# Todo lo que NO necesita el build. Cuanto menos se copie al contexto, más
+# rápido es `docker build` y menos capas se invalidan por tonterías.
+node_modules
+dist
+dist-ssr
+storybook-static
+coverage
+
+.git
+.gitignore
+.github
+.claude
+.storybook
+.vscode
+.idea
+
+*.log
+*.local
+Dockerfile
+.dockerignore
+docker-compose.yml
+README.md
+corrections.txt
