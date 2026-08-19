@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Badge>;
 
 export const Default: Story = {
   args: {
-    color: "bg-black",
+    color: "bg-[#3a3939]",
     size: "w-1/4",
     className: "text-white",
     label: "Badge"
