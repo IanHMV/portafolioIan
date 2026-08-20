@@ -44,7 +44,7 @@ const HeroSection = ({ logo,
           </div>
         </div>
 
-        <div className={`${styles.content} flex flex-col items-center gap-6 text-center md:items-start md:text-left rounded-2xl border border-white/10 bg-black/35 backdrop-blur-md p-8 md:p-10`}>
+        <div className={`${styles.content} flex flex-col items-center gap-6 text-center md:items-start md:text-left rounded-2xl border border-white/10 bg-black/55 p-8 md:p-10`}>
           <Heading
             as="h1"
             size={heading.size}

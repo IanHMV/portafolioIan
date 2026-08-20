@@ -33,7 +33,7 @@ export const hero: HeroSectionProps = {
 export const aboutMe: AboutMeProps = {
   id: "about",
   coverImage: {
-    src: "/img/space.gif",
+    src: "/img/space.webp",
     alt: "Scenic cover for the about me section",
   },
   coverTitle: {
@@ -73,7 +73,7 @@ export const projectSection: ProjectSectionProps = {
   },
   projects: [
     {
-      img: { src: "/img/tecNew.png", alt: "Project - TecNews" },
+      img: { src: "/img/tecNew.webp", alt: "Project - TecNews" },
       description: "This was my fist project. I lern to develop webpages with HTML and CSS.",
       title: "TecNews",
       footer: "CSS + HTML",
@@ -81,7 +81,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#151515",
     },
     {
-      img: { src: "/img/finestra.png", alt: "Project - Finestra" },
+      img: { src: "/img/finestra.webp", alt: "Project - Finestra" },
       description: "Project for a small Gelato shop made during my internship.",
       title: "Finestra Website",
       footer: "HTML + CSS",
@@ -89,7 +89,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#0f2027",
     },
     {
-      img: { src: "/img/testpiscometrico.png", alt: "Project - TestPsicometrico" },
+      img: { src: "/img/testpiscometrico.webp", alt: "Project - TestPsicometrico" },
       description: "Project developed for one of my classes in my university.",
       title: "TestPsicometrico",
       footer: "HTML + CSS",
@@ -97,7 +97,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#1e293b",
     },
     {
-      img: { src: "/img/bootstrap.png", alt: "Project - Bootstrap course" },
+      img: { src: "/img/bootstrap.webp", alt: "Project - Bootstrap course" },
       description: "Project that i develop for learn about Bootstrap.",
       title: "Project Bootstrap",
       footer: "HTML + BOOTSTRAP",
@@ -105,7 +105,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#14532d",
     },
     {
-      img: { src: "/img/sesaecol.png", alt: "Sesaecol" },
+      img: { src: "/img/sesaecol.webp", alt: "Sesaecol" },
       description: "This was the first project that i develop for my work in government.",
       title: "Sesaecol",
       footer: "REACT + TAILWIND CSS",
@@ -113,7 +113,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#3b0764",
     },
     {
-      img: { src: "/img/pdecolima.png", alt: "Pdecolima" },
+      img: { src: "/img/pdecolima.webp", alt: "Pdecolima" },
       description: "This was my second project, i developed this page for centralize the others projects that i run up in my work.",
       title: "PDECOLIMA",
       footer: "REACT + TS + DOCKER",
@@ -121,7 +121,7 @@ export const projectSection: ProjectSectionProps = {
       backColor: "#7c2d12",
     },
     {
-      img: { src: "/img/s5.png", alt: "System 5" },
+      img: { src: "/img/s5.webp", alt: "System 5" },
       description: "I developed this system for my work, It's a project that helps you report a public official.",
       title: "System 5 for reporting public official",
       footer: "REACT + TS + DOCKER",

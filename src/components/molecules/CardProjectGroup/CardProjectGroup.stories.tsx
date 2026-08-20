@@ -16,7 +16,7 @@ const baseArgs: CardProjectGroupProps = {
   cards: [
     {
       img: {
-        src: "/img/image2.jpg",
+        src: "/img/image2.webp",
         alt: "Screenshot del proyecto",
       },
       description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
@@ -27,7 +27,7 @@ const baseArgs: CardProjectGroupProps = {
     },
     {
       img: {
-        src: "/img/image2.jpg",
+        src: "/img/image2.webp",
         alt: "Screenshot del proyecto",
       },
       description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
@@ -38,7 +38,7 @@ const baseArgs: CardProjectGroupProps = {
     },
     {
       img: {
-        src: "/img/image2.jpg",
+        src: "/img/image2.webp",
         alt: "Screenshot del proyecto",
       },
       description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",

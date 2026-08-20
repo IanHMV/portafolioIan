@@ -30,7 +30,7 @@ const baseArgs: ProjectSectionProps = {
   },
   projects: [
     {
-      img: { src: "/img/image2.jpg", alt: "Portfolio website screenshot" },
+      img: { src: "/img/image2.webp", alt: "Portfolio website screenshot" },
       description: "Personal portfolio built with React, TypeScript and Tailwind CSS.",
       title: "Portafolio Web",
       footer: "2024 · React + TS",
@@ -54,7 +54,7 @@ const baseArgs: ProjectSectionProps = {
       backColor: "#1e293b",
     },
     {
-      img: { src: "/img/image2.jpg", alt: "Project four screenshot" },
+      img: { src: "/img/image2.webp", alt: "Project four screenshot" },
       description: "Placeholder project — swap this card with a real one.",
       title: "Project Four",
       footer: "2025 · Node.js",
@@ -78,7 +78,7 @@ const baseArgs: ProjectSectionProps = {
       backColor: "#7c2d12",
     },
     {
-      img: { src: "/img/image2.jpg", alt: "Project seven screenshot" },
+      img: { src: "/img/image2.webp", alt: "Project seven screenshot" },
       description: "Placeholder project — swap this card with a real one.",
       title: "Project Seven",
       footer: "2025 · Storybook",

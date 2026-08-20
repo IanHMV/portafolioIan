@@ -10,6 +10,12 @@ const AUTO_ADVANCE_DELAY_MS = 2600;
 
 type View = "cover" | "content";
 
+/* Las portadas animadas se sirven como vídeo, no como GIF. Un GIF se
+   descomprime fotograma a fotograma en el hilo principal — el mismo que
+   mueve el scroll — mientras que un <video> lo decodifica la GPU aparte.
+   Con eso el scroll deja de competir con la animación de fondo. */
+const VIDEO_SRC = /\.(mp4|webm)$/i;
+
 const AboutMe = ({ id,
   coverImage,
   coverTitle,
@@ -18,6 +24,7 @@ const AboutMe = ({ id,
   contentImage,
   className = "",
 }: AboutMeProps) => {
+  const coverIsVideo = VIDEO_SRC.test(coverImage.src);
   const [view, setView] = useState<View>("cover");
   const [raised, setRaised] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -100,11 +107,24 @@ const AboutMe = ({ id,
         >
           <div className={`${styles.track} ${view === "content" ? styles.trackDown : ""}`}>
             <div className={styles.slide} inert={view !== "cover"}>
-              <Image
-                src={coverImage.src}
-                alt={coverImage.alt}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+              {coverIsVideo ? (
+                <video
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src={coverImage.src}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={coverImage.alt}
+                />
+              ) : (
+                <Image
+                  src={coverImage.src}
+                  alt={coverImage.alt}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              )}
               <div className={styles.coverOverlay} />
 
               <div className="relative flex h-full items-center justify-center">

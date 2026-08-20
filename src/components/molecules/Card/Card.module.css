@@ -1,15 +1,10 @@
-.blur {
-  position: absolute;
-  top: 40%;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
-}
+/* Aquí había una capa `.blur` con `backdrop-filter: blur(6px)`. Se quitó a
+   propósito: a diferencia de un `filter`, el backdrop-filter no se puede
+   cachear — el navegador tiene que volver a muestrear y desenfocar todo lo
+   que hay detrás en cada frame, y al hacer scroll el fondo cambia siempre.
+   Multiplicado por el número de tarjetas, era la mayor causa de tirones.
+   El `.gradient` de abajo ya oscurecía la misma zona, así que hace el trabajo
+   de legibilidad él solo y a coste cero. */
 
 .gradient {
   position: absolute;
@@ -18,5 +13,5 @@
   left: 0;
   right: 0;
   z-index: 2;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.92) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.68) 50%, rgba(0, 0, 0, 0.94) 100%);
 }

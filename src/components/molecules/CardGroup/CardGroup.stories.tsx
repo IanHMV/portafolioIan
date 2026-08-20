@@ -20,7 +20,7 @@ export const Default: Story = {
       {
         className: " w-72 ",
         img: {
-          src: "/img/image2.jpg",
+          src: "/img/image2.webp",
           alt: "Image",
           className: "",
           rounded: "rounded-md"
@@ -41,7 +41,7 @@ export const Default: Story = {
       {
         className: " w-72 ",
         img: {
-          src: "/img/image2.jpg",
+          src: "/img/image2.webp",
           alt: "Image",
           className: "",
           rounded: "rounded-md"

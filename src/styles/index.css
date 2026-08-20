@@ -4,6 +4,33 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
+ * Salta por completo el layout y el pintado de las secciones que están fuera
+ * de la pantalla. El navegador solo trabaja en lo que se ve, y como efecto
+ * secundario pausa las animaciones `infinite` de SkillsSection y SocialDial
+ * mientras no son visibles.
+ *
+ * `contain-intrinsic-size: auto 100vh` es obligatorio: sin una altura estimada
+ * el navegador daría altura 0 a lo no renderizado y la barra de scroll pegaría
+ * saltos. El `auto` hace que recuerde la altura real una vez medida.
+ *
+ * Se excluye la primera <section> (el hero) a propósito: es lo que se ve al
+ * entrar, aplazarlo solo empeoraría el LCP.
+ */
+section:not(:first-of-type),
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
+/* El scroll suave es una animación más: si el sistema pide menos movimiento,
+   hay que devolver el salto instantáneo. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 .outfit {
   font-family: "Outfit", sans-serif;
   font-optical-sizing: auto;

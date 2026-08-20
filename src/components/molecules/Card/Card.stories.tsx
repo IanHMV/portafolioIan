@@ -21,7 +21,7 @@ export const Default: Story = {
   args: {
     className: "m-5 w-72 ",
     img: {
-      src: "./img/image2.jpg",
+      src: "./img/image2.webp",
       alt: "Logo",
       className: "",
       rounded: "rounded-sm"

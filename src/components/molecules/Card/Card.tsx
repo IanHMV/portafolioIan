@@ -139,8 +139,7 @@ const Card = ({
           <Image {...img} className="w-full h-full object-cover" />
         </div>
 
-        {/* Capas de blur y gradiente (definidas en Card.module.css) */}
-        <div className={styles.blur} />
+        {/* Gradiente que oscurece la mitad inferior para que el texto se lea sobre cualquier imagen (definido en Card.module.css) */}
         <div className={styles.gradient} />
 
         {/* Contenido de texto */}
