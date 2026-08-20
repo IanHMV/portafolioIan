@@ -8,10 +8,15 @@ services:
     container_name: portafolio-ian
     restart: unless-stopped
     ports:
-      # host:contenedor — 8080 para no chocar con nada que ya use el 80.
-      # Si esta va a ser LA página principal del servidor y no hay un proxy
-      # inverso delante, cámbialo a "80:80" (y añade el 443 con TLS).
-      - "8080:80"
+      # El "127.0.0.1:" del principio es deliberado: publica el puerto SOLO
+      # en loopback, que es donde lo busca el nginx del host (proxy_pass a
+      # http://127.0.0.1:8080). Sin esa IP, Docker abre el 8080 a internet
+      # escribiendo en iptables por debajo de ufw: el firewall no lo tapa y
+      # cualquiera puede saltarse Cloudflare y el TLS.
+      #
+      # Solo si NO hay proxy inverso delante y esta es la página principal:
+      # cambia el mapeo a "80:80" (y ya te toca resolver el TLS aquí dentro).
+      - "127.0.0.1:8080:80"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
       interval: 30s
