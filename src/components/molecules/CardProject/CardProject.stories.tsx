@@ -13,7 +13,7 @@ type Story = StoryObj<typeof CardProject>;
 
 const baseArgs: CardProjectProps = {
   img: {
-    src: "/img/image2.jpg",
+    src: "/img/image2.webp",
     alt: "Screenshot del proyecto",
   },
   description: "Portafolio personal construido con React, TypeScript y Tailwind CSS.",
