@@ -8,7 +8,7 @@ import CardProject from "../../molecules/CardProject/CardProject";
 
 /* Velocidad crucero: posiciones de tarjeta por segundo (1 tarjeta ≈ 4.5s) */
 const CRUISE_SPEED = 0.22;
-const CARD_SPACING = 230;
+const CARD_SPACING = 340;
 const MAX_VISIBLE_OFFSET = 3;
 
 /* Distancia circular más corta entre una tarjeta y la posición del carrusel */

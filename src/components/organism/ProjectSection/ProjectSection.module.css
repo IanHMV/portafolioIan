@@ -39,7 +39,7 @@
    preserve-3d, so no z-index juggling is needed. */
 .stage {
   position: relative;
-  height: 22rem;
+  height: 33rem;
   perspective: 1400px;
   transform-style: preserve-3d;
 }
