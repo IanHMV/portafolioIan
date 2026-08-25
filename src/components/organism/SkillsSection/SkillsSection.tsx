@@ -35,32 +35,37 @@ const SkillsSection = ({ id,
       </div>
 
       {/* El anillo gira; al hacer hover sobre una skill se pausa y el
-          centro muestra su nombre y descripción */}
-      <div className={styles.stage} data-paused={paused}>
-        <div className={styles.ring}>
-          {skills.map((item, index) => (
-            <div
-              key={item.name}
-              className={styles.orbitItem}
-              style={{ "--angle": `${(360 / skills.length) * index}deg` } as CSSProperties}
-            >
+          centro muestra su nombre y descripción.
+          `.stage` envuelve SOLO al anillo (es quien lo recorta); la ficha
+          central es hermana, no hija, para que en móvil pueda salirse del
+          recorte y caer debajo del arco en vez de quedar cortada. */}
+      <div className={styles.stageWrap} data-paused={paused}>
+        <div className={styles.stage}>
+          <div className={styles.ring}>
+            {skills.map((item, index) => (
               <div
-                className={styles.orbitIcon}
-                tabIndex={0}
-                aria-label={item.name}
-                onPointerEnter={() => focusSkill(index)}
-                onPointerLeave={() => setPaused(false)}
-                onFocus={() => focusSkill(index)}
-                onBlur={() => setPaused(false)}
+                key={item.name}
+                className={styles.orbitItem}
+                style={{ "--angle": `${(360 / skills.length) * index}deg` } as CSSProperties}
               >
-                <Image
-                  src={item.icon.src}
-                  alt={item.icon.alt}
-                  className={styles.orbitImg}
-                />
+                <div
+                  className={styles.orbitIcon}
+                  tabIndex={0}
+                  aria-label={item.name}
+                  onPointerEnter={() => focusSkill(index)}
+                  onPointerLeave={() => setPaused(false)}
+                  onFocus={() => focusSkill(index)}
+                  onBlur={() => setPaused(false)}
+                >
+                  <Image
+                    src={item.icon.src}
+                    alt={item.icon.alt}
+                    className={styles.orbitImg}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {skill && (

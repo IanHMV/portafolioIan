@@ -35,11 +35,15 @@
 }
 
 /* ── Área de fólders flotantes ─────────────────────────── */
-/* Escenario donde las carpetas flotan; también es el límite contra el
-   que rebotan al arrastrarlas (containerRef del DraggableCardBody) */
+/* Escenario donde las carpetas se apilan en cascada; también es el límite
+   contra el que rebotan al arrastrarlas (containerRef del
+   DraggableCardBody).
+   La altura se calcula sola con el número de fólders (--count lo pone el
+   componente): (n-1) saltos de 20px + la altura de un fólder completo, que
+   es el último de la pila y sí se ve entero. */
 .stage {
   position: relative;
-  height: 30rem;
+  height: calc((var(--count, 7) - 1) * 20px + 11rem);
   margin-bottom: 1.5rem;
 }
 
@@ -60,16 +64,20 @@
 
 /* Pestaña trapezoidal: costados inclinados con skew, esquina superior
    externa redondeada — misma receta que el archivero anterior */
+/* La pestaña mide exactamente el salto de la cascada (20px): así la franja
+   que asoma de cada fólder tapado es justo su nombre, completo y legible. */
 .floatTab {
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: 32px;
+  height: 20px;
   margin-left: 22px;
-  padding: 0 16px;
+  padding: 0 14px;
   background: var(--folder-color);
   color: white;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .floatTab::before,

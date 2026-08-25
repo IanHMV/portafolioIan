@@ -11,7 +11,9 @@
 }
 
 .footer {
-  background: #000;
+  /* mismo zinc-950 que el resto de secciones: en negro puro se veía el
+     escalón de color al llegar al final de la página */
+  background: #09090b;
   border-top: 1px solid rgb(255 255 255 / 0.08);
   padding: 3.5rem 2rem 1.5rem;
   /* el disco social se dibuja en 3D y no debe empujar scroll horizontal */

@@ -22,6 +22,30 @@
   }
 }
 
+/* Panel del hero: la malla de olas es el fondo de ESTE div, no el de la
+   sección. Así la sección comparte el mismo zinc-950 que el resto de la
+   página y no se ve el corte de color entre secciones.
+   El `overflow: hidden` es lo que recorta el canvas a las esquinas
+   redondeadas; no afecta al logo 3D, que tiene su propia perspectiva. */
+.panel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2rem 1.25rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #000;
+  overflow: hidden;
+}
+
+@media (width >=48rem) {
+  .panel {
+    padding: 3.5rem 3rem;
+  }
+}
+
 /* Wireframe-terrain backdrop (canvas) with a soft vignette so the mesh
    fades out toward the edges and the content stays in focus. */
 .backdrop {
@@ -51,6 +75,17 @@
 
 .content>*:nth-child(3) {
   animation-delay: 0.3s;
+}
+
+/* Los dos botones miden lo mismo pase lo que pase con su texto: el ancho lo
+   fija `min-width`, no el contenido. `inline-flex` es necesario porque
+   LinkComponent renderiza un <a> (inline), y un inline ignora el ancho. */
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 11rem;
+  padding: 0.75rem 1.5rem;
 }
 
 .stage {
