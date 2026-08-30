@@ -17,7 +17,7 @@ type Story = StoryObj<typeof ExperienceSection>;
 
 export const Default: Story = {
   args: {
-    className: "bg-zinc-950 min-h-svh",
+    className: "bg-surface min-h-svh",
     title: {
       as: "h2",
       size: "text-4xl",

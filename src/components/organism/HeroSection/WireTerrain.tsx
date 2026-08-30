@@ -1,3 +1,13 @@
+/*
+ * GUARDADO PARA REUSO — ahora mismo no se monta en ningún sitio.
+ *
+ * Era el fondo animado del hero (malla de olas en canvas 2D). Se retiró al
+ * pasar el hero a fondo plano oscuro, pero se conserva entero: para volver
+ * a usarlo, importarlo y envolverlo en un div con `position: absolute` e
+ * `inset: 0` — la clase `.backdrop` de HeroSection.module.css ya hace eso y
+ * añade la viñeta.
+ */
+
 import { useEffect, useRef } from "react";
 
 interface WireTerrainProps {

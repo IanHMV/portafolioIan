@@ -1,0 +1,68 @@
+/*
+ * Globo de alambre: meridianos + paralelos girando sobre el eje horizontal,
+ * de arriba hacia abajo.
+ *
+ * Se construye con divs redondos en 3D real (preserve-3d) en vez de dibujar
+ * una esfera: así el navegador calcula la proyección solo y el giro es una
+ * única animación en el compositor, sin JavaScript por frame.
+ */
+
+@keyframes globeSpin {
+  from {
+    transform: rotateX(0deg);
+  }
+
+  to {
+    transform: rotateX(360deg);
+  }
+}
+
+.globe {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  animation: globeSpin var(--globe-duration, 32s) linear infinite;
+}
+
+.meridian,
+.parallel {
+  position: absolute;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+/* Circunferencia completa girada sobre el eje Y: pasa por los dos polos,
+   que es justo lo que es un meridiano. */
+.meridian {
+  inset: 0;
+  transform: rotateY(var(--angle));
+}
+
+/*
+ * Paralelo: circunferencia horizontal a la altura de su latitud.
+ *
+ * El orden importa. `translateY` va ANTES de `rotateX(90deg)` para que la
+ * altura se aplique en el espacio del globo; si fuese después, se aplicaría
+ * sobre el eje ya girado y el anillo saldría hacia el espectador.
+ *
+ * El desplazamiento se mide en % del PROPIO anillo (así funciona translate
+ * en porcentaje), no del globo: por trigonometría eso es tan(latitud)/2,
+ * que es lo que llega en --tan.
+ */
+.parallel {
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) translateY(calc(var(--tan) * -50%)) rotateX(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe {
+    animation: none;
+    /* quieto, pero inclinado: de frente los paralelos se verían como
+       rayas rectas y no se leería como esfera */
+    transform: rotateX(18deg);
+  }
+}

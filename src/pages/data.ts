@@ -12,9 +12,12 @@ export const hero: HeroSectionProps = {
     alt: "Ian Martinez logo",
   },
   heading: {
-    children: "Ian Martinez",
-    size: "text-5xl",
-    className: "sm:text-6xl md:text-7xl",
+    // El tamaño ya no se pone aquí: el hero lo calcula solo con un
+    // font-size fluido (clamp) para que el título llene el ancho del panel
+    // sin desbordarlo en ningún tamaño de pantalla. Ojo: ese cálculo está
+    // afinado para un saludo de ~11 caracteres; si lo cambias por uno mucho
+    // más largo, baja el factor cqw de .displayName.
+    children: "Hi, friend!",
   },
   description: {
     children:
@@ -59,7 +62,7 @@ export const aboutMe: AboutMeProps = {
 
 export const projectSection: ProjectSectionProps = {
   id: "projects",
-  className: "bg-zinc-950",
+  className: "bg-surface",
   heading: {
     children: "Projects",
     as: "h2",
@@ -134,7 +137,7 @@ export const projectSection: ProjectSectionProps = {
 export const experienceSection: ExperienceSectionProps = {
   // sin `min-h-svh`: con los fólders en cascada el contenido mide la mitad
   // que antes y forzar el alto de pantalla dejaba un hueco enorme debajo
-  className: "bg-zinc-950",
+  className: "bg-surface",
   title: {
     as: "h2",
     size: "text-4xl",
@@ -226,7 +229,7 @@ export const experienceSection: ExperienceSectionProps = {
 };
 
 export const skillSection: SkillsSectionProps = {
-  className: "bg-zinc-950",
+  className: "bg-surface",
   title: {
     as: "h2",
     size: "text-4xl",

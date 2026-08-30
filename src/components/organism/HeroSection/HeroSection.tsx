@@ -1,14 +1,11 @@
-import type { CSSProperties } from "react";
 import styles from "./HeroSection.module.css";
 import type { HeroSectionProps } from "./HeroSection.types";
 import Heading from "../../atoms/Heading/Heading";
 import Text from "../../atoms/Text/Text";
 import LinkComponent from "../../atoms/Link/LinkComponent";
-import WireTerrain from "./WireTerrain";
+import WireGlobe from "./WireGlobe";
 
-const DEPTH_LAYERS = 10;
-
-const HeroSection = ({ logo,
+const HeroSection = ({
   heading,
   description,
   primaryAction,
@@ -17,58 +14,84 @@ const HeroSection = ({ logo,
 }: HeroSectionProps) => {
   return (
     <section
-      className={`relative flex min-h-svh items-center bg-zinc-950 px-4 py-16 sm:px-6 lg:px-16 ${className}`}
+      className={`relative flex min-h-svh items-center overflow-x-clip bg-surface px-4 py-12 sm:px-6 lg:px-16 lg:py-16 ${className}`}
     >
-      {/* Panel: la malla de olas es SU fondo, no el de la sección. Todo el
-          contenido del hero (logo, texto y botones) vive dentro de él. */}
+      {/*
+        Contenedor del hero, sin fondo propio: todo se apoya sobre el mismo
+        plano de la página.
+
+        El fondo animado (la malla de olas) se retiró de aquí, pero NO se
+        borró: sigue en ./WireTerrain.tsx junto con su clase `.backdrop` en
+        el CSS. Para recuperarlo basta con importarlo y volver a poner:
+
+            <div className={styles.backdrop} aria-hidden="true">
+              <WireTerrain className="h-full w-full" />
+            </div>
+      */}
       <div className={styles.panel}>
-        <div className={styles.backdrop} aria-hidden="true">
-          <WireTerrain className="h-full w-full" />
+        {/* El mundo: globo de alambre girando sobre su eje horizontal, detrás
+            del contenido. Va antes que la composición en el DOM y con
+            z-index 0, así el texto siempre queda por encima.
+            La versión plana anterior sigue guardada en ./PolarGrid.tsx. */}
+        <div className={styles.world} aria-hidden="true">
+          <WireGlobe />
         </div>
 
-        <div className="relative grid w-full items-center gap-10 md:grid-cols-2 md:gap-14">
-          <div
-            className={`${styles.stage} relative grid place-items-center`}
-            role="img"
-            aria-label={logo.alt}
-          >
-            <div className={styles.glow} />
-            <div
-              className={styles.tilt}
-              style={{ "--logo-url": `url(${logo.src})` } as CSSProperties}
-            >
-              {Array.from({ length: DEPTH_LAYERS }, (_, i) => (
-                <span
-                  key={i}
-                  className={styles.layer}
-                  style={{ "--i": i } as CSSProperties}
-                />
-              ))}
+        {/*
+          LOGO GUARDADO — la marca de la esquina superior izquierda se retiró.
+
+          Su CSS sigue entero (.mark, .tilt, .layer, .glow y el @keyframes
+          float en HeroSection.module.css). Para devolverla, vuelve a
+          importar CSSProperties, recupera la constante DEPTH_LAYERS y monta:
+
+              <div className={styles.mark} role="img" aria-label={logo.alt}>
+                <div className={styles.glow} />
+                <div
+                  className={styles.tilt}
+                  style={{ "--logo-url": `url(${logo.src})` } as CSSProperties}
+                >
+                  {Array.from({ length: DEPTH_LAYERS }, (_, i) => (
+                    <span key={i} className={styles.layer} style={{ "--i": i } as CSSProperties} />
+                  ))}
+                </div>
+              </div>
+        */}
+
+        <div className={styles.composition}>
+          {/* `.stack` mantiene el nombre en una rejilla a ancho completo: sin
+              ella, `align-items: center` del flex lo dimensionaría por su
+              contenido y el texto con `nowrap` desbordaría el panel. */}
+          {/* Saludo y presentación van juntos y pegados; el aire grande se
+              reserva para separarlos del bloque de abajo. */}
+          <div className={styles.intro}>
+            <div className={styles.stack}>
+              <Heading as="h1" className={styles.displayName}>
+                {heading.children}
+              </Heading>
             </div>
+
+            <Heading as="h2" className={styles.subtitle}>
+              I&apos;m Ian
+            </Heading>
           </div>
 
-          <div className={`${styles.content} flex flex-col items-center gap-6 text-center md:items-start md:text-left rounded-2xl bg-black/45 p-6 backdrop-blur-sm md:p-8`}>
-            <Heading
-              as="h1"
-              size={heading.size}
-              className={`font-bold text-white leading-tight tracking-tight ${heading.className ?? ""}`}
-            >
-              {heading.children}
-            </Heading>
-
+          {/* Capa 3: descripción y acciones, abajo y centradas */}
+          <div className={styles.bottom}>
             <Text
               as="p"
-              className={`text-gray-400 text-lg max-w-xl ${description.className ?? ""}`}
+              className={`${styles.tagline} ${description.className ?? ""}`}
             >
               {description.children}
             </Text>
 
-            {/* `${styles.action}` iguala el ancho de los dos botones: sin él
-                cada uno mide lo que mida su texto */}
-            <div className="flex flex-wrap justify-center gap-4 md:justify-start">
+            {/* Los dos botones comparten `.action` (mismo ancho) y se
+                diferencian solo por el relleno: sólido para la acción
+                principal, contorno para la secundaria. Ambos en la misma
+                tinta que el título. */}
+            <div className={styles.actions}>
               <LinkComponent
                 href={primaryAction.href}
-                className={`${styles.action} rounded-lg bg-green-400 font-semibold text-zinc-950 transition-colors hover:bg-green-300`}
+                className={`${styles.action} ${styles.actionPrimary}`}
               >
                 {primaryAction.label}
               </LinkComponent>
@@ -76,7 +99,7 @@ const HeroSection = ({ logo,
               {secondaryAction && (
                 <LinkComponent
                   href={secondaryAction.href}
-                  className={`${styles.action} rounded-lg border border-zinc-800 bg-zinc-900 font-semibold text-white transition-colors hover:bg-zinc-800`}
+                  className={`${styles.action} ${styles.actionGhost}`}
                 >
                   {secondaryAction.label}
                 </LinkComponent>
