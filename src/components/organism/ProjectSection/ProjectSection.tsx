@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./ProjectSection.module.css";
 import type { ProjectSectionProps } from "./ProjectSection.types";
 
@@ -8,8 +8,18 @@ import CardProject from "../../molecules/CardProject/CardProject";
 
 /* Velocidad crucero: posiciones de tarjeta por segundo (1 tarjeta ≈ 4.5s) */
 const CRUISE_SPEED = 0.22;
-const CARD_SPACING = 340;
-const MAX_VISIBLE_OFFSET = 3;
+
+const MOBILE_QUERY = "(max-width: 767px)";
+
+/* En móvil el carrusel no se mueve solo y solo se ve UNA tarjeta: no hay
+   sitio para el arco de tres y una tarjeta que se desplaza sola es imposible
+   de tocar. En escritorio se mantiene el arco de siempre. */
+const LAYOUT = {
+  desktop: { spacing: 230, maxVisible: 3, autoplay: true },
+  mobile: { spacing: 170, maxVisible: 1, autoplay: false },
+} as const;
+
+type Layout = (typeof LAYOUT)[keyof typeof LAYOUT];
 
 /* Distancia circular más corta entre una tarjeta y la posición del carrusel */
 const circularOffset = (index: number, position: number, count: number) => {
@@ -22,13 +32,31 @@ const circularOffset = (index: number, position: number, count: number) => {
 /* Apariencia de un slot según su distancia (continua) al centro del arco:
    se separa, rota hacia el espectador, crece al centro y se desvanece al
    acercarse a los bordes ocultos. */
-const arcStyle = (d: number) => {
+const arcStyle = (d: number, layout: Layout) => {
   const abs = Math.abs(d);
   const scale = 1 + 0.06 * Math.max(0, 1 - abs);
   return {
-    opacity: Math.max(0, Math.min(1, MAX_VISIBLE_OFFSET - abs)),
-    transform: `translate(-50%, -50%) translateX(${d * CARD_SPACING}px) translateZ(${abs * 34}px) rotateY(${-d * 18}deg) scale(${scale})`,
+    opacity: Math.max(0, Math.min(1, layout.maxVisible - abs)),
+    transform: `translate(-50%, -50%) translateX(${d * layout.spacing}px) translateZ(${abs * 34}px) rotateY(${-d * 18}deg) scale(${scale})`,
   };
+};
+
+/* matchMedia en vez de un breakpoint de CSS porque aquí el tamaño no cambia
+   estilos, cambia el COMPORTAMIENTO (autoplay sí/no) y eso vive en JS. */
+const useMatchMedia = (query: string) => {
+  const [matches, setMatches] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const sync = () => setMatches(mql.matches);
+    sync();
+    mql.addEventListener("change", sync);
+    return () => mql.removeEventListener("change", sync);
+  }, [query]);
+
+  return matches;
 };
 
 const ProjectSection = ({ id,
@@ -43,6 +71,9 @@ const ProjectSection = ({ id,
   const speedFactor = useRef(1);
   const pausedRef = useRef(false);
   const count = projects.length;
+
+  const isMobile = useMatchMedia(MOBILE_QUERY);
+  const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
 
   /* Cinta continua: cada frame avanza la posición fraccional y pinta los
      transforms directamente en el DOM (sin re-renders de React). El hover
@@ -62,7 +93,7 @@ const ProjectSection = ({ id,
       const target = pausedRef.current ? 0 : 1;
       speedFactor.current += (target - speedFactor.current) * Math.min(1, dt * 6);
 
-      if (!reduceMotion) {
+      if (!reduceMotion && layout.autoplay) {
         position.current += CRUISE_SPEED * speedFactor.current * dt;
       }
 
@@ -81,7 +112,7 @@ const ProjectSection = ({ id,
       slotRefs.current.forEach((slot, index) => {
         if (!slot) return;
         const d = circularOffset(index, position.current, count);
-        const { opacity, transform } = arcStyle(d);
+        const { opacity, transform } = arcStyle(d, layout);
         slot.style.opacity = String(opacity);
         slot.style.transform = transform;
         slot.inert = opacity === 0;
@@ -92,7 +123,7 @@ const ProjectSection = ({ id,
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [count]);
+  }, [count, layout]);
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
@@ -101,49 +132,54 @@ const ProjectSection = ({ id,
         <Text {...description} />
       </div>
 
-      <div className={`${styles.content} relative mx-auto max-w-6xl`}>
-        <div
-          className={styles.stage}
-          onPointerEnter={() => { pausedRef.current = true; }}
-          onPointerLeave={() => { pausedRef.current = false; }}
-        >
-          {projects.map((project, index) => {
-            const initial = arcStyle(circularOffset(index, 0, count));
-            return (
-              <div
-                key={`${project.title}-${index}`}
-                ref={(el) => { slotRefs.current[index] = el; }}
-                className={styles.slot}
-                inert={initial.opacity === 0}
-                style={initial}
-              >
-                <CardProject {...project} />
-              </div>
-            );
-          })}
+      {/* Rejilla de 3 columnas: flecha | escenario | flecha. Antes las flechas
+          iban en `position: absolute` sobre el escenario y en móvil caían
+          encima de la tarjeta; así ocupan su propio carril. */}
+      <div className={`${styles.content} mx-auto max-w-6xl`}>
+        <div className={styles.carousel}>
+          <button
+            type="button"
+            aria-label="Previous project"
+            onClick={() => { pending.current -= 1; }}
+            className={styles.arrow}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div
+            className={styles.stage}
+            onPointerEnter={() => { pausedRef.current = true; }}
+            onPointerLeave={() => { pausedRef.current = false; }}
+          >
+            {projects.map((project, index) => {
+              const initial = arcStyle(circularOffset(index, 0, count), layout);
+              return (
+                <div
+                  key={`${project.title}-${index}`}
+                  ref={(el) => { slotRefs.current[index] = el; }}
+                  className={styles.slot}
+                  inert={initial.opacity === 0}
+                  style={initial}
+                >
+                  <CardProject {...project} />
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            aria-label="Next project"
+            onClick={() => { pending.current += 1; }}
+            className={styles.arrow}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
-
-        <button
-          type="button"
-          aria-label="Previous project"
-          onClick={() => { pending.current -= 1; }}
-          className={`${styles.arrow} left-2 sm:left-4`}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          aria-label="Next project"
-          onClick={() => { pending.current += 1; }}
-          className={`${styles.arrow} right-2 sm:right-4`}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
       </div>
     </section>
   );

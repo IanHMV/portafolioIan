@@ -11,8 +11,14 @@
 }
 
 .section {
-  padding: 4rem 2rem;
+  padding: 4rem 1.5rem;
   overflow-x: clip;
+}
+
+@media (width >=40rem) {
+  .section {
+    padding: 4rem 2rem;
+  }
 }
 
 .header {
@@ -34,6 +40,27 @@
   animation: fadeInUp 0.5s ease-out 0.12s both;
 }
 
+/* Carril propio para cada flecha: la tarjeta nunca queda debajo de ellas.
+   `minmax(0, 1fr)` en la columna del centro evita que el escenario crezca
+   con su contenido y empuje a las flechas fuera de la pantalla. */
+.carousel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (width >=40rem) {
+  .carousel {
+    gap: 1rem;
+  }
+
+  .arrow {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
 /* 3D stage: the cards live in a shared perspective so the side slots can
    curve toward the viewer like an arc. The browser depth-sorts them via
    preserve-3d, so no z-index juggling is needed. */
@@ -42,6 +69,19 @@
   height: 33rem;
   perspective: 1400px;
   transform-style: preserve-3d;
+  /* El recorte es lo que garantiza que NINGUNA tarjeta se pinte sobre las
+     flechas, en cualquier ancho de pantalla. La máscara evita que el corte
+     sea a tijera: las tarjetas de los extremos se desvanecen contra el
+     borde en lugar de aparecer cortadas por la mitad.
+     Ojo: tanto `overflow` como `mask` aplanan el elemento, pero la
+     `perspective` se sigue aplicando a los hijos, así que el arco 3D de los
+     slots no se pierde. */
+  overflow: hidden;
+  mask-image: linear-gradient(to right,
+      transparent 0,
+      #000 7%,
+      #000 93%,
+      transparent 100%);
 }
 
 /* Each slot is centered on the stage; the RAF loop in the component drives
@@ -55,14 +95,10 @@
 }
 
 .arrow {
-  position: absolute;
-  top: 50%;
-  translate: 0 -50%;
-  z-index: 20;
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   color: white;
   background: rgba(0, 0, 0, 0.45);

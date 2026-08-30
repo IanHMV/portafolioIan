@@ -10,16 +10,9 @@ import {
 
 import type { ExperienceSectionProps } from "./ExperienceSection.types";
 
-/* Posiciones desparramadas para los fólders flotantes; se ciclan por índice */
-const SCATTER = [
-  "top-6 left-[5%] rotate-[-6deg]",
-  "top-40 left-[18%] rotate-[5deg]",
-  "top-2 left-[38%] rotate-[8deg]",
-  "top-44 left-[52%] rotate-[-5deg]",
-  "top-10 left-[68%] rotate-[4deg]",
-  "top-48 left-[30%] rotate-[-8deg]",
-  "top-20 left-[60%] rotate-[7deg]",
-];
+/* Cascada: cada fólder arranca 20px más abajo que el anterior y se apila
+   encima, así de todos se ve al menos su pestaña con el nombre. */
+const FOLDER_STEP = 20;
 
 const ExperienceSection = ({ id,
   title,
@@ -60,14 +53,21 @@ const ExperienceSection = ({ id,
 
       <div className={`${styles.content} mx-auto w-full max-w-5xl`}>
         <DraggableCardContainer className="relative">
-          <div ref={stageRef} className={styles.stage}>
+          <div
+            ref={stageRef}
+            className={styles.stage}
+            style={{ "--count": folders.length } as CSSProperties}
+          >
             {folders.map((folder, index) => (
               <DraggableCardBody
-                key={folder.label}
+                /* el label NO es único: hay varios "Frontend Developer" y
+                   React avisaba de keys duplicadas */
+                key={`${folder.label}-${index}`}
                 containerRef={stageRef}
                 onTap={() => toggle(index)}
                 glare={false}
-                className={`absolute min-h-0 w-64 overflow-visible rounded-none bg-transparent p-0 shadow-none ${SCATTER[index % SCATTER.length]}`}
+                style={{ top: index * FOLDER_STEP, zIndex: index }}
+                className="absolute left-1/2 -ml-32 min-h-0 w-64 overflow-visible rounded-none bg-transparent p-0 shadow-none"
               >
                 <div
                   role="button"

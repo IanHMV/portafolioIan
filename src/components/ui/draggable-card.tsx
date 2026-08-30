@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ReactNode, RefObject, MouseEvent } from "react";
+import type { ReactNode, RefObject, MouseEvent, CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import {
   motion,
@@ -32,6 +32,11 @@ interface DraggableCardBodyProps {
   onTap?: () => void;
   /** Reflejo blanco sobre la tarjeta al inclinarla (default: true) */
   glare?: boolean;
+  /**
+   * Estilos extra para colocar la tarjeta (top, zIndex…). Se mezclan con los
+   * del tilt 3D; van primero para que rotateX/rotateY/opacity no se pisen.
+   */
+  style?: CSSProperties;
 }
 
 export const DraggableCardBody = ({
@@ -40,6 +45,7 @@ export const DraggableCardBody = ({
   containerRef,
   onTap,
   glare = true,
+  style,
 }: DraggableCardBodyProps) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -137,6 +143,7 @@ export const DraggableCardBody = ({
         });
       }}
       style={{
+        ...style,
         rotateX,
         rotateY,
         opacity,
@@ -144,6 +151,9 @@ export const DraggableCardBody = ({
       }}
       animate={controls}
       whileHover={{ scale: 1.02 }}
+      /* mientras se arrastra pasa por encima de todo: en la cascada de
+         fólders, si no, la tarjeta se esconde bajo las de abajo */
+      whileDrag={{ zIndex: 999 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={cn(

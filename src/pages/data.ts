@@ -132,7 +132,9 @@ export const projectSection: ProjectSectionProps = {
 };
 
 export const experienceSection: ExperienceSectionProps = {
-  className: "bg-zinc-950 min-h-svh",
+  // sin `min-h-svh`: con los fólders en cascada el contenido mide la mitad
+  // que antes y forzar el alto de pantalla dejaba un hueco enorme debajo
+  className: "bg-zinc-950",
   title: {
     as: "h2",
     size: "text-4xl",

@@ -64,15 +64,21 @@
   margin-bottom: 1rem;
 }
 
-/* Escenario: muestra solo el arco superior del anillo (el resto se
-   recorta), como en la referencia */
-.stage {
+/* Contenedor de referencia: guarda las medidas del anillo y es el ancla
+   de la ficha central. No recorta nada. */
+.stageWrap {
   --radius: min(21rem, 42vw);
   /* aire sobre el anillo para que el logo de la cúspide no se recorte */
   --sky: 2.5rem;
   position: relative;
-  height: calc(var(--radius) * 1.4 + var(--sky));
   margin-top: 1rem;
+}
+
+/* Escenario: muestra solo el arco superior del anillo (el resto se
+   recorta), como en la referencia */
+.stage {
+  position: relative;
+  height: calc(var(--radius) * 1.4 + var(--sky));
   overflow: hidden;
 }
 
@@ -131,8 +137,8 @@
 
 /* Hover sobre una skill: se pausa el anillo Y las contra-rotaciones
    (deben pausarse juntas o los logos quedarían inclinados) */
-.stage[data-paused="true"] .ring,
-.stage[data-paused="true"] .orbitIcon {
+.stageWrap[data-paused="true"] .ring,
+.stageWrap[data-paused="true"] .orbitIcon {
   animation-play-state: paused;
 }
 
@@ -184,6 +190,63 @@
   color: #9ca3af;
   line-height: 1.6;
   max-width: 36ch;
+}
+
+/* ── Móvil ─────────────────────────────────────────────── */
+/* El anillo se salía por los lados: con --radius a 42vw, los iconos del
+   extremo llegaban a 42vw + medio icono desde el centro, más que la mitad
+   de la pantalla menos el padding. Se encoge el radio, los iconos, y la
+   ficha central pasa a colocarse DEBAJO del arco (en vez de en su centro,
+   donde no cabía). */
+@media (width <=47.99rem) {
+  .section {
+    padding: 3rem 1rem 0;
+  }
+
+  .stageWrap {
+    --radius: 30vw;
+    --sky: 1.25rem;
+  }
+
+  .orbitItem {
+    width: 3.25rem;
+    height: 3.25rem;
+    margin: -1.625rem;
+  }
+
+  .orbitImg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .center {
+    position: static;
+    translate: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin: -1.5rem auto 0;
+    max-width: 20rem;
+    text-align: center;
+  }
+
+  .centerIcon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .centerImg {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .centerText {
+    align-items: center;
+  }
+
+  .centerDescription {
+    max-width: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
