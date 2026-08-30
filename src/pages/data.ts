@@ -68,7 +68,7 @@ export const projectSection: ProjectSectionProps = {
   },
   description: {
     children:
-      "Some of the things I've created while perfecting my technique, studying, or working. Hover over a card to pause the carousel and flip it.",
+      "Some of the things I've created while perfecting my technique, studying, or working. Hover over a card to pause the carousel.",
     className: "text-gray-400 max-w-xl",
   },
   projects: [
