@@ -8,7 +8,12 @@ export interface HeroAction {
 }
 
 export interface HeroSectionProps {
-  logo: Pick<ImageProps, "src" | "alt">
+  /**
+   * SIN USO ahora mismo: el hero dejó de pintar la marca de la esquina.
+   * Se mantiene (opcional) porque el CSS y las instrucciones para volver a
+   * montarla siguen en HeroSection.tsx, y así data.ts no tiene que cambiar.
+   */
+  logo?: Pick<ImageProps, "src" | "alt">
   heading: Pick<HeadingProps, "children" | "className" | "size">
   description: Pick<TextProps, "children" | "className">
   primaryAction: HeroAction

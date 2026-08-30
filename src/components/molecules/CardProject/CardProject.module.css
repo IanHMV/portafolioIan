@@ -7,16 +7,17 @@
  * y en táctil directamente no había forma de llegar a ella. Ahora todo está
  * visible a la vez y la tarjeta se queda quieta.
  *
- * Paleta: escala zinc sobre el bg-zinc-950 de la sección, más el verde
+ * Paleta: superficie elevada sobre el fondo de la sección, más el verde
  * #4ade80 que ya usa el resto del sitio como acento. Sin tonos nuevos.
  */
 
 .card {
   width: 300px;
   padding: 12px;
-  background: #18181b;
-  /* Un escalón por encima del #09090b de la sección. El borde es lo que
-     separa la tarjeta del fondo: sobre oscuro las sombras casi no se ven. */
+  background: var(--color-surface-2);
+  /* Un escalón por encima del fondo de la sección (token en
+     styles/index.css). El borde es lo que separa la tarjeta del fondo:
+     sobre oscuro las sombras casi no se ven. */
   border: 1px solid #27272a;
   border-radius: 24px;
   display: flex;

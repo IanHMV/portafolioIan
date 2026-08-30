@@ -95,7 +95,7 @@ const AboutMe = ({ id,
     <section
       ref={sectionRef}
       id={id}
-      className={`${styles.section} flex min-h-svh items-center justify-center bg-zinc-950 px-4 py-16 sm:px-8 ${className}`}
+      className={`${styles.section} flex min-h-svh items-center justify-center bg-surface px-4 py-16 sm:px-8 ${className}`}
     >
       <div className={`${styles.lift} ${raised ? styles.liftRaised : ""} w-full max-w-5xl rounded-3xl`}>
         <div
@@ -149,7 +149,7 @@ const AboutMe = ({ id,
               </button>
             </div>
 
-            <div className={`${styles.slide} bg-zinc-950`} inert={view !== "content"}>
+            <div className={`${styles.slide} bg-surface`} inert={view !== "content"}>
               <div className="grid h-full items-center gap-8 p-8 pt-20 sm:p-12 sm:pt-20 md:grid-cols-2 md:gap-12">
                 <div className="flex flex-col gap-5 text-left">
                   <Heading
