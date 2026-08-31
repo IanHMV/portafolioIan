@@ -12,7 +12,7 @@
 
 .footer {
   /* Alias locales de la tinta del sitio, igual que hace el hero con
-     --hero-ink. Los colores de las redes del disco NO se tocan: el rojo de
+     --hero-ink. Los colores de las redes del anillo NO se tocan: el rojo de
      Gmail o el azul de LinkedIn son su identidad, no decoración. */
   --footer-ink: var(--color-ink);
   --footer-ink-dim: var(--color-ink-dim);
@@ -22,8 +22,11 @@
   /* mismo tono que el resto de la página; el token está en styles/index.css */
   background: var(--color-surface);
   border-top: 1px solid var(--footer-line);
-  padding: 3.5rem 2rem 1.5rem;
-  /* el disco social se dibuja en 3D y no debe empujar scroll horizontal */
+  /* Aire generoso arriba y abajo: el cierre de la página es una pausa, no
+     una franja de datos apretada. Es lo que sostiene la composición de dos
+     bloques (titular grande a un lado, anillo al otro). */
+  padding: clamp(4rem, 9vw, 7rem) 2rem 1.5rem;
+  /* el anillo se sale de su caja al girar y no debe empujar scroll lateral */
   overflow-x: clip;
 }
 
@@ -32,20 +35,29 @@
   max-width: var(--content-max);
   margin: 0 auto;
   display: grid;
-  gap: 1.5rem;
+  gap: 3rem;
   align-items: center;
   justify-items: center;
   text-align: center;
   animation: fadeInUp 0.5s ease-out both;
 }
 
-/* md — el disco pasa a la derecha y el texto se alinea a la izquierda */
-@media (width >=48rem) {
+/*
+ * lg — la composición de la referencia: el texto ocupa la columna izquierda
+ * y el anillo se planta a la derecha. `auto` en la segunda columna para que
+ * el anillo pida lo que mide y el titular se quede con el resto.
+ *
+ * El corte va en 64rem y no en el md de siempre (48rem) porque el anillo
+ * mide 416px y no se encoge hasta que 62vw baja de 340: en una tablet de
+ * 768px las dos columnas dejaban 256px para un titular de 40px, o sea tres
+ * líneas de una palabra. Hasta 1024px es mejor el bloque centrado.
+ */
+@media (width >=64rem) {
   .inner {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     justify-items: start;
     text-align: left;
-    gap: 2.5rem;
+    gap: 2rem;
   }
 }
 
@@ -53,11 +65,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
-  max-width: 34rem;
+  gap: 1.15rem;
+  max-width: 32rem;
 }
 
-@media (width >=48rem) {
+@media (width >=64rem) {
   .intro {
     align-items: flex-start;
   }
@@ -67,23 +79,33 @@
    y sobre este fondo sería invisible: brightness(0) lo aplana a negro puro e
    invert(1) lo pasa a blanco, sin depender del color original del archivo. */
 .logo {
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   object-fit: contain;
   /* `invert(1)` deja el emblema en blanco puro, medio tono por encima de la
      tinta del sitio (#eceef2). La opacidad lo baja hasta ese nivel sin
      tener que recolorear el SVG. */
   filter: brightness(0) invert(1);
   opacity: 0.92;
+  margin-bottom: 0.35rem;
 }
 
-/* Titular del footer con el degradado de tinta del hero, en versión
-   pequeña: el cierre de la página rima con su apertura. */
+/*
+ * Titular a tamaño de display. Es el cambio que más se nota respecto al
+ * footer anterior (que iba a 2rem como mucho): aquí el texto es la mitad
+ * izquierda de la composición, así que tiene que pesar tanto como el anillo
+ * de la derecha o la página se queda coja.
+ *
+ * Mantiene el degradado de tinta del hero: el cierre de la página rima con
+ * su apertura.
+ */
 .heading {
-  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  font-size: clamp(2.25rem, 5.2vw, 3.75rem);
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  /* la vuelta de línea cae donde toca por medida, no a mitad de idea */
+  text-wrap: balance;
   color: transparent;
   background-image: linear-gradient(180deg, var(--footer-ink) 0%, var(--footer-ink-dim) 100%);
   background-clip: text;
@@ -97,6 +119,79 @@
   color: var(--footer-body);
   font-size: 1rem;
   line-height: 1.65;
+  max-width: 28rem;
+}
+
+/*
+ * Llamada a la acción. Sólido en la tinta del sitio con el texto en el
+ * color del fondo: el mayor contraste posible (18.4:1) sin meter ningún
+ * color nuevo, y el mismo trato que la acción principal del hero.
+ */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 0.5rem;
+  background: var(--footer-ink);
+  color: var(--color-surface);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cta:hover {
+  background: #fff;
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--footer-ink);
+  outline-offset: 3px;
+}
+
+/* La flecha avanza un poco al pasar por encima: el gesto dice "esto lleva a
+   algún sitio" mejor que cualquier subrayado. */
+.ctaArrow {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  transition: translate 0.2s ease;
+}
+
+.cta:hover .ctaArrow,
+.cta:focus-visible .ctaArrow {
+  translate: 0.2rem 0;
+}
+
+/* el anillo ya trae su propia caja calculada; aquí solo se centra */
+.ring {
+  justify-self: center;
+}
+
+/*
+ * Barra inferior: enlaces de sección y copyright. Los enlaces bajaron aquí
+ * desde el bloque del titular — arriba competían con la llamada a la
+ * acción, y este es su sitio natural: la letra pequeña del cierre.
+ */
+.bottom {
+  max-width: var(--content-max);
+  margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--footer-line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+  text-align: center;
+}
+
+@media (width >=48rem) {
+  .bottom {
+    justify-content: space-between;
+  }
 }
 
 .nav {
@@ -104,13 +199,6 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.35rem 1.5rem;
-  margin-top: 0.35rem;
-}
-
-@media (width >=48rem) {
-  .nav {
-    justify-content: flex-start;
-  }
 }
 
 /*
@@ -135,19 +223,6 @@
   border-radius: 3px;
 }
 
-/* el disco ya trae su propia caja calculada; aquí solo se centra */
-.dial {
-  justify-self: center;
-}
-
-.bottom {
-  max-width: var(--content-max);
-  margin: 2rem auto 0;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--footer-line);
-  text-align: center;
-}
-
 .copy {
   color: var(--footer-ink-dim);
   letter-spacing: 0.04em;
@@ -156,5 +231,11 @@
 @media (prefers-reduced-motion: reduce) {
   .inner {
     animation: none;
+  }
+
+  .cta,
+  .ctaArrow,
+  .navLink {
+    transition-duration: 1ms;
   }
 }

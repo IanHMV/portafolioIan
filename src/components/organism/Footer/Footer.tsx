@@ -5,15 +5,17 @@ import Heading from "../../atoms/Heading/Heading";
 import Text from "../../atoms/Text/Text";
 import Image from "../../atoms/Image/Image";
 import LinkComponent from "../../atoms/Link/LinkComponent";
-import { SocialDial } from "../../molecules/SocialDial/SocialDial";
+import { SocialRing } from "../../molecules/SocialRing/SocialRing";
 
-const Footer = ({ id,
+const Footer = ({
+  id,
   logo,
   heading,
   description,
+  action,
   links = [],
   social,
-  dial,
+  ring,
   copyright,
   className = "",
 }: FooterProps) => {
@@ -42,33 +44,58 @@ const Footer = ({ id,
             {description.children}
           </Text>
 
-          {links.length > 0 && (
-            <nav aria-label="Secciones" className={styles.nav}>
-              {links.map((link) => (
-                <LinkComponent
-                  key={link.href}
-                  href={link.href}
-                  size="text-sm"
-                  className={styles.navLink}
-                >
-                  {link.label}
-                </LinkComponent>
-              ))}
-            </nav>
+          {action && (
+            <LinkComponent
+              href={action.href}
+              className={styles.cta}
+              size="text-sm"
+            >
+              {action.label}
+              {/* La flecha va como SVG suelto y no por el átomo Icon: ese
+                  solo conoce tres iconos (git, home, settings) y tira de
+                  Font Awesome, que es una petición de red para dibujar una
+                  línea y dos trazos. */}
+              <svg
+                aria-hidden
+                className={styles.ctaArrow}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </LinkComponent>
           )}
         </div>
 
-        {/* `dial` va primero: lo de abajo no se puede sobreescribir desde data */}
-        <SocialDial
-          size={210}
-          {...dial}
+        {/* `ring` va primero: lo de abajo no se puede sobreescribir desde data */}
+        <SocialRing
+          {...ring}
           items={social}
           ariaLabel="Redes sociales"
-          className={styles.dial}
+          className={styles.ring}
         />
       </div>
 
       <div className={styles.bottom}>
+        {links.length > 0 && (
+          <nav aria-label="Secciones" className={styles.nav}>
+            {links.map((link) => (
+              <LinkComponent
+                key={link.href}
+                href={link.href}
+                size="text-sm"
+                className={styles.navLink}
+              >
+                {link.label}
+              </LinkComponent>
+            ))}
+          </nav>
+        )}
+
         <Text as="span" size="text-xs" className={styles.copy}>
           {copyright}
         </Text>
