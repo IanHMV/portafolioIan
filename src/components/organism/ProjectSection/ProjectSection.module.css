@@ -66,21 +66,23 @@
    preserve-3d, so no z-index juggling is needed. */
 .stage {
   position: relative;
-  height: 33rem;
+  height: calc(33rem * var(--fit, 1));
   perspective: 1400px;
   transform-style: preserve-3d;
   /* El recorte es lo que garantiza que NINGUNA tarjeta se pinte sobre las
      flechas, en cualquier ancho de pantalla. La máscara evita que el corte
      sea a tijera: las tarjetas de los extremos se desvanecen contra el
-     borde en lugar de aparecer cortadas por la mitad.
+     borde en lugar de aparecer cortadas por la mitad. La banda va en px
+     (no en %) porque el arco ya reserva ese margen: en porcentaje, en
+     pantallas anchas se comería la esquina de una tarjeta.
      Ojo: tanto `overflow` como `mask` aplanan el elemento, pero la
      `perspective` se sigue aplicando a los hijos, así que el arco 3D de los
      slots no se pierde. */
   overflow: hidden;
   mask-image: linear-gradient(to right,
       transparent 0,
-      #000 7%,
-      #000 93%,
+      #000 20px,
+      #000 calc(100% - 20px),
       transparent 100%);
 }
 

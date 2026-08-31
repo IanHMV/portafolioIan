@@ -6,20 +6,67 @@ import Text from "../../atoms/Text/Text";
 import Heading from "../../atoms/Heading/Heading";
 import CardProject from "../../molecules/CardProject/CardProject";
 
-/* Velocidad crucero: posiciones de tarjeta por segundo (1 tarjeta ≈ 4.5s) */
-const CRUISE_SPEED = 0.22;
+/* Ancho real de la tarjeta (`.card` en CardProject.module.css). Todo el arco
+   se dimensiona a partir de él: si allí cambia, aquí también. */
+const CARD_WIDTH = 300;
+
+/* Aire entre la tarjeta central y sus vecinas. */
+const CARD_GAP = 24;
+
+/* Margen reservado a cada lado del escenario para que la máscara del borde
+   (`.stage` en el CSS) se coma aire y no la esquina de una tarjeta. */
+const STAGE_EDGE = 28;
+
+/* Una tarjeta lateral no es simétrica en pantalla: gira 18° sobre su eje Y y
+   se acerca 34px al espectador, así que la perspectiva ensancha su borde
+   exterior y encoge el interior. Medido sobre la tarjeta de 300px: sobresale
+   1.145 × su media anchura hacia fuera y 0.96 hacia dentro. El lado interior
+   manda para el hueco entre tarjetas; el exterior, para saber si el arco
+   cabe en el escenario. */
+const SIDE_INNER = 0.96;
+const SIDE_OUTER = 1.145;
+
+/* Cuánto crece la tarjeta central (ver `arcStyle`). */
+const CENTER_GROW = 1.06;
+
+/* Separación entre centros: media central + media lateral + aire. El valor
+   anterior (230px) era MENOR que el ancho de la tarjeta, así que las
+   tarjetas se solapaban ~70px: de ahí que se vieran amontonadas. */
+const ARC_SPACING =
+  (CARD_WIDTH / 2) * CENTER_GROW + (CARD_WIDTH / 2) * SIDE_INNER + CARD_GAP;
+
+/* Segundos de reposo entre paso y paso del autoplay. */
+const STEP_INTERVAL = 4;
+
+/* Pasos encolados como máximo: pulsar la flecha diez veces seguidas no debe
+   lanzar el carrusel a dar vueltas. */
+const MAX_PENDING = 2;
 
 const MOBILE_QUERY = "(max-width: 767px)";
 
 /* En móvil el carrusel no se mueve solo y solo se ve UNA tarjeta: no hay
    sitio para el arco de tres y una tarjeta que se desplaza sola es imposible
-   de tocar. En escritorio se mantiene el arco de siempre. */
+   de tocar. En escritorio se ven siempre tres. */
 const LAYOUT = {
-  desktop: { spacing: 230, maxVisible: 3, autoplay: true },
-  mobile: { spacing: 170, maxVisible: 1, autoplay: false },
+  desktop: { spacing: ARC_SPACING, visible: 3, autoplay: true },
+  mobile: { spacing: CARD_WIDTH + CARD_GAP, visible: 1, autoplay: false },
 } as const;
 
 type Layout = (typeof LAYOUT)[keyof typeof LAYOUT];
+
+/* Ancho que necesita el arco completo a escala 1:1. Con tres visibles mandan
+   las laterales (`spacing` + su media anchura proyectada); con una sola
+   tarjeta manda la tarjeta misma. */
+const requiredWidth = (layout: Layout) =>
+  layout.visible === 1
+    ? CARD_WIDTH + STAGE_EDGE * 2
+    : (layout.spacing + (CARD_WIDTH / 2) * SIDE_OUTER + STAGE_EDGE) * 2;
+
+/* Cuando el arco no cabe no se recorta: se encoge entero. Así las tres
+   tarjetas siguen viéndose completas y con el mismo aire entre ellas en
+   cualquier ancho, en vez de desbordar el escenario y salir cortadas. */
+const fitFactor = (stageWidth: number, layout: Layout) =>
+  stageWidth > 0 ? Math.min(1, stageWidth / requiredWidth(layout)) : 1;
 
 /* Distancia circular más corta entre una tarjeta y la posición del carrusel */
 const circularOffset = (index: number, position: number, count: number) => {
@@ -31,13 +78,19 @@ const circularOffset = (index: number, position: number, count: number) => {
 
 /* Apariencia de un slot según su distancia (continua) al centro del arco:
    se separa, rota hacia el espectador, crece al centro y se desvanece al
-   acercarse a los bordes ocultos. */
-const arcStyle = (d: number, layout: Layout) => {
+   salir de la ventana visible.
+
+   La ventana mide media tarjeta más que el número de visibles,
+   `(visible + 1) / 2`: a distancia 1 la lateral está entera y a distancia 2
+   ya ha desaparecido. Antes se usaba `visible` a secas, que dejaba opacas
+   las tarjetas hasta la distancia 2 — cinco a la vez, unas sobre otras. */
+const arcStyle = (d: number, layout: Layout, fit: number) => {
   const abs = Math.abs(d);
-  const scale = 1 + 0.06 * Math.max(0, 1 - abs);
+  const fade = (layout.visible + 1) / 2;
+  const scale = (1 + 0.06 * Math.max(0, 1 - abs)) * fit;
   return {
-    opacity: Math.max(0, Math.min(1, layout.maxVisible - abs)),
-    transform: `translate(-50%, -50%) translateX(${d * layout.spacing}px) translateZ(${abs * 34}px) rotateY(${-d * 18}deg) scale(${scale})`,
+    opacity: Math.max(0, Math.min(1, fade - abs)),
+    transform: `translate(-50%, -50%) translateX(${d * layout.spacing * fit}px) translateZ(${abs * 34 * fit}px) rotateY(${-d * 18}deg) scale(${scale})`,
   };
 };
 
@@ -65,19 +118,46 @@ const ProjectSection = ({ id,
   projects,
   className = "",
 }: ProjectSectionProps) => {
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const position = useRef(0);
   const pending = useRef(0);
-  const speedFactor = useRef(1);
+  const idle = useRef(0);
   const pausedRef = useRef(false);
   const count = projects.length;
 
   const isMobile = useMatchMedia(MOBILE_QUERY);
   const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
 
-  /* Cinta continua: cada frame avanza la posición fraccional y pinta los
-     transforms directamente en el DOM (sin re-renders de React). El hover
-     no congela en seco: la velocidad desacelera y re-acelera suavemente. */
+  /* El ancho del escenario lo decide la rejilla (las flechas tienen carril
+     propio), así que hay que medirlo: de ahí sale la escala del arco. */
+  const [stageWidth, setStageWidth] = useState(0);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setStageWidth(entry.contentRect.width);
+    });
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+
+  const fit = fitFactor(stageWidth, layout);
+
+  const step = (direction: 1 | -1) => {
+    pending.current = Math.max(
+      -MAX_PENDING,
+      Math.min(MAX_PENDING, pending.current + direction)
+    );
+    idle.current = 0;
+  };
+
+  /* Avance por pasos: el carrusel descansa en posiciones ENTERAS, que es
+     donde se ven exactamente tres tarjetas completas, y solo desde ahí encola
+     el siguiente paso. La deriva continua anterior no se detenía nunca en una
+     posición limpia, así que siempre había tarjetas a medio entrar.
+     Los transforms se pintan directamente en el DOM (sin re-renders). */
   useEffect(() => {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -90,21 +170,29 @@ const ProjectSection = ({ id,
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
 
-      const target = pausedRef.current ? 0 : 1;
-      speedFactor.current += (target - speedFactor.current) * Math.min(1, dt * 6);
-
-      if (!reduceMotion && layout.autoplay) {
-        position.current += CRUISE_SPEED * speedFactor.current * dt;
+      /* El hover no corta un paso a medias — dejaría el arco torcido —, solo
+         impide que se encole el siguiente. */
+      if (layout.autoplay && !reduceMotion && !pausedRef.current && pending.current === 0) {
+        idle.current += dt;
+        if (idle.current >= STEP_INTERVAL) {
+          idle.current = 0;
+          pending.current = 1;
+        }
       }
 
-      /* Las flechas encolan ±1 y se consume con easing exponencial */
+      /* Los pasos (autoplay y flechas) se consumen con easing exponencial */
       if (pending.current !== 0) {
         const chunk = reduceMotion
           ? pending.current
-          : pending.current * Math.min(1, dt * 8);
+          : pending.current * Math.min(1, dt * 5);
         position.current += chunk;
         pending.current -= chunk;
-        if (Math.abs(pending.current) < 0.001) pending.current = 0;
+        /* La cola se salda de golpe para aterrizar EXACTAMENTE en el entero:
+           un residuo de 0.001 basta para dejar el arco descuadrado. */
+        if (Math.abs(pending.current) < 0.002) {
+          position.current += pending.current;
+          pending.current = 0;
+        }
       }
 
       position.current = ((position.current % count) + count) % count;
@@ -112,10 +200,10 @@ const ProjectSection = ({ id,
       slotRefs.current.forEach((slot, index) => {
         if (!slot) return;
         const d = circularOffset(index, position.current, count);
-        const { opacity, transform } = arcStyle(d, layout);
+        const { opacity, transform } = arcStyle(d, layout, fit);
         slot.style.opacity = String(opacity);
         slot.style.transform = transform;
-        slot.inert = opacity === 0;
+        slot.inert = opacity < 0.05;
       });
 
       raf = requestAnimationFrame(frame);
@@ -123,7 +211,7 @@ const ProjectSection = ({ id,
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [count, layout]);
+  }, [count, layout, fit]);
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
@@ -140,7 +228,7 @@ const ProjectSection = ({ id,
           <button
             type="button"
             aria-label="Previous project"
-            onClick={() => { pending.current -= 1; }}
+            onClick={() => step(-1)}
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -149,18 +237,22 @@ const ProjectSection = ({ id,
           </button>
 
           <div
+            ref={stageRef}
             className={styles.stage}
+            /* El alto acompaña a la escala del arco: si las tarjetas se
+               encogen, el escenario no debe dejar un hueco vacío debajo. */
+            style={{ ["--fit" as string]: fit }}
             onPointerEnter={() => { pausedRef.current = true; }}
             onPointerLeave={() => { pausedRef.current = false; }}
           >
             {projects.map((project, index) => {
-              const initial = arcStyle(circularOffset(index, 0, count), layout);
+              const initial = arcStyle(circularOffset(index, 0, count), layout, fit);
               return (
                 <div
                   key={`${project.title}-${index}`}
                   ref={(el) => { slotRefs.current[index] = el; }}
                   className={styles.slot}
-                  inert={initial.opacity === 0}
+                  inert={initial.opacity < 0.05}
                   style={initial}
                 >
                   <CardProject {...project} />
@@ -172,7 +264,7 @@ const ProjectSection = ({ id,
           <button
             type="button"
             aria-label="Next project"
-            onClick={() => { pending.current += 1; }}
+            onClick={() => step(1)}
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

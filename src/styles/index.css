@@ -48,6 +48,16 @@ html {
 }
 
 body {
+  /*
+   * La familia se fija AQUÍ además de heredarse del <html> que pinta el
+   * preflight de Tailwind. Parece redundante y no lo es: cualquier entorno
+   * que monte la app dentro de su propio chrome declara su tipografía sobre
+   * `body`, y ese selector le gana a la herencia por muy arriba que esté la
+   * nuestra. Es lo que pasaba en Storybook, donde todo el texto corrido se
+   * pintaba en Nunito Sans (su fuente por defecto) en vez de Inter: los
+   * componentes se revisaban con una tipografía que el sitio no usa.
+   */
+  font-family: var(--font-sans);
   /* El fondo vive aquí, no en cada sección: así no puede volver a aparecer
      un escalón de color entre una sección y la siguiente. */
   background-color: var(--color-surface);
