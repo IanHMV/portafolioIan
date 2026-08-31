@@ -291,29 +291,29 @@ export const footer: FooterProps = {
     children:
       "Frontend developer based in México. Open to new projects and collaborations — pick a slice and say hi.",
   },
+  // El botón grande junto al titular. Va al mismo correo que la insignia de
+  // Gmail del anillo: una sola dirección de contacto, dos caminos hacia ella.
+  action: { label: "Contact me", href: "mailto:ianhmv418@gmail.com" },
   links: [
     { label: "About", href: "#about" },
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
   ],
-  // El disco se parte en tantas porciones como redes haya aquí.
+  // Las redes se reparten en ángulos iguales por el anillo.
   social: [
     { id: "gmail", href: "mailto:ianhmv418@gmail.com", label: "Gmail" },
     { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
     { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
   ],
-  // Todo el aspecto del disco se ajusta desde aquí; borra la línea que no
+  // Todo el aspecto del anillo se ajusta desde aquí; borra la línea que no
   // quieras tocar y se queda con su default.
-  dial: {
-    size: 270,        // diámetro en px (en móvil se autolimita a 40vw)
-    tilt: 60,         // inclinación: 0 = de frente, 70 = casi de canto
-    spin: 60,         // gira el disco sobre su propio plano
-    startAngle: 0,    // rota solo el reparto de porciones
-    thickness: 30,    // grosor extruido, en px
-    rise: 20,         // cuánto sube la porción en hover
-    push: 0,         // cuánto se aparta del centro en hover
-    iconRadius: 0.62, // posición del icono, en fracción del radio
-    floating: true,   // animación de flotado
+  ring: {
+    size: 340,        // diámetro de la órbita en px (en móvil se autolimita a 62vw)
+    badgeSize: 76,    // diámetro de cada insignia en px
+    minBadges: 12,    // insignias mínimas: las 3 redes se repiten hasta llegar
+    startAngle: 0,    // rota el reparto sin mover nada más
+    spinDuration: 48, // segundos por vuelta; 0 deja el anillo quieto
+    reverse: false,   // true = sentido antihorario
   },
   copyright: "© 2026 Ian Martinez",
 };
