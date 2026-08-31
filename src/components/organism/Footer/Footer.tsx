@@ -5,7 +5,7 @@ import Heading from "../../atoms/Heading/Heading";
 import Text from "../../atoms/Text/Text";
 import Image from "../../atoms/Image/Image";
 import LinkComponent from "../../atoms/Link/LinkComponent";
-import { SocialRing } from "../../molecules/SocialRing/SocialRing";
+import { SocialOrbs } from "../../molecules/SocialOrbs/SocialOrbs";
 
 const Footer = ({
   id,
@@ -15,7 +15,7 @@ const Footer = ({
   action,
   links = [],
   social,
-  ring,
+  orbs,
   copyright,
   className = "",
 }: FooterProps) => {
@@ -71,12 +71,12 @@ const Footer = ({
           )}
         </div>
 
-        {/* `ring` va primero: lo de abajo no se puede sobreescribir desde data */}
-        <SocialRing
-          {...ring}
+        {/* `orbs` va primero: lo de abajo no se puede sobreescribir desde data */}
+        <SocialOrbs
+          {...orbs}
           items={social}
-          ariaLabel="Redes sociales"
-          className={styles.ring}
+          ariaLabel="Social links"
+          className={styles.orbs}
         />
       </div>
 

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import Footer from "./Footer";
-import type { SocialRingItems } from "../../molecules/SocialRing/SocialRing.types";
+import type { SocialOrbItems } from "../../molecules/SocialOrbs/SocialOrbs.types";
 
-const social: SocialRingItems = [
+const social: SocialOrbItems = [
   { id: "gmail", href: "mailto:ianhmv418@gmail.com", label: "Gmail" },
   { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
   { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
@@ -16,9 +16,9 @@ const meta: Meta<typeof Footer> = {
     layout: "fullscreen",
   },
   argTypes: {
-    /* las perillas sueltas (size, badgeSize, minBadges, spinDuration…)
-       tienen sliders en Molecules/SocialRing; aquí se edita el objeto */
-    ring: { control: { type: "object" } },
+    /* las perillas sueltas (orbSize, width, friction, bounce…) tienen
+       sliders en Molecules/SocialOrbs; aquí se edita el objeto */
+    orbs: { control: { type: "object" } },
   },
 } satisfies Meta<typeof Footer>;
 
@@ -49,7 +49,7 @@ export const Default: Story = {
   },
 };
 
-/** Sin logo, sin botón y sin enlaces: solo el anillo y el copyright. */
+/** Sin logo, sin botón y sin enlaces: solo las esferas y el copyright. */
 export const Minimal: Story = {
   args: {
     id: "contact",
@@ -61,15 +61,15 @@ export const Minimal: Story = {
       children: "Frontend Developer",
     },
     social,
-    ring: { size: 240, badgeSize: 56 },
+    orbs: { width: 260, height: 150, orbSize: 52 },
     copyright: "© 2026 Ian Martinez",
   },
 };
 
-/** Anillo quieto: para revisar tipografía y contraste sin persecución. */
-export const StillRing: Story = {
+/** Esferas pesadas: se paran donde se sueltan. Para revisar la tipografía. */
+export const HeavyOrbs: Story = {
   args: {
     ...Default.args!,
-    ring: { spinDuration: 0 },
+    orbs: { friction: 0.82, bounce: 0.1 },
   },
 };

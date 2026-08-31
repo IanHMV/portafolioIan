@@ -1,0 +1,245 @@
+/* SocialOrbs — una esfera por red, sueltas dentro de un área acotada.
+
+   La colocación la lleva JS (es física, no maquetación: las esferas chocan
+   entre ellas y contra las paredes), así que aquí solo se define CÓMO se ve
+   una esfera. Lo único que cruza la frontera son tres custom properties que
+   el componente escribe en el área: --w, --h y --orb. */
+
+/*
+ * El ancho vive AQUÍ y en píxeles, no dentro del área con un porcentaje.
+ *
+ * Con `width: min(--w, 100%)` en el área, ese 100% se mide contra esta caja,
+ * que en una rejilla con `justify-items: center` o en una columna `auto` se
+ * encoge hasta su contenido: el área acababa midiendo lo que la pista de
+ * abajo ("DRAG THEM AROUND", 140px). Un ancho definido sí cuenta como
+ * contribución intrínseca, y `max-width` recorta después en móvil.
+ */
+.wrap {
+  --w: 380px;
+  --h: 190px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  width: var(--w);
+  max-width: 100%;
+}
+
+/*
+ * El área. Tiene borde y fondo propios a propósito: sin una caja visible,
+ * unas esferas que se mueven parecen un fallo de maquetación. Con ella se
+ * lee como lo que es — un sitio pequeño donde las cosas se pueden empujar.
+ *
+ * `--w` es un tope, no un ancho: en un móvil manda el 100% del hueco.
+ */
+.pit {
+  --orb: 64px;
+
+  position: relative;
+  width: 100%;
+  height: var(--h);
+  border-radius: 1.5rem;
+  /* superficie elevada del sitio + un halo arriba que hace de "luz de sala":
+     es lo que da a las esferas algo contra lo que recortarse */
+  background:
+    radial-gradient(120% 90% at 50% -10%,
+      color-mix(in srgb, var(--color-ink) 8%, transparent),
+      transparent 68%),
+    var(--color-surface-2);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-ink) 7%, transparent);
+  /* las etiquetas cuelgan por debajo de su esfera y no deben recortarse; las
+     esferas no se salen nunca — de eso se encarga la física */
+  overflow: visible;
+}
+
+/* ---------- esfera ---------- */
+
+/*
+ * El `transform` lo escribe JS en cada fotograma, así que NINGUNA regla de
+ * este archivo puede tocarlo: el hover crece con `scale`, que es propiedad
+ * independiente y se compone con el transform sin pisarlo, y la entrada
+ * baja con `translate`, por lo mismo.
+ */
+.orb {
+  /* reflejo y sombra propia: son las dos capas que convierten un círculo
+     plano en una esfera. Van SIEMPRE encima del relleno, tanto en reposo
+     como con el color de marca. */
+  --gloss: radial-gradient(circle at 34% 26%,
+      rgb(255 255 255 / 38%),
+      rgb(255 255 255 / 0%) 46%);
+  --shade: radial-gradient(circle at 68% 82%,
+      rgb(0 0 0 / 45%),
+      rgb(0 0 0 / 0%) 58%);
+  --rest: linear-gradient(160deg,
+      color-mix(in srgb, var(--color-ink) 16%, var(--color-surface-2)),
+      var(--color-surface-2));
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--orb);
+  height: var(--orb);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background-image: var(--rest);
+  box-shadow:
+    0 12px 20px -10px rgb(0 0 0 / 75%),
+    inset 0 -6px 12px -6px rgb(0 0 0 / 55%);
+  text-decoration: none;
+  cursor: grab;
+  /* Sin esto, arrastrar una esfera con el dedo hace scroll de la página en
+     vez de mover la esfera: el navegador se queda el gesto antes de que
+     llegue el primer pointermove. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+  transition: scale 0.25s cubic-bezier(0.22, 1.2, 0.36, 1);
+  animation: orbIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* las esferas aterrizan una detrás de otra, de izquierda a derecha */
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* Relleno de marca. Va en una capa aparte y no en `background-image` porque
+   los degradados no se pueden interpolar: cambiando la imagen de fondo el
+   color entraría de golpe, y así entra fundido. */
+.orb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: var(--face);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+/* Reflejo y sombra, por encima del relleno y por debajo del icono. */
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 50%;
+  background-image: var(--gloss), var(--shade);
+  pointer-events: none;
+}
+
+.orb:active {
+  cursor: grabbing;
+}
+
+/* La que se lleva el dedo pasa por encima de las demás; si no, se hunde bajo
+   las que se pintan después. */
+.orb:hover,
+.orb:focus-visible,
+.orb:active {
+  z-index: 2;
+}
+
+.orb:hover::before,
+.orb:focus-visible::before {
+  opacity: 1;
+}
+
+.orb:hover,
+.orb:focus-visible {
+  scale: 1.08;
+}
+
+.orb:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 4px;
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  width: 40%;
+  height: 40%;
+  /* En reposo TODAS van en la tinta del sitio: el grupo se lee como una
+     sola pieza. El color de marca se reserva para el hover, donde sí
+     significa algo. */
+  fill: var(--color-ink);
+  opacity: 0.75;
+  transition: fill 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.orb:hover .icon,
+.orb:focus-visible .icon {
+  fill: #fff;
+  opacity: 1;
+}
+
+/* ---------- etiqueta ---------- */
+
+.tag {
+  position: absolute;
+  /* anclada al borde de abajo de la esfera, mida lo que mida */
+  top: calc(100% + 0.45rem);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 3;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: var(--color-ink);
+  color: var(--color-surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.orb:hover .tag,
+.orb:focus-visible .tag {
+  opacity: 1;
+}
+
+/* ---------- pista ---------- */
+
+/* El arrastre no se ve: si no se cuenta, nadie lo prueba. */
+.hint {
+  color: var(--color-ink-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- animación ---------- */
+
+@keyframes orbIn {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/*
+ * Con movimiento reducido no se quita el arrastre —lo mueve el usuario, no
+ * el componente— pero sí todo lo que se mueve solo: la entrada escalonada y
+ * el impulso al soltar (eso lo apaga el propio componente).
+ */
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none;
+  }
+
+  .orb,
+  .orb::before,
+  .icon,
+  .tag {
+    transition-duration: 1ms;
+  }
+}
