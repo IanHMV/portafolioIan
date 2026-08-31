@@ -12,12 +12,12 @@ export const hero: HeroSectionProps = {
     alt: "Ian Martinez logo",
   },
   heading: {
-    // El tamaño ya no se pone aquí: el hero lo calcula solo con un
-    // font-size fluido (clamp) para que el título llene el ancho del panel
-    // sin desbordarlo en ningún tamaño de pantalla. Ojo: ese cálculo está
-    // afinado para un saludo de ~11 caracteres; si lo cambias por uno mucho
-    // más largo, baja el factor cqw de .displayName.
-    children: "Hi, friend!",
+    // Cámbialo por lo que quieras y del largo que quieras: el hero reparte
+    // el ancho del panel entre las letras del saludo para calcular su
+    // cuerpo, así que uno largo sale más pequeño y uno corto más grande,
+    // sin tocar el CSS. Y si aun así no cupiera, parte en dos líneas en vez
+    // de recortarse.
+    children: "Hi, what's new?",
   },
   description: {
     children:
@@ -131,36 +131,30 @@ export const projectSection: ProjectSectionProps = {
 };
 
 export const experienceSection: ExperienceSectionProps = {
-  // sin `min-h-svh`: con los fólders en cascada el contenido mide la mitad
-  // que antes y forzar el alto de pantalla dejaba un hueco enorme debajo
+  id: "experience",
   className: "bg-surface",
+  eyebrow: "Where I have worked",
+  // El titular va partido a mano en dos líneas, como en la referencia: el
+  // `\n` lo respeta `.title` con `white-space: pre-line`.
   title: {
     as: "h2",
-    size: "text-4xl",
-    className: "text-white font-bold tracking-tight",
-    children: "Experience",
+    children: "Four places that turned\npractice into real work.",
   },
   description: {
-    as: "p",
-    size: "text-base",
-    weight: "font-normal",
-    className: "text-gray-400 max-w-xl py-3 whitespace-pre-line",
     children:
-      "A file cabinet of the places and projects that shaped me.\n - Do click for open a folder.\n - Press again for close the folder.\n - Press and hold the click button to drag the folder.",
+      "Every card is a chapter — the short version here, the full story one click away.",
   },
-  folders: [
+  // El detalle de cada ficha es el mismo texto que ya estaba en la sección
+  // anterior; lo nuevo es solo el resumen corto de la tarjeta.
+  entries: [
     {
-      label: "Frontend Developer",
-      color: "#8f2d56",
-      preview: {
-        code: "01A",
-        note: "Finestra Gelato",
-        date: "2020 — My first job",
-      },
-      sheet: {
-        fileNo: "Nº 01",
+      code: "01",
+      title: "Freelance Developer",
+      summary: "Website for a gelato shop, built during my internship",
+      date: "2020",
+      detail: {
         heading: "Freelance Developer",
-        period: "2020 — Past",
+        period: "2020 · Finestra Gelato",
         paragraphs: [
           "This was my first experience working with a company that wanted to develop a website for its gelato store.",
           "I joined this company as part of my internship, where I was given the opportunity to design and develop its website to promote the business and help attract more customers.",
@@ -168,54 +162,41 @@ export const experienceSection: ExperienceSectionProps = {
       },
     },
     {
-      label: "Fontend Developer",
-      color: "#e4572e",
-      preview: {
-        code: "02B",
-        note: "TECNM Colima",
-        date: "2023 — 2024",
-      },
-      sheet: {
-        fileNo: "Nº 02",
-        heading: "Institude Project",
-        period: "2023 — 2024",
+      code: "02",
+      title: "Institute Project",
+      summary: "Frontend of a psychometric testing system, alongside a backend team",
+      date: "2023 — 2024",
+      detail: {
+        heading: "Institute Project",
+        period: "2023 — 2024 · TECNM Colima",
         paragraphs: [
           "I worked for my academic institude for developing a system for psicometric tests. I made the frontend for this page and i worked with another partners and they made the backend in that moment.",
-          "It was a good first experience working with another people, and i learned to use github deeper."
+          "It was a good first experience working with another people, and i learned to use github deeper.",
         ],
       },
     },
     {
-      label: "Frontend Developer",
-      color: "#0f8a5f",
-      preview: {
-        code: "03C",
-        note: "FORENTEC.",
-        date: "2024-2025",
-      },
-      sheet: {
-        fileNo: "Nº 03",
+      code: "03",
+      title: "Frontend Developer",
+      summary: "Voting systems, data graphing and zone mapping for a cybersecurity firm",
+      date: "2024 — 2025",
+      detail: {
         heading: "FORENTEC",
-        period: "2024",
+        period: "2024 — 2025 · Cybersecurity",
         paragraphs: [
           "I worked with another partner in a company of cybersecurity, we develop web pages for companies and government. We developed pages for voting systems, data graphing and localitation of specific zones.",
-          "I managed the graphication of the differents zones, i made that with json files and google."
-
+          "I managed the graphication of the differents zones, i made that with json files and google.",
         ],
       },
     },
     {
-      label: "Pdecolima Manager",
-      color: "#2b4bdb",
-      preview: {
-        code: "04D",
-        note: "Manager of different systems for the National Digital Platform",
-        date: "2025 — 2026",
-      },
-      sheet: {
-        fileNo: "Nº 04",
-        heading: "Government EmployeePlatform",
-        period: "2025 — 2026",
+      code: "04",
+      title: "Platform Manager",
+      summary: "Running the National Digital Platform systems on the state server",
+      date: "2025 — 2026",
+      detail: {
+        heading: "Government Employee",
+        period: "2025 — 2026 · PDECOLIMA",
         paragraphs: [
           "I worked in government managment the diferent systems of the National Digital Plataform. I worked with a physical server and run up different servers there for my government institute, some systems are from the National Digital Plataform and i only adapt this systems. And others systems i developed them from scratch.",
         ],
@@ -226,17 +207,14 @@ export const experienceSection: ExperienceSectionProps = {
 
 export const skillSection: SkillsSectionProps = {
   className: "bg-surface",
+  eyebrow: "What I build with",
+  // Sin `size` ni clases de color: el tamaño fluido y la tinta los pone
+  // SkillsSection.module.css, igual que en Experience y en el hero.
   title: {
     as: "h2",
-    size: "text-4xl",
-    className: "text-white font-bold tracking-tight",
     children: "My Skills",
   },
   description: {
-    as: "p",
-    size: "text-base",
-    weight: "font-normal",
-    className: "text-gray-400 max-w-xl py-3",
     children:
       "The tools I work with every day. Hover a logo to stop the wheel and read what I do with it.",
   },
@@ -303,17 +281,13 @@ export const skillSection: SkillsSectionProps = {
 export const footer: FooterProps = {
   id: "contact",
   logo: { src: "/img/Logo.svg", alt: "Ian Martinez logo" },
+  // Mismo criterio que en Skills: el footer decide su tipografía y su
+  // tinta desde el CSS, aquí solo viaja el texto.
   heading: {
     as: "h2",
-    size: "text-2xl",
-    className: "text-white font-bold tracking-tight",
     children: "Let's build something together",
   },
   description: {
-    as: "p",
-    size: "text-base",
-    weight: "font-normal",
-    className: "text-gray-400",
     children:
       "Frontend developer based in México. Open to new projects and collaborations — pick a slice and say hi.",
   },

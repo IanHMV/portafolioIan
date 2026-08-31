@@ -54,10 +54,89 @@
   --color-ink-dim: #7e8492;
 }
 
+/*
+ * ── BANDA DE CONTENIDO ───────────────────────────────────────────────
+ *
+ * Un solo ancho máximo para TODAS las secciones. Antes cada una traía el
+ * suyo y en un monitor de 2560px el ojo tenía que saltar entre cuatro
+ * márgenes distintos: el encabezado de Projects arrancaba en x=32 (pegado
+ * al borde), su propio carrusel en x=697, la tarjeta de About Me en x=781 y
+ * Experience, Skills y el footer en x=697.
+ *
+ * Con este token todo empieza en la misma línea vertical, que es lo que
+ * permite leer la página de arriba abajo sin mover la cabeza: el ojo fija
+ * un borde izquierdo y ya no lo suelta.
+ *
+ * No se toca el `text-align`: el texto sigue alineado a la izquierda donde
+ * lo estaba. Lo que se mueve es la caja que lo contiene.
+ */
+:root {
+  --content-max: 72rem;
+
+  /*
+   * Tope del nombre del hero. Está aquí, y no en HeroSection.module.css,
+   * porque es el otro valor que hay que compensar cuando sube la raíz (ver
+   * los breakpoints de abajo): ese título ya escala solo con el ancho del
+   * panel en `cqw`, así que si además creciera con la raíz se saldría de la
+   * pantalla. Medido en 2560px: 417px de cuerpo dan 2584px de ancho contra
+   * 2560 de ventana, y `.stack` lo recortaría por los costados.
+   *
+   * El valor equivale a 336px en los tres escalones — el tamaño máximo con
+   * el que se diseñó el hero.
+   */
+  --hero-title-max: 21rem;
+}
+
 html {
   scroll-behavior: smooth;
   /* barras de scroll, campos de formulario y menús nativos en oscuro */
   color-scheme: dark;
+}
+
+/*
+ * ── ESCALA EN PANTALLAS MUY GRANDES ──────────────────────────────────
+ *
+ * En un monitor de 27" o más, 16px de base se quedan cortos: el texto se ve
+ * diminuto porque la distancia de lectura es mayor. Subir la raíz escala de
+ * golpe TODO lo definido en rem —tipografías, paddings, gaps y el propio
+ * --content-max—, así que las proporciones del diseño no se mueven: solo
+ * crece el conjunto.
+ *
+ * Va en PORCENTAJE y no en píxeles a propósito: el porcentaje se calcula
+ * sobre el tamaño de letra que el usuario tenga configurado en su
+ * navegador, así que quien haya subido la suya por accesibilidad conserva
+ * su ajuste. Con `font-size: 18px` se lo estaríamos pisando.
+ *
+ * --content-max baja en rem en cada escalón para compensar la subida de la
+ * raíz. Los números están elegidos para que el ancho en píxeles de la banda
+ * NO dé un salto al cruzar el breakpoint y para que su borde izquierdo se
+ * quede donde está hoy (~700px en 2560px), mientras la letra crece un 25%:
+ *
+ *   < 1600px   raíz 16px · 72rem = 1152px
+ *   ≥ 1600px   raíz 18px · 64rem = 1152px
+ *   ≥ 2048px   raíz 20px · 58rem = 1160px
+ *
+ * Las unidades `rem` de un media query se miden SIEMPRE contra el tamaño
+ * inicial del navegador, no contra el que declaramos aquí: no hay
+ * dependencia circular, y si alguien usa una base de 20px los escalones le
+ * llegan antes, que es justo lo correcto.
+ */
+@media (width >=100rem) {
+  :root {
+    font-size: 112.5%;
+    --content-max: 64rem;
+    /* 18.667rem x 18px = 336px */
+    --hero-title-max: 18.667rem;
+  }
+}
+
+@media (width >=128rem) {
+  :root {
+    font-size: 125%;
+    --content-max: 58rem;
+    /* 16.8rem x 20px = 336px */
+    --hero-title-max: 16.8rem;
+  }
 }
 
 body {

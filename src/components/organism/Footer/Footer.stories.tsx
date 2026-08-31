@@ -31,15 +31,9 @@ export const Default: Story = {
     logo: { src: "/img/Logo.svg", alt: "Ian Martinez logo" },
     heading: {
       as: "h2",
-      size: "text-2xl",
-      className: "text-white font-bold tracking-tight",
       children: "Let's build something together",
     },
     description: {
-      as: "p",
-      size: "text-base",
-      weight: "font-normal",
-      className: "text-gray-400",
       children:
         "Frontend developer based in Colima, México. Open to new projects and collaborations — pick a slice and say hi.",
     },
@@ -58,15 +52,9 @@ export const Minimal: Story = {
   args: {
     heading: {
       as: "h2",
-      size: "text-xl",
-      className: "text-white font-bold tracking-tight",
       children: "Ian Martinez",
     },
     description: {
-      as: "p",
-      size: "text-sm",
-      weight: "font-normal",
-      className: "text-gray-400",
       children: "Frontend Developer",
     },
     social,

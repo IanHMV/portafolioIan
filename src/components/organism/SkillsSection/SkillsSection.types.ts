@@ -14,6 +14,8 @@ export interface Skill {
 export interface SkillsSectionProps {
   id?: string
   className?: string
+  /** Rótulo pequeño en versalitas sobre el título — ej. "MY TOOLBOX" */
+  eyebrow?: string
   title: Pick<HeadingProps, "as" | "children" | "className" | "size">
   description: Pick<TextProps, "as" | "children" | "className" | "size" | "weight">
   skills: Skill[]

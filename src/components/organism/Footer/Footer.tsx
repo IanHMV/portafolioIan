@@ -25,8 +25,22 @@ const Footer = ({ id,
             <Image src={logo.src} alt={logo.alt} className={styles.logo} />
           )}
 
-          <Heading {...heading} />
-          <Text {...description} />
+          {/* El tamaño y el color los pone el CSS del footer, no utilidades
+              sueltas desde los datos: así el cierre de la página comparte
+              tinta y tipografía con el hero. */}
+          <Heading
+            as={heading.as ?? "h2"}
+            className={`${styles.heading} ${heading.className ?? ""}`}
+          >
+            {heading.children}
+          </Heading>
+
+          <Text
+            as="p"
+            className={`${styles.description} ${description.className ?? ""}`}
+          >
+            {description.children}
+          </Text>
 
           {links.length > 0 && (
             <nav aria-label="Secciones" className={styles.nav}>

@@ -45,23 +45,74 @@
 }
 
 .section {
-  padding: 4rem 2rem 0;
+  /* Alias locales de la tinta del sitio, igual que hace el hero con
+     --hero-ink: aquí no nace ningún color, todos salen de las variables de
+     src/styles/index.css. Los logos de las skills sí conservan su color de
+     marca — es su identidad, no decoración. */
+  --skills-ink: var(--color-ink);
+  --skills-ink-dim: var(--color-ink-dim);
+  --skills-body: color-mix(in srgb, var(--color-ink) 68%, var(--color-surface));
+  --skills-line: color-mix(in srgb, var(--color-ink) 14%, transparent);
+
+  padding: 5rem 2rem 0;
   overflow-x: clip;
 }
 
+/* Cabecera centrada, la misma que la sección Experience: el anillo es una
+   composición centrada y un titular pegado a la izquierda lo descuadraba. */
 .header {
-  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 46rem;
+  margin: 0 auto 2.5rem;
+  text-align: center;
   animation: fadeInUp 0.5s ease-out both;
 }
 
-.header::before {
-  content: '';
-  display: block;
-  width: 2rem;
-  height: 2px;
-  background-color: #4ade80;
-  border-radius: 1px;
-  margin-bottom: 1rem;
+/*
+ * BARRA VERDE RETIRADA — la cabecera abría con un filete de 2rem en
+ * #4ade80, el único verde que quedaba en la sección. Se cambió por el
+ * rótulo en versalitas para que Skills, Experience y el hero compartan una
+ * sola paleta. Para devolverla:
+ *
+ *   .header::before { content: ''; display: block; width: 2rem;
+ *     height: 2px; background-color: #4ade80; border-radius: 1px; }
+ */
+.eyebrow {
+  color: var(--skills-ink-dim);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  /* compensa el espaciado sobrante de la última letra para centrar
+     ópticamente el bloque */
+  text-indent: 0.3em;
+}
+
+/* Mismo degradado de tinta que el nombre del hero y el titular de
+   Experience: claro arriba, apagado abajo. */
+.title {
+  font-size: clamp(2rem, 5.2vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: transparent;
+  background-image: linear-gradient(180deg, var(--skills-ink) 0%, var(--skills-ink-dim) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  /* colchón para las colas de las letras: `background-clip: text` las
+     recorta si el renglón va justo */
+  padding-block: 0.06em;
+}
+
+.lead {
+  max-width: 42ch;
+  color: var(--skills-body);
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 /* Contenedor de referencia: guarda las medidas del anillo y es el ancla
@@ -90,7 +141,8 @@
   width: calc(var(--radius) * 2);
   height: calc(var(--radius) * 2);
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  /* el aro es un hilo de la misma tinta del sitio, no un blanco suelto */
+  border: 1px solid var(--skills-line);
   animation: spin 60s linear infinite;
 }
 
@@ -123,7 +175,7 @@
 }
 
 .orbitIcon:focus-visible {
-  outline: 2px solid #4ade80;
+  outline: 2px solid var(--skills-ink);
   outline-offset: 4px;
   border-radius: 50%;
 }
@@ -186,8 +238,19 @@
   gap: 0.35rem;
 }
 
+/* Nombre de la skill activa. Antes venía con utilidades sueltas desde el
+   TSX (`font-bold text-white`): blanco puro y peso 700, que no es lo que usa
+   ningún otro título del sitio. */
+.centerName {
+  color: var(--skills-ink);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
 .centerDescription {
-  color: #9ca3af;
+  color: var(--skills-body);
   line-height: 1.6;
   max-width: 36ch;
 }

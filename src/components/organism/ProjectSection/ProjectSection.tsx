@@ -223,7 +223,7 @@ const ProjectSection = ({ id,
       {/* Rejilla de 3 columnas: flecha | escenario | flecha. Antes las flechas
           iban en `position: absolute` sobre el escenario y en móvil caían
           encima de la tarjeta; así ocupan su propio carril. */}
-      <div className={`${styles.content} mx-auto max-w-6xl`}>
+      <div className={styles.content}>
         <div className={styles.carousel}>
           <button
             type="button"

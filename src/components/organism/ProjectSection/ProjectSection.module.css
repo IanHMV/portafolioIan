@@ -21,8 +21,13 @@
   }
 }
 
+/* El encabezado comparte la banda del carrusel. Antes no tenía ancho
+   máximo: en un monitor ancho arrancaba pegado al borde izquierdo (x=32)
+   mientras su propio carrusel empezaba en x=697, y el ojo tenía que hacer
+   ese viaje entre el título y las tarjetas que describe. */
 .header {
-  margin-bottom: 2.5rem;
+  max-width: var(--content-max);
+  margin: 0 auto 2.5rem;
   animation: fadeInUp 0.5s ease-out both;
 }
 
@@ -36,7 +41,12 @@
   margin-bottom: 1rem;
 }
 
+/* El ancho venía de un `max-w-6xl` suelto en el TSX. Se trae aquí para que
+   la banda de la sección salga del mismo token que las demás y no haya que
+   buscarla en dos archivos. */
 .content {
+  max-width: var(--content-max);
+  margin-inline: auto;
   animation: fadeInUp 0.5s ease-out 0.12s both;
 }
 

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import styles from "./HeroSection.module.css";
 import type { HeroSectionProps } from "./HeroSection.types";
 import Heading from "../../atoms/Heading/Heading";
@@ -12,6 +13,20 @@ const HeroSection = ({
   secondaryAction,
   className = "",
 }: HeroSectionProps) => {
+  /*
+   * El CSS reparte el ancho del panel entre las letras del saludo para
+   * calcular su cuerpo (ver `.displayName`), así que necesita saber cuántas
+   * hay. Es el único dato que no puede deducir solo.
+   *
+   * El tope de 8 evita que un saludo muy corto ("Hola") pida un cuerpo
+   * enorme antes de que actúe el máximo del clamp, y el 14 de reserva es la
+   * longitud típica por si algún día el título deja de ser texto plano.
+   */
+  const titleLength =
+    typeof heading.children === "string"
+      ? Math.max(heading.children.trim().length, 8)
+      : 14;
+
   return (
     <section
       className={`relative flex min-h-svh items-center overflow-x-clip bg-surface px-4 py-12 sm:px-6 lg:px-16 lg:py-16 ${className}`}
@@ -64,7 +79,13 @@ const HeroSection = ({
           {/* Saludo y presentación van juntos y pegados; el aire grande se
               reserva para separarlos del bloque de abajo. */}
           <div className={styles.intro}>
-            <div className={styles.stack}>
+            {/* --title-len va en el contenedor y no en el propio título
+                porque las custom properties se heredan: así el átomo Heading
+                no necesita aceptar un `style` solo para esto. */}
+            <div
+              className={styles.stack}
+              style={{ "--title-len": titleLength } as CSSProperties}
+            >
               <Heading as="h1" className={styles.displayName}>
                 {heading.children}
               </Heading>

@@ -29,7 +29,9 @@
 .plate {
   position: relative;
   width: 100%;
-  max-width: 64rem;
+  /* Antes 64rem: la tarjeta arrancaba 84px a la derecha de donde arrancan
+     las demás secciones y el escalón se notaba al bajar por la página. */
+  max-width: var(--content-max);
   border-radius: 1.75rem;
   background: linear-gradient(150deg,
       color-mix(in srgb, var(--color-ink) 38%, var(--color-surface)) 0%,

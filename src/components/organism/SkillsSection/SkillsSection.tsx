@@ -8,6 +8,7 @@ import Image from "../../atoms/Image/Image";
 import type { SkillsSectionProps } from "./SkillsSection.types";
 
 const SkillsSection = ({ id,
+  eyebrow,
   title,
   description,
   skills,
@@ -29,9 +30,25 @@ const SkillsSection = ({ id,
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
+      {/* Misma cabecera que Experience: rótulo, titular con el degradado de
+          tinta del hero y bajada. Los tamaños y colores los pone el CSS, no
+          utilidades sueltas desde los datos. */}
       <div className={styles.header}>
-        <Heading {...title} />
-        <Text {...description} />
+        {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
+
+        <Heading
+          as={title.as ?? "h2"}
+          className={`${styles.title} ${title.className ?? ""}`}
+        >
+          {title.children}
+        </Heading>
+
+        <Text
+          as="p"
+          className={`${styles.lead} ${description.className ?? ""}`}
+        >
+          {description.children}
+        </Text>
       </div>
 
       {/* El anillo gira; al hacer hover sobre una skill se pausa y el
@@ -79,7 +96,7 @@ const SkillsSection = ({ id,
               <Image src={skill.icon.src} alt="" className={styles.centerImg} />
             </div>
             <div className={styles.centerText}>
-              <Heading as="h3" size="text-2xl" className="font-bold text-white tracking-tight">
+              <Heading as="h3" className={styles.centerName}>
                 {skill.name}
               </Heading>
               <Text as="p" size="text-xs" className={styles.centerDescription}>
