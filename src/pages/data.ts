@@ -5,8 +5,32 @@ import type { ProjectSectionProps } from "../components/organism/ProjectSection/
 import type { ExperienceSectionProps } from "../components/organism/ExperienceSection/ExperienceSection.types";
 import type { FooterProps } from "../components/organism/Footer/Footer.types";
 import type { SkillsSectionProps } from "@/components/organism/SkillsSection/SkillsSection.types";
+import type { NavbarProps } from "@/components/organism/Navbar/Navbar.types";
+
+/*
+ * El menú del dock. El orden de esta lista es el orden en el que se recorre
+ * la página, y cada `href` tiene que apuntar al `id` de su sección: es de
+ * ahí de donde el componente saca qué elemento vigilar para encender el
+ * ítem cuando esa sección llega a la altura de los ojos.
+ *
+ * Seis es el tope: el dock mide 6 x ancho de icono y a partir de ahí no
+ * cabe en una pantalla de 320px sin encoger los iconos por debajo del área
+ * táctil recomendada. Para añadir una séptima sección, lo que hay que
+ * repensar es el dock, no esta lista.
+ */
+export const navbar: NavbarProps = {
+  items: [
+    { href: "#home", label: "Home", icon: "home" },
+    { href: "#about", label: "About", icon: "about" },
+    { href: "#projects", label: "Projects", icon: "projects" },
+    { href: "#experience", label: "Experience", icon: "experience" },
+    { href: "#skills", label: "Skills", icon: "skills" },
+    { href: "#contact", label: "Contact", icon: "contact" },
+  ],
+};
 
 export const hero: HeroSectionProps = {
+  id: "home",
   logo: {
     src: "/img/Logo.svg",
     alt: "Ian Martinez logo",
@@ -208,6 +232,9 @@ export const experienceSection: ExperienceSectionProps = {
 };
 
 export const skillSection: SkillsSectionProps = {
+  /* Skills era la única sección con `id` en sus props y sin usarlo. Ahora
+     lo necesita: es el destino del quinto icono del dock. */
+  id: "skills",
   className: "bg-surface",
   eyebrow: "What I build with",
   // Sin `size` ni clases de color: el tamaño fluido y la tinta los pone

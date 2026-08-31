@@ -7,6 +7,7 @@ import LinkComponent from "../../atoms/Link/LinkComponent";
 import WireGlobe from "./WireGlobe";
 
 const HeroSection = ({
+  id,
   heading,
   description,
   primaryAction,
@@ -29,6 +30,7 @@ const HeroSection = ({
 
   return (
     <section
+      id={id}
       className={`relative flex min-h-svh items-center overflow-x-clip bg-surface px-4 py-12 sm:px-6 lg:px-16 lg:py-16 ${className}`}
     >
       {/*
