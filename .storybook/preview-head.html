@@ -1,0 +1,15 @@
+<!--
+  Las mismas fuentes que carga index.html: Inter para leer y Outfit para los
+  títulos. Sin esto Storybook cae a la sans-serif del sistema y los
+  componentes se ven con una tipografía que no es la del sitio — justo lo
+  que Storybook debería servir para verificar.
+
+  Van duplicadas a propósito. Traerlas con @import desde src/styles/index.css
+  las centralizaría, pero un @import bloquea el render y en producción
+  perderíamos el preconnect, que es lo que adelanta la llegada de la fuente.
+  Si aquí cambia la familia, cámbiala también en index.html.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap"
+  rel="stylesheet">

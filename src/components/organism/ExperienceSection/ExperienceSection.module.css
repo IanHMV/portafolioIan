@@ -1,3 +1,22 @@
+/*
+ * TIPOGRAFÍA UNIFICADA — esta sección ya no trae familias propias.
+ *
+ * El archivador tenía cuatro `font-family` sueltas que imitaban un documento
+ * físico: monospace en `.floatBody`, `.fileTag` y `.sheetPeriod` (aire de
+ * etiqueta mecanografiada) y Georgia italic en `.sheetHeading` (aire de hoja
+ * impresa). Eran las únicas 15 piezas de texto de todo el sitio fuera del par
+ * Inter + Outfit, y se retiraron para que la tipografía por defecto sea la
+ * misma en todas las secciones.
+ *
+ * El efecto de papel NO depende solo de la letra: siguen aquí el fondo crema
+ * de `.sheet`, su borde de color, el `font-style: italic` del encabezado y la
+ * rotación de `.fileTag`. Para devolver la letra de máquina basta con
+ * reponer, en las reglas que se indican:
+ *
+ *     font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+ *     font-family: Georgia, "Times New Roman", serif;   // solo .sheetHeading
+ */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -111,7 +130,6 @@
   border-radius: 8px;
   background: var(--folder-color);
   color: rgba(255, 255, 255, 0.92);
-  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 11px;
   display: flex;
   flex-direction: column;
@@ -163,20 +181,17 @@
   padding: 2px 10px;
   border: 1.5px solid #2b4bdb;
   color: #2b4bdb;
-  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 11px;
   transform: rotate(-1.5deg);
 }
 
 .sheetHeading {
-  font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
 
 .sheetPeriod {
-  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   color: #6b6357;
   margin-bottom: 1.5rem;
 }
