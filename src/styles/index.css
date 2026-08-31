@@ -39,6 +39,19 @@
   /* superficie elevada: tarjetas, modales — todo lo que deba leerse
      por encima del plano de la página */
   --color-surface-2: #1a1d26;
+
+  /*
+   * Tinta del sitio: el par claro/apagado con el que se pinta el título del
+   * hero (letras y líneas del globo). Vive aquí, y no dentro de una sección,
+   * para que cualquier otra pueda pedir la MISMA tinta y el sitio entero
+   * mantenga una sola colorimetría — es lo que hace la tarjeta de About Me.
+   *
+   * No es blanco puro a propósito, por lo mismo que el fondo no es negro:
+   * el par #eceef2 → #7e8492 da volumen al degradado del texto sin llegar a
+   * la halación del blanco sobre oscuro.
+   */
+  --color-ink: #eceef2;
+  --color-ink-dim: #7e8492;
 }
 
 html {

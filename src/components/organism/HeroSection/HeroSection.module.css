@@ -31,9 +31,12 @@
    define el ancho contra el que se mide el título. */
 .panel {
   /* Tinta del hero: la MISMA para las letras del título y para las líneas
-     del mundo, que es justo lo que se pidió. Un solo sitio donde cambiarla. */
-  --hero-ink: #eceef2;
-  --hero-ink-dim: #7e8492;
+     del mundo, que es justo lo que se pidió. Los valores ya no viven aquí:
+     salen de --color-ink / --color-ink-dim (src/styles/index.css) para que
+     otras secciones —About Me— puedan pedir esa misma tinta y no acabemos
+     con dos plateados distintos. Un solo sitio donde cambiarla. */
+  --hero-ink: var(--color-ink);
+  --hero-ink-dim: var(--color-ink-dim);
   /* velo que separa el texto del mundo; sale del fondo de la página, así
      que no hay ningún color nuevo en la paleta */
   --hero-scrim: color-mix(in srgb, var(--color-surface) 92%, transparent);

@@ -1,66 +1,72 @@
 import { useEffect, useRef, useState } from "react";
-import type { PointerEvent } from "react";
 import styles from "./AboutMe.module.css";
 import type { AboutMeProps } from "./AboutMe.types";
 import Heading from "../../atoms/Heading/Heading";
 import Text from "../../atoms/Text/Text";
 import Image from "../../atoms/Image/Image";
 
-const AUTO_ADVANCE_DELAY_MS = 2600;
+/*
+ * Una sola tarjeta con dos vistas encima de la misma celda: primero el
+ * rótulo (monograma + oficio) y, al llegar a la sección, se desvanece para
+ * dejar salir la presentación.
+ *
+ * La versión anterior —portada a pantalla completa con vídeo y deslizamiento
+ * vertical— no se ha borrado: vive en ./AboutMeCover.tsx con su propio CSS,
+ * lista para volver a montarse.
+ */
 
-type View = "cover" | "content";
+/* Cuánto se queda el rótulo en pantalla antes de dar paso al texto. Lo justo
+   para leerlo: más tiempo y parece que la página se ha quedado colgada. */
+const REVEAL_DELAY_MS = 1600;
 
-/* Las portadas animadas se sirven como vídeo, no como GIF. Un GIF se
-   descomprime fotograma a fotograma en el hilo principal — el mismo que
-   mueve el scroll — mientras que un <video> lo decodifica la GPU aparte.
-   Con eso el scroll deja de competir con la animación de fondo. */
-const VIDEO_SRC = /\.(mp4|webm)$/i;
+type View = "cover" | "info";
 
-const AboutMe = ({ id,
-  coverImage,
-  coverTitle,
+/* Se consulta al montar, no dentro del efecto: así el primer pintado ya sale
+   bien y quien pide menos movimiento no llega a ver el rótulo desaparecer. */
+const prefersReducedMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const AboutMe = ({
+  id,
+  cover,
   heading,
   paragraphs,
   contentImage,
   className = "",
 }: AboutMeProps) => {
-  const coverIsVideo = VIDEO_SRC.test(coverImage.src);
-  const [view, setView] = useState<View>("cover");
-  const [raised, setRaised] = useState(false);
+  /* Sin movimiento no hay nada que anunciar: la tarjeta nace puesta en su
+     sitio y con la presentación abierta, que es el contenido que importa. */
+  const [staticView] = useState(prefersReducedMotion);
+  const [view, setView] = useState<View>(staticView ? "info" : "cover");
+  const [raised, setRaised] = useState(staticView);
   const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const autoTimer = useRef(0);
-  const autoDone = useRef(false);
+  const revealTimer = useRef(0);
+  /* Una vez que el visitante toca el botón, el cambio automático se retira:
+     mandar dos cosas a la vez sobre la misma tarjeta es lo que hace que un
+     sitio parezca que "se mueve solo". */
+  const revealed = useRef(false);
 
-  const goTo = (next: View) => {
-    window.clearTimeout(autoTimer.current);
-    autoDone.current = true;
-    setView(next);
-    /* Keep focus on the card: if it stayed on the clicked button, the
-       browser would scroll the page chasing it as the slide moves away. */
-    cardRef.current?.focus({ preventScroll: true });
-  };
+  const showingInfo = view === "info";
 
-  /* Rise + auto-advance: when the section starts to show, the card lifts
-     off the page; once it is mostly visible, wait a moment on the cover
-     and slide down to the content. Manual navigation disables the auto. */
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!section || staticView) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.intersectionRatio >= 0.2) setRaised(true);
 
-        if (autoDone.current) return;
+        if (revealed.current) return;
+        /* El fundido no se dispara al asomar, sino cuando la sección ya
+           ocupa la pantalla: si no, se gasta el rótulo antes de que nadie
+           haya llegado a leerlo. */
         if (entry.intersectionRatio >= 0.6) {
-          autoTimer.current = window.setTimeout(() => {
-            autoDone.current = true;
-            setView("content");
-          }, AUTO_ADVANCE_DELAY_MS);
+          revealTimer.current = window.setTimeout(() => {
+            revealed.current = true;
+            setView("info");
+          }, REVEAL_DELAY_MS);
         } else {
-          window.clearTimeout(autoTimer.current);
+          window.clearTimeout(revealTimer.current);
         }
       },
       { threshold: [0.2, 0.6] }
@@ -68,27 +74,15 @@ const AboutMe = ({ id,
     observer.observe(section);
 
     return () => {
-      window.clearTimeout(autoTimer.current);
+      window.clearTimeout(revealTimer.current);
       observer.disconnect();
     };
-  }, []);
+  }, [staticView]);
 
-  const handleTilt = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse") return;
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width - 0.5;
-    const py = (event.clientY - rect.top) / rect.height - 0.5;
-    card.style.setProperty("--tilt-x", `${(py * -4).toFixed(2)}deg`);
-    card.style.setProperty("--tilt-y", `${(px * 6).toFixed(2)}deg`);
-  };
-
-  const resetTilt = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.setProperty("--tilt-x", "0deg");
-    card.style.setProperty("--tilt-y", "0deg");
+  const toggleView = () => {
+    window.clearTimeout(revealTimer.current);
+    revealed.current = true;
+    setView((current) => (current === "cover" ? "info" : "cover"));
   };
 
   return (
@@ -97,98 +91,72 @@ const AboutMe = ({ id,
       id={id}
       className={`${styles.section} flex min-h-svh items-center justify-center bg-surface px-4 py-16 sm:px-8 ${className}`}
     >
-      <div className={`${styles.lift} ${raised ? styles.liftRaised : ""} w-full max-w-5xl rounded-3xl`}>
-        <div
-          ref={cardRef}
-          tabIndex={-1}
-          onPointerMove={handleTilt}
-          onPointerLeave={resetTilt}
-          className={`${styles.card} relative w-full overflow-hidden rounded-3xl border border-white/10 outline-none`}
-        >
-          <div className={`${styles.track} ${view === "content" ? styles.trackDown : ""}`}>
-            <div className={styles.slide} inert={view !== "cover"}>
-              {coverIsVideo ? (
-                <video
-                  className="absolute inset-0 h-full w-full object-cover"
-                  src={coverImage.src}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={coverImage.alt}
-                />
-              ) : (
-                <Image
-                  src={coverImage.src}
-                  alt={coverImage.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              )}
-              <div className={styles.coverOverlay} />
+      <div className={`${styles.plate} ${raised ? styles.plateRaised : ""}`}>
+        <div className={styles.card}>
+          {/* Los dos halos del fondo. Decorativos: se apartan al pasar el
+              ratón y no dicen nada, así que se ocultan al lector de pantalla. */}
+          <span className={`${styles.blob} ${styles.blobTop}`} aria-hidden="true" />
+          <span className={`${styles.blob} ${styles.blobBottom}`} aria-hidden="true" />
 
-              <div className="relative flex h-full items-center justify-center">
-                <Heading
-                  as="h2"
-                  size={coverTitle.size}
-                  className={`font-bold text-white tracking-tight drop-shadow-lg ${coverTitle.className ?? ""}`}
-                >
-                  {coverTitle.children}
-                </Heading>
-              </div>
+          <div className={styles.stage}>
+            {/* Vista 1 — el rótulo. `inert` la saca del foco y del lector de
+                pantalla mientras está desvanecida: si no, se puede tabular
+                hacia contenido invisible. */}
+            <div
+              className={`${styles.view} ${styles.cover} ${showingInfo ? styles.coverHidden : ""}`}
+              inert={showingInfo}
+            >
+              <span className={`outfit ${styles.initials}`}>{cover.initials}</span>
 
-              <button
-                type="button"
-                aria-label="Scroll down to read about me"
-                onClick={() => goTo("content")}
-                className={`${styles.navButton} ${styles.bounce} bottom-6 left-1/2 -translate-x-1/2`}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
+              <Heading as="h2" className={styles.role}>
+                {cover.role}
+              </Heading>
             </div>
 
-            <div className={`${styles.slide} bg-surface`} inert={view !== "content"}>
-              <div className="grid h-full items-center gap-8 p-8 pt-20 sm:p-12 sm:pt-20 md:grid-cols-2 md:gap-12">
-                <div className="flex flex-col gap-5 text-left">
-                  <Heading
-                    as="h3"
-                    size={heading.size}
-                    className={`font-bold text-white tracking-tight ${heading.className ?? ""}`}
-                  >
-                    {heading.children}
-                  </Heading>
+            {/* Vista 2 — la presentación que antes vivía en la diapositiva de
+                abajo, ahora en el mismo sitio que el rótulo. */}
+            <div
+              className={`${styles.view} ${styles.info} ${showingInfo ? "" : styles.infoHidden}`}
+              inert={!showingInfo}
+            >
+              <div className={styles.infoText}>
+                <Heading as="h3" className={styles.infoHeading}>
+                  {heading.children}
+                </Heading>
 
-                  {paragraphs.map((paragraph) => (
-                    <Text key={paragraph} as="p" className="text-gray-400 text-base leading-relaxed">
-                      {paragraph}
-                    </Text>
-                  ))}
-                </div>
-
-                <div className="hidden items-center justify-center md:flex">
-                  <Image
-                    src={contentImage.src}
-                    alt={contentImage.alt}
-                    rounded="rounded-lg"
-                    className="max-h-[26rem] w-full max-w-sm object-cover shadow-2xl"
-                  />
-                </div>
+                {paragraphs.map((paragraph) => (
+                  <Text key={paragraph} as="p" className={styles.paragraph}>
+                    {paragraph}
+                  </Text>
+                ))}
               </div>
 
-              <button
-                type="button"
-                aria-label="Back to cover"
-                onClick={() => goTo("cover")}
-                className={`${styles.navButton} left-1/2 top-6 -translate-x-1/2`}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
+              <div className={styles.portrait}>
+                <Image
+                  src={contentImage.src}
+                  alt={contentImage.alt}
+                  className={styles.portraitImg}
+                />
+              </div>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={toggleView}
+            aria-label={showingInfo ? "Back to the title" : "Read my introduction"}
+            className={`${styles.toggle} ${showingInfo ? styles.toggleUp : styles.bounce}`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M6 9l6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
