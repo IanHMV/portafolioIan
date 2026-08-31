@@ -5,7 +5,13 @@ import type { CardProjectProps } from "../../molecules/CardProject/CardProject.t
 export interface ProjectSectionProps {
   id?: string
   className?: string
+  /** Rótulo pequeño en versalitas sobre el título — ej. "WHAT I'VE BUILT".
+   *  Mismo papel que el `eyebrow` de Experience y Skills. */
+  eyebrow?: string
+  /** Título de la sección. El cuerpo y la tinta los pone el CSS, así que no
+   *  hace falta pasar `size` ni clases de color desde los datos. */
   heading: Pick<HeadingProps, "as" | "children" | "className" | "size">
-  description: Pick<TextProps, "children" | "className">
+  /** Bajada bajo el título */
+  description: Pick<TextProps, "as" | "children" | "className" | "size" | "weight">
   projects: CardProjectProps[]
 }
