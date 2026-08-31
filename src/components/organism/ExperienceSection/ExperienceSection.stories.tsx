@@ -18,31 +18,22 @@ type Story = StoryObj<typeof ExperienceSection>;
 export const Default: Story = {
   args: {
     className: "bg-surface min-h-svh",
+    eyebrow: "Where I have worked",
     title: {
       as: "h2",
-      size: "text-4xl",
-      className: "text-white font-bold tracking-tight",
-      children: "Experience",
+      children: "Four places that turned\npractice into real work.",
     },
     description: {
-      as: "p",
-      size: "text-base",
-      weight: "font-normal",
-      className: "text-gray-400 max-w-xl py-3",
       children:
-        "A file cabinet of the places and projects that shaped me. Hover a folder to peek inside; click it to pull out the full sheet.",
+        "Every card is a chapter — the short version here, the full story one click away.",
     },
-    folders: [
+    entries: [
       {
-        label: "Frontend Developer",
-        color: "#8f2d56",
-        preview: {
-          code: "01A",
-          note: "Placeholder role. Swap with your real experience.",
-          date: "2024 — present",
-        },
-        sheet: {
-          fileNo: "Nº 01",
+        code: "01",
+        title: "Frontend Developer",
+        summary: "Placeholder role — swap it for your real experience",
+        date: "2024 — present",
+        detail: {
           heading: "Frontend Developer",
           period: "2024 — present · Remote",
           paragraphs: [
@@ -52,15 +43,11 @@ export const Default: Story = {
         },
       },
       {
-        label: "Freelance Projects",
-        color: "#e4572e",
-        preview: {
-          code: "02B",
-          note: "Client work and personal commissions.",
-          date: "2023 — 2024",
-        },
-        sheet: {
-          fileNo: "Nº 02",
+        code: "02",
+        title: "Freelance Projects",
+        summary: "Client work and personal commissions",
+        date: "2023 — 2024",
+        detail: {
           heading: "Freelance Projects",
           period: "2023 — 2024 · Remote",
           paragraphs: [
@@ -69,15 +56,11 @@ export const Default: Story = {
         },
       },
       {
-        label: "Open Source",
-        color: "#0f8a5f",
-        preview: {
-          code: "03C",
-          note: "Contributions and experiments in public.",
-          date: "2023",
-        },
-        sheet: {
-          fileNo: "Nº 03",
+        code: "03",
+        title: "Open Source",
+        summary: "Contributions and experiments in public",
+        date: "2023",
+        detail: {
           heading: "Open Source",
           period: "2023 · GitHub",
           paragraphs: [
@@ -86,15 +69,11 @@ export const Default: Story = {
         },
       },
       {
-        label: "Studies & Certifications",
-        color: "#2b4bdb",
-        preview: {
-          code: "04D",
-          note: "Formal education and self-directed learning.",
-          date: "2021 — 2023",
-        },
-        sheet: {
-          fileNo: "Nº 04",
+        code: "04",
+        title: "Studies",
+        summary: "Formal education and self-directed learning",
+        date: "2021 — 2023",
+        detail: {
           heading: "Studies & Certifications",
           period: "2021 — 2023",
           paragraphs: [
@@ -102,23 +81,19 @@ export const Default: Story = {
           ],
         },
       },
-      {
-        label: "First Steps in Code",
-        color: "#5b2a86",
-        preview: {
-          code: "05E",
-          note: "Where it all started.",
-          date: "2020",
-        },
-        sheet: {
-          fileNo: "Nº 05",
-          heading: "First Steps in Code",
-          period: "2020",
-          paragraphs: [
-            "Placeholder description — the first project, the first bug and the moment you got hooked.",
-          ],
-        },
-      },
     ],
+  },
+};
+
+/*
+ * Sin `eyebrow` ni `description`: los dos son opcionales y la cabecera se
+ * queda solo con el titular. Sirve para comprobar que el aire de arriba no
+ * depende de que existan.
+ */
+export const TitleOnly: Story = {
+  args: {
+    ...Default.args,
+    eyebrow: undefined,
+    description: undefined,
   },
 };

@@ -1,20 +1,17 @@
 /*
- * TIPOGRAFÍA UNIFICADA — esta sección ya no trae familias propias.
+ * Experience — rejilla de tarjetas + modal.
  *
- * El archivador tenía cuatro `font-family` sueltas que imitaban un documento
- * físico: monospace en `.floatBody`, `.fileTag` y `.sheetPeriod` (aire de
- * etiqueta mecanografiada) y Georgia italic en `.sheetHeading` (aire de hoja
- * impresa). Eran las únicas 15 piezas de texto de todo el sitio fuera del par
- * Inter + Outfit, y se retiraron para que la tipografía por defecto sea la
- * misma en todas las secciones.
+ * COLORIMETRÍA: aquí no nace ningún color. Todo sale de las cuatro
+ * variables del sitio (src/styles/index.css):
  *
- * El efecto de papel NO depende solo de la letra: siguen aquí el fondo crema
- * de `.sheet`, su borde de color, el `font-style: italic` del encabezado y la
- * rotación de `.fileTag`. Para devolver la letra de máquina basta con
- * reponer, en las reglas que se indican:
+ *   --color-ink / --color-ink-dim        la tinta plateada del hero
+ *   --color-surface / --color-surface-2  el fondo y la superficie elevada
  *
- *     font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
- *     font-family: Georgia, "Times New Roman", serif;   // solo .sheetHeading
+ * El título se pinta con el MISMO degradado de tinta que el nombre del hero
+ * (claro arriba, apagado abajo) y las tarjetas se dibujan mezclando esa
+ * tinta con el fondo. Lo que en la referencia era dorado —el rótulo de
+ * arriba y el número de cada tarjeta— aquí es tinta apagada: mismo papel
+ * visual, cero colores nuevos.
  */
 
 @keyframes fadeInUp {
@@ -30,189 +27,390 @@
 }
 
 .section {
-  padding: 4rem 2rem;
+  /* Un único punto donde se decide la tinta de la sección: las reglas de
+     abajo solo consumen estas variables. */
+  --exp-ink: var(--color-ink);
+  --exp-ink-dim: var(--color-ink-dim);
+  /* Cuerpo de texto: la tinta rebajada contra el fondo, no un gris suelto.
+     Al 68% queda por encima de 8:1 de contraste sobre la tarjeta — se lee
+     cómodo sin competir con el título. */
+  --exp-body: color-mix(in srgb, var(--color-ink) 68%, var(--color-surface));
+  /* Hilos: los bordes de la referencia son casi invisibles y solo se
+     encienden al pasar el ratón. */
+  --exp-line: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  --exp-line-hover: color-mix(in srgb, var(--color-ink) 30%, transparent);
+
+  padding: 5rem 1.5rem;
   overflow-x: clip;
 }
 
+@media (width >=40rem) {
+  .section {
+    padding: 6rem 2rem;
+  }
+}
+
+/* ── Cabecera ────────────────────────────────────────────────────────── */
+/* Centrada, como en la referencia: rótulo pequeño, titular grande y una
+   bajada opcional. */
+
 .header {
-  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 46rem;
+  margin: 0 auto 3.5rem;
+  text-align: center;
   animation: fadeInUp 0.5s ease-out both;
 }
 
-.header::before {
-  content: '';
-  display: block;
-  width: 2rem;
-  height: 2px;
-  background-color: #4ade80;
-  border-radius: 1px;
-  margin-bottom: 1rem;
+/* El rótulo hace de antetítulo: en versalitas y muy espaciado se lee como
+   una etiqueta y no como una frase, y por eso puede ir en tamaño mínimo sin
+   pelearse con el titular. */
+.eyebrow {
+  color: var(--exp-ink-dim);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  /* compensa el espaciado sobrante de la última letra para que el bloque
+     quede ópticamente centrado */
+  text-indent: 0.3em;
 }
 
-.content {
+/* Mismo degradado que `.displayName` del hero: es lo que amarra las dos
+   secciones a una sola colorimetría. */
+.title {
+  font-size: clamp(2rem, 5.2vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  /* el titular es una frase larga partida en dos líneas; el salto se
+     controla con un \n desde los datos */
+  white-space: pre-line;
+  /* si en un ancho intermedio el salto cae mal, al menos las líneas se
+     reparten parejas en vez de dejar una palabra huérfana */
+  text-wrap: balance;
+  color: transparent;
+  background-image: linear-gradient(180deg, var(--exp-ink) 0%, var(--exp-ink-dim) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  /* colchón para las colas de las letras: sin él, `background-clip: text`
+     recorta las descendentes de la última línea */
+  padding-block: 0.06em;
+}
+
+.lead {
+  max-width: 42ch;
+  color: var(--exp-body);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+/* ── Rejilla de tarjetas ─────────────────────────────────────────────── */
+/* Una columna en móvil, dos en tableta y cuatro en escritorio. Los saltos
+   son explícitos y no `auto-fit`: con cuatro fichas, `auto-fit` deja tres
+   arriba y una suelta abajo en los anchos intermedios. */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  /* misma banda que el resto de secciones — el token vive en styles/index.css */
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
   animation: fadeInUp 0.5s ease-out 0.12s both;
 }
 
-/* ── Área de fólders flotantes ─────────────────────────── */
-/* Escenario donde las carpetas se apilan en cascada; también es el límite
-   contra el que rebotan al arrastrarlas (containerRef del
-   DraggableCardBody).
-   La altura se calcula sola con el número de fólders (--count lo pone el
-   componente): (n-1) saltos de 20px + la altura de un fólder completo, que
-   es el último de la pila y sí se ve entero. */
-.stage {
-  position: relative;
-  height: calc((var(--count, 7) - 1) * 20px + 11rem);
-  margin-bottom: 1.5rem;
+@media (width >=40rem) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
 }
 
-.floatFolder {
-  cursor: grab;
-  outline: none;
+@media (width >=64rem) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
-.floatFolder:active {
-  cursor: grabbing;
+/* La celda estira la tarjeta hasta la altura de la fila: todas terminan a
+   la misma altura aunque un resumen ocupe una línea más. */
+.cell {
+  display: flex;
 }
 
-.floatFolder:focus-visible {
-  outline: 2px solid #4ade80;
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
-/* Pestaña trapezoidal: costados inclinados con skew, esquina superior
-   externa redondeada — misma receta que el archivero anterior */
-/* La pestaña mide exactamente el salto de la cascada (20px): así la franja
-   que asoma de cada fólder tapado es justo su nombre, completo y legible. */
-.floatTab {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  margin-left: 22px;
-  padding: 0 14px;
-  background: var(--folder-color);
-  color: white;
-  font-size: 0.72rem;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.floatTab::before,
-.floatTab::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 22px;
-  height: 100%;
-  background: var(--folder-color);
-}
-
-.floatTab::before {
-  left: -11px;
-  transform: skewX(-16deg);
-  border-top-left-radius: 9px;
-}
-
-.floatTab::after {
-  right: -11px;
-  transform: skewX(16deg);
-  border-top-right-radius: 9px;
-}
-
-/* Cuerpo del fólder con la info de la vista previa encima */
-.floatBody {
-  position: relative;
-  height: 8.5rem;
-  margin-top: -2px;
-  padding: 0.9rem 1.1rem;
-  border-radius: 8px;
-  background: var(--folder-color);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 11px;
+.card {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.75);
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.5rem 1.35rem 1.25rem;
+  /* radio pequeño a propósito: la referencia son rectángulos casi rectos y
+     un `rounded-2xl` los volvería píldoras */
+  border-radius: 6px;
+  border: 1px solid var(--exp-line);
+  background: color-mix(in srgb, var(--color-surface-2) 55%, transparent);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease;
 }
 
-.floatMeta {
-  display: flex;
-  justify-content: space-between;
-  opacity: 0.85;
+.card:hover,
+.card:focus-visible {
+  border-color: var(--exp-line-hover);
+  background-color: var(--color-surface-2);
+  transform: translateY(-3px);
 }
 
-.floatNote {
+.card:focus-visible {
+  outline: 2px solid var(--exp-ink);
+  outline-offset: 3px;
+}
+
+/* El número de expediente. En la referencia es el único punto de color;
+   aquí lo sustituye la tinta apagada con mucho espaciado, que cumple la
+   misma función: marcar el orden sin llamar la atención. */
+.code {
+  color: var(--exp-ink-dim);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.cardTitle {
+  color: var(--exp-ink);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.cardSummary {
+  color: var(--exp-body);
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 
-/* ── Hoja desplegable al click ─────────────────────────── */
-/* grid-template-rows 0fr→1fr anima hacia la altura natural del contenido */
-.sheetWrap {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s ease;
+/* El pie se pega abajo con `margin-top: auto`: así la fecha queda alineada
+   entre tarjetas aunque los resúmenes midan distinto. */
+.cardFoot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--exp-line);
 }
 
-.sheetWrap[data-open="true"] {
-  grid-template-rows: 1fr;
+.cardDate {
+  color: var(--exp-ink-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
 }
 
-.sheetInner {
-  overflow: hidden;
-  min-height: 0;
-}
-
-/* La hoja de papel enmarcada por el color del fólder al que pertenece */
-.sheet {
-  position: relative;
-  background: #f4f1e8;
-  color: #2a2723;
-  padding: 2.5rem 2.75rem 3.5rem;
-  border: 10px solid var(--folder-color);
-  border-radius: 8px;
-}
-
-.fileTag {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.75rem;
-  padding: 2px 10px;
-  border: 1.5px solid #2b4bdb;
-  color: #2b4bdb;
-  font-size: 11px;
-  transform: rotate(-1.5deg);
-}
-
-.sheetHeading {
-  font-style: italic;
+/* Pista de que la tarjeta se abre. Solo aparece al apuntarla o al enfocarla
+   con el teclado: en reposo la rejilla se lee limpia, como la referencia. */
+.cardCue {
+  color: var(--exp-ink);
+  font-size: 0.72rem;
   font-weight: 500;
-  margin-bottom: 0.25rem;
+  opacity: 0;
+  translate: -4px 0;
+  transition: opacity 0.25s ease, translate 0.25s ease;
 }
 
-.sheetPeriod {
-  color: #6b6357;
-  margin-bottom: 1.5rem;
+.card:hover .cardCue,
+.card:focus-visible .cardCue {
+  opacity: 0.85;
+  translate: 0 0;
 }
 
-.sheetParagraph {
-  max-width: 60ch;
-  line-height: 1.7;
+/* ── Modal ───────────────────────────────────────────────────────────── */
+/*
+ * <dialog> nativo con showModal(): el navegador regala el foco atrapado, el
+ * fondo inerte y el cierre con Escape. No hace falta portal ni librería.
+ *
+ * El elemento ocupa toda la ventana y hace de zona muerta; la caja visible
+ * es `.modal`, dentro. Así el click de fuera (que llega con target = el
+ * propio dialog) se distingue del click dentro de la ficha.
+ */
+
+.dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 1.25rem;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    display 0.3s allow-discrete,
+    overlay 0.3s allow-discrete;
 }
 
-.sheetParagraph+.sheetParagraph {
+/* El navegador ya oculta el diálogo cerrado, pero el `display: flex` de
+   arriba le gana; hay que devolverlo a mano. */
+.dialog:not([open]) {
+  display: none;
+}
+
+.dialog[open] {
+  opacity: 1;
+}
+
+/* Estado desde el que ARRANCA la animación de entrada. Sin esto el modal
+   aparecería de golpe: al venir de `display: none` no hay valor anterior
+   desde el que interpolar. */
+@starting-style {
+  .dialog[open] {
+    opacity: 0;
+  }
+}
+
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 40rem;
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding: 2.25rem 2rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+  background: var(--color-surface-2);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9);
+  /* la ficha sube desde un poco más abajo que el velo, para que se lea como
+     que sale del fondo */
+  transform: translateY(14px);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dialog[open] .modal {
+  transform: translateY(0);
+}
+
+@starting-style {
+  .dialog[open] .modal {
+    transform: translateY(14px);
+  }
+}
+
+@media (width >=40rem) {
+  .modal {
+    padding: 2.75rem 2.75rem 2.5rem;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--exp-ink-dim);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.close:hover {
+  color: var(--exp-ink);
+  border-color: var(--exp-line-hover);
+  background-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--exp-ink);
+  outline-offset: 2px;
+}
+
+.modalTitle {
+  margin-top: 0.75rem;
+  color: var(--exp-ink);
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  /* sitio para el botón de cerrar: sin esto un título largo se le mete
+     debajo */
+  padding-right: 2.5rem;
+}
+
+.modalPeriod {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--exp-ink-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+.modalBody {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--exp-line);
+}
+
+.modalParagraph {
+  max-width: 62ch;
+  color: var(--exp-body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.modalParagraph+.modalParagraph {
   margin-top: 1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
 
   .header,
-  .content {
+  .grid {
     animation: none;
   }
 
-  .sheetWrap {
+  .card,
+  .cardCue,
+  .dialog,
+  .modal {
     transition: none;
+  }
+
+  .card:hover,
+  .card:focus-visible,
+  .modal {
+    transform: none;
   }
 }

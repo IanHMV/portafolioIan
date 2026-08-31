@@ -1,128 +1,165 @@
-import { useRef, useState } from "react";
-import type { CSSProperties, KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./ExperienceSection.module.css";
-import Text from "../../atoms/Text/Text";
 import Heading from "../../atoms/Heading/Heading";
-import {
-  DraggableCardBody,
-  DraggableCardContainer,
-} from "@/components/ui/draggable-card";
-
+import Text from "../../atoms/Text/Text";
 import type { ExperienceSectionProps } from "./ExperienceSection.types";
 
-/* Cascada: cada fólder arranca 20px más abajo que el anterior y se apila
-   encima, así de todos se ve al menos su pestaña con el nombre. */
-const FOLDER_STEP = 20;
-
-const ExperienceSection = ({ id,
+const ExperienceSection = ({
+  id,
+  eyebrow,
   title,
   description,
-  folders,
-  defaultOpenIndex = 0,
+  entries,
   className = "",
 }: ExperienceSectionProps) => {
-  const [openIndex, setOpenIndex] = useState<number | null>(
-    defaultOpenIndex >= 0 && defaultOpenIndex < folders.length
-      ? defaultOpenIndex
-      : null
-  );
-  const stageRef = useRef<HTMLDivElement>(null);
+  /* Dos estados y no uno: `isOpen` dice si el modal se ve y `activeIndex`
+     qué ficha muestra. Al cerrar solo se apaga el primero, así el contenido
+     sigue en su sitio mientras el modal se desvanece — con un único índice
+     que volviera a null, la ficha se vaciaría de golpe. */
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  /* Recuerda la última carpeta abierta para que la hoja conserve su
-     contenido mientras se cierra (si no, colapsaría vacía de golpe) */
-  const lastOpen = useRef(0);
-  if (openIndex !== null) lastOpen.current = openIndex;
-  const sheetFolder = folders[openIndex ?? lastOpen.current];
+  const entry = entries[activeIndex];
 
-  const toggle = (index: number) =>
-    setOpenIndex((current) => (current === index ? null : index));
+  const open = useCallback((index: number) => {
+    setActiveIndex(index);
+    setIsOpen(true);
+  }, []);
 
-  const handleKey = (event: KeyboardEvent<HTMLDivElement>, index: number) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      toggle(index);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (!isOpen) {
+      if (dialog.open) dialog.close();
+      return;
     }
-  };
+
+    if (!dialog.open) {
+      /* showModal() es lo que da gratis el foco atrapado, el fondo inerte y
+         el cierre con Escape. jsdom no lo implementa, así que en pruebas se
+         cae al atributo `open` — el modal se pinta igual, sin capa superior. */
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+    }
+
+    /* showModal() vuelve inerte la página de atrás, pero NO impide que siga
+       haciendo scroll debajo del modal. */
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
       <div className={styles.header}>
-        <Heading {...title} />
-        <Text {...description} />
-      </div>
+        {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
 
-      <div className={`${styles.content} mx-auto w-full max-w-5xl`}>
-        <DraggableCardContainer className="relative">
-          <div
-            ref={stageRef}
-            className={styles.stage}
-            style={{ "--count": folders.length } as CSSProperties}
-          >
-            {folders.map((folder, index) => (
-              <DraggableCardBody
-                /* el label NO es único: hay varios "Frontend Developer" y
-                   React avisaba de keys duplicadas */
-                key={`${folder.label}-${index}`}
-                containerRef={stageRef}
-                onTap={() => toggle(index)}
-                glare={false}
-                style={{ top: index * FOLDER_STEP, zIndex: index }}
-                className="absolute left-1/2 -ml-32 min-h-0 w-64 overflow-visible rounded-none bg-transparent p-0 shadow-none"
-              >
-                <div
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={openIndex === index}
-                  onKeyDown={(event) => handleKey(event, index)}
-                  className={styles.floatFolder}
-                  style={{ "--folder-color": folder.color } as CSSProperties}
-                >
-                  <span className={styles.floatTab}>{folder.label}</span>
-                  <div className={styles.floatBody}>
-                    <div className={styles.floatMeta}>
-                      <span>{folder.preview.code}</span>
-                      <span>{folder.preview.date}</span>
-                    </div>
-                    <p className={styles.floatNote}>{folder.preview.note}</p>
-                  </div>
-                </div>
-              </DraggableCardBody>
-            ))}
-          </div>
-        </DraggableCardContainer>
-
-        {/* La hoja de siempre: se despliega debajo del área flotante */}
-        <div
-          className={styles.sheetWrap}
-          data-open={openIndex !== null}
-          inert={openIndex === null}
+        <Heading
+          as={title.as ?? "h2"}
+          className={`${styles.title} ${title.className ?? ""}`}
         >
-          <div className={styles.sheetInner}>
-            {sheetFolder && (
-              <article
-                className={styles.sheet}
-                style={{ "--folder-color": sheetFolder.color } as CSSProperties}
-              >
-                <span className={styles.fileTag}>File {sheetFolder.sheet.fileNo}</span>
+          {title.children}
+        </Heading>
 
-                <Heading as="h3" size="text-3xl" className={styles.sheetHeading}>
-                  {sheetFolder.sheet.heading}
-                </Heading>
-
-                <Text as="p" size="text-xs" className={styles.sheetPeriod}>
-                  {sheetFolder.sheet.period}
-                </Text>
-
-                {sheetFolder.sheet.paragraphs.map((paragraph) => (
-                  <Text key={paragraph} as="p" size="text-base" className={styles.sheetParagraph}>
-                    {paragraph}
-                  </Text>
-                ))}
-              </article>
-            )}
-          </div>
-        </div>
+        {description && (
+          <Text
+            as="p"
+            className={`${styles.lead} ${description.className ?? ""}`}
+          >
+            {description.children}
+          </Text>
+        )}
       </div>
+
+      <ul className={styles.grid}>
+        {entries.map((item, index) => (
+          /* el título NO es único: puede repetirse el mismo puesto en dos
+             sitios distintos, así que la key lleva el índice */
+          <li key={`${item.title}-${index}`} className={styles.cell}>
+            {/* Un <button> y no un <div role="button">: así el teclado, el
+                foco y Enter/Espacio funcionan sin escribir una línea. */}
+            <button
+              type="button"
+              className={styles.card}
+              onClick={() => open(index)}
+              aria-haspopup="dialog"
+            >
+              <span className={styles.code}>{item.code}</span>
+
+              <Heading as="h3" className={styles.cardTitle}>
+                {item.title}
+              </Heading>
+
+              <Text as="p" className={styles.cardSummary}>
+                {item.summary}
+              </Text>
+
+              <span className={styles.cardFoot}>
+                <span className={styles.cardDate}>{item.date}</span>
+                <span className={styles.cardCue} aria-hidden="true">
+                  Read more
+                </span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* El click en el ::backdrop llega con `target` = el propio <dialog>,
+          por eso el contenido va envuelto: si el click cae en el envoltorio
+          o más adentro, no es el fondo y el modal se queda abierto. */}
+      <dialog
+        ref={dialogRef}
+        className={styles.dialog}
+        aria-label={entry?.detail.heading}
+        onClose={close}
+        onClick={(event) => {
+          if (event.target === dialogRef.current) close();
+        }}
+      >
+        {entry && (
+          <article className={styles.modal}>
+            <button
+              type="button"
+              className={styles.close}
+              onClick={close}
+              aria-label="Close"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+
+            <span className={styles.code}>{entry.code}</span>
+
+            <Heading as="h3" className={styles.modalTitle}>
+              {entry.detail.heading}
+            </Heading>
+
+            <span className={styles.modalPeriod}>{entry.detail.period}</span>
+
+            <div className={styles.modalBody}>
+              {entry.detail.paragraphs.map((paragraph) => (
+                <Text key={paragraph} as="p" className={styles.modalParagraph}>
+                  {paragraph}
+                </Text>
+              ))}
+            </div>
+          </article>
+        )}
+      </dialog>
     </section>
   );
 };

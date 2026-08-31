@@ -18,17 +18,12 @@ type Story = StoryObj<typeof SkillsSection>;
 export const Default: Story = {
   args: {
     className: "bg-surface",
+    eyebrow: "What I build with",
     title: {
       as: "h2",
-      size: "text-4xl",
-      className: "text-white font-bold tracking-tight",
       children: "My Skills",
     },
     description: {
-      as: "p",
-      size: "text-base",
-      weight: "font-normal",
-      className: "text-gray-400 max-w-xl py-3",
       children:
         "The tools I work with every day. Hover a logo to stop the wheel and read what I do with it.",
     },

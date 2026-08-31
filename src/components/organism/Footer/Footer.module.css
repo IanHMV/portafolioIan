@@ -11,16 +11,25 @@
 }
 
 .footer {
+  /* Alias locales de la tinta del sitio, igual que hace el hero con
+     --hero-ink. Los colores de las redes del disco NO se tocan: el rojo de
+     Gmail o el azul de LinkedIn son su identidad, no decoración. */
+  --footer-ink: var(--color-ink);
+  --footer-ink-dim: var(--color-ink-dim);
+  --footer-body: color-mix(in srgb, var(--color-ink) 68%, var(--color-surface));
+  --footer-line: color-mix(in srgb, var(--color-ink) 12%, transparent);
+
   /* mismo tono que el resto de la página; el token está en styles/index.css */
   background: var(--color-surface);
-  border-top: 1px solid rgb(255 255 255 / 0.08);
+  border-top: 1px solid var(--footer-line);
   padding: 3.5rem 2rem 1.5rem;
   /* el disco social se dibuja en 3D y no debe empujar scroll horizontal */
   overflow-x: clip;
 }
 
 .inner {
-  max-width: 72rem;
+  /* misma banda que el resto de secciones — el token vive en styles/index.css */
+  max-width: var(--content-max);
   margin: 0 auto;
   display: grid;
   gap: 1.5rem;
@@ -61,7 +70,33 @@
   width: 3.25rem;
   height: 3.25rem;
   object-fit: contain;
+  /* `invert(1)` deja el emblema en blanco puro, medio tono por encima de la
+     tinta del sitio (#eceef2). La opacidad lo baja hasta ese nivel sin
+     tener que recolorear el SVG. */
   filter: brightness(0) invert(1);
+  opacity: 0.92;
+}
+
+/* Titular del footer con el degradado de tinta del hero, en versión
+   pequeña: el cierre de la página rima con su apertura. */
+.heading {
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: transparent;
+  background-image: linear-gradient(180deg, var(--footer-ink) 0%, var(--footer-ink-dim) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  /* colchón para las colas de las letras, que `background-clip: text`
+     recortaría */
+  padding-block: 0.06em;
+}
+
+.description {
+  color: var(--footer-body);
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .nav {
@@ -78,14 +113,26 @@
   }
 }
 
+/*
+ * VERDE RETIRADO — los enlaces pasaban a #4ade80 en hover, el último resto
+ * de la paleta anterior en el footer. Ahora el estado activo se marca
+ * subiendo la tinta de apagada a plena, que es como se distinguen las dos
+ * acciones del hero. Para devolver el verde: `color: #4ade80` aquí abajo.
+ */
 .navLink {
-  color: #9ca3af;
+  color: var(--footer-ink-dim);
   transition: color 0.2s ease;
 }
 
 .navLink:hover,
 .navLink:focus-visible {
-  color: #4ade80;
+  color: var(--footer-ink);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--footer-ink);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
 /* el disco ya trae su propia caja calculada; aquí solo se centra */
@@ -94,15 +141,16 @@
 }
 
 .bottom {
-  max-width: 72rem;
+  max-width: var(--content-max);
   margin: 2rem auto 0;
   padding-top: 1.25rem;
-  border-top: 1px solid rgb(255 255 255 / 0.08);
+  border-top: 1px solid var(--footer-line);
   text-align: center;
 }
 
 .copy {
-  color: #6b7280;
+  color: var(--footer-ink-dim);
+  letter-spacing: 0.04em;
 }
 
 @media (prefers-reduced-motion: reduce) {
