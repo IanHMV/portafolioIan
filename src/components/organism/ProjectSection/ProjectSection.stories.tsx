@@ -17,16 +17,14 @@ export default meta;
 type Story = StoryObj<typeof ProjectSection>;
 
 const baseArgs: ProjectSectionProps = {
+  eyebrow: "What I have built",
   heading: {
-    children: "Projects",
     as: "h2",
-    className: "text-white font-bold tracking-tight",
-    size: "text-4xl",
+    children: "Projects",
   },
   description: {
     children:
-      "Some of the things I've built while polishing my craft. Hover a card to pause the carousel and flip it over.",
-    className: "text-gray-400 max-w-xl",
+      "Some of the things I've built while polishing my craft. Hover a card to pause the carousel.",
   },
   projects: [
     {

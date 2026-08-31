@@ -59,16 +59,18 @@ export const aboutMe: AboutMeProps = {
 export const projectSection: ProjectSectionProps = {
   id: "projects",
   className: "bg-surface",
+  eyebrow: "What I have built",
+  // Sin `size` ni clases de color, igual que Experience y Skills: el cuerpo
+  // fluido y el degradado de tinta los pone ProjectSection.module.css. Antes
+  // el `text-white font-bold` de aquí era lo que hacía que este titular se
+  // viera distinto a todos los demás del sitio.
   heading: {
-    children: "Projects",
     as: "h2",
-    className: "text-white font-bold tracking-tight",
-    size: "text-4xl",
+    children: "Projects",
   },
   description: {
     children:
       "Some of the things I've created while perfecting my technique, studying, or working. Hover over a card to pause the carousel.",
-    className: "text-gray-400 max-w-xl",
   },
   projects: [
     {

@@ -1,3 +1,23 @@
+/*
+ * Projects — cabecera + carrusel en arco.
+ *
+ * COLORIMETRÍA: aquí no nace ningún color. Igual que Experience, Skills y el
+ * footer, todo sale de las cuatro variables del sitio (src/styles/index.css):
+ *
+ *   --color-ink / --color-ink-dim        la tinta plateada del hero
+ *   --color-surface / --color-surface-2  el fondo y la superficie elevada
+ *
+ * Antes esta sección iba por libre: un filete verde #4ade80 en la cabecera,
+ * el título en blanco puro con utilidades sueltas desde data.ts y las
+ * flechas en negro translúcido con foco verde. Era la única sección con una
+ * paleta propia, y se notaba al hacer scroll.
+ *
+ * TIPOGRAFÍA: el título ya no lleva `size` ni clases de color desde los
+ * datos. El cuerpo fluido y el degradado los pone este archivo, que es lo
+ * que hace que Projects, Experience, Skills y el footer se lean como una
+ * sola voz.
+ */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -11,6 +31,17 @@
 }
 
 .section {
+  /* Un único punto donde se decide la tinta de la sección: las reglas de
+     abajo solo consumen estas variables. */
+  --proj-ink: var(--color-ink);
+  --proj-ink-dim: var(--color-ink-dim);
+  /* Cuerpo de texto: la tinta rebajada contra el fondo, no un gris suelto.
+     Es el mismo 68% que usan Experience, Skills y el footer. */
+  --proj-body: color-mix(in srgb, var(--color-ink) 68%, var(--color-surface));
+  /* Hilos: casi invisibles en reposo, se encienden al pasar el ratón. */
+  --proj-line: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  --proj-line-hover: color-mix(in srgb, var(--color-ink) 30%, transparent);
+
   padding: 4rem 1.5rem;
   overflow-x: clip;
 }
@@ -21,24 +52,68 @@
   }
 }
 
-/* El encabezado comparte la banda del carrusel. Antes no tenía ancho
-   máximo: en un monitor ancho arrancaba pegado al borde izquierdo (x=32)
-   mientras su propio carrusel empezaba en x=697, y el ojo tenía que hacer
-   ese viaje entre el título y las tarjetas que describe. */
+/* ── Cabecera ────────────────────────────────────────────────────────── */
+/*
+ * Centrada, como Experience y Skills: rótulo pequeño, titular grande y
+ * bajada. Antes iba pegada a la izquierda de la banda mientras el carrusel
+ * de debajo es una composición centrada, así que el bloque quedaba
+ * descuadrado sobre su propio contenido.
+ *
+ * BARRA VERDE RETIRADA — la cabecera abría con un filete de 2rem en
+ * #4ade80, el único color de marca del sitio. Lo sustituye el rótulo en
+ * versalitas, igual que se hizo en Skills. Para devolverla:
+ *
+ *   .header::before { content: ''; display: block; width: 2rem;
+ *     height: 2px; background-color: #4ade80; border-radius: 1px; }
+ */
 .header {
-  max-width: var(--content-max);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 46rem;
   margin: 0 auto 2.5rem;
+  text-align: center;
   animation: fadeInUp 0.5s ease-out both;
 }
 
-.header::before {
-  content: '';
-  display: block;
-  width: 2rem;
-  height: 2px;
-  background-color: #4ade80;
-  border-radius: 1px;
-  margin-bottom: 1rem;
+/* El rótulo hace de antetítulo: en versalitas y muy espaciado se lee como
+   una etiqueta y no como una frase, y por eso puede ir en tamaño mínimo sin
+   pelearse con el titular. */
+.eyebrow {
+  color: var(--proj-ink-dim);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  /* compensa el espaciado sobrante de la última letra para que el bloque
+     quede ópticamente centrado */
+  text-indent: 0.3em;
+}
+
+/* Mismo degradado que `.displayName` del hero y que los titulares de
+   Experience y Skills: es lo que amarra las secciones a una sola
+   colorimetría. */
+.title {
+  font-size: clamp(2rem, 5.2vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: transparent;
+  background-image: linear-gradient(180deg, var(--proj-ink) 0%, var(--proj-ink-dim) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  /* colchón para las colas de las letras: `background-clip: text` las
+     recorta si el renglón va justo */
+  padding-block: 0.06em;
+}
+
+.lead {
+  max-width: 42ch;
+  color: var(--proj-body);
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 /* El ancho venía de un `max-w-6xl` suelto en el TSX. Se trae aquí para que
@@ -106,26 +181,30 @@
   will-change: transform, opacity;
 }
 
+/* Mismo trato que el botón fantasma del hero (`.actionGhost`): tinta sobre
+   un fondo apenas insinuado. Antes eran negro al 45% con borde blanco y
+   foco verde — tres valores que no existían en ninguna otra sección. */
 .arrow {
   display: grid;
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
-  color: white;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--proj-ink);
+  background: color-mix(in srgb, var(--color-surface-2) 60%, transparent);
+  border: 1px solid var(--proj-line);
   backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .arrow:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background-color: var(--color-surface-2);
+  border-color: var(--proj-line-hover);
 }
 
 .arrow:focus-visible {
-  outline: 2px solid #4ade80;
+  outline: 2px solid var(--proj-ink);
   outline-offset: 2px;
 }
 
@@ -134,5 +213,9 @@
   .header,
   .content {
     animation: none;
+  }
+
+  .arrow {
+    transition: none;
   }
 }

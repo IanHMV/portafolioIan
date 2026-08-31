@@ -113,6 +113,7 @@ const useMatchMedia = (query: string) => {
 };
 
 const ProjectSection = ({ id,
+  eyebrow,
   heading,
   description,
   projects,
@@ -215,9 +216,26 @@ const ProjectSection = ({ id,
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
+      {/* Misma cabecera que Experience y Skills: rótulo, titular y bajada.
+          Las clases salen del CSS Module — el titular ya NO recibe su color
+          ni su cuerpo desde los datos, que era lo que dejaba a esta sección
+          con una tipografía y una paleta propias. */}
       <div className={styles.header}>
-        <Heading {...heading} />
-        <Text {...description} />
+        {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
+
+        <Heading
+          as={heading.as ?? "h2"}
+          className={`${styles.title} ${heading.className ?? ""}`}
+        >
+          {heading.children}
+        </Heading>
+
+        <Text
+          as="p"
+          className={`${styles.lead} ${description.className ?? ""}`}
+        >
+          {description.children}
+        </Text>
       </div>
 
       {/* Rejilla de 3 columnas: flecha | escenario | flecha. Antes las flechas
