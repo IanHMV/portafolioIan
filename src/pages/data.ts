@@ -328,21 +328,23 @@ export const footer: FooterProps = {
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
   ],
-  // Las redes se reparten en ángulos iguales por el anillo.
+  // Una esfera por red, sin repetir. Salen ordenadas en fila y a partir de
+  // ahí las mueve quien visita la página: se arrastran, se empujan entre
+  // ellas y rebotan contra las paredes del área.
   social: [
     { id: "gmail", href: "mailto:ianhmv418@gmail.com", label: "Gmail" },
     { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
     { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
   ],
-  // Todo el aspecto del anillo se ajusta desde aquí; borra la línea que no
+  // Todo el aspecto del área se ajusta desde aquí; borra la línea que no
   // quieras tocar y se queda con su default.
-  ring: {
-    size: 340,        // diámetro de la órbita en px (en móvil se autolimita a 62vw)
-    badgeSize: 76,    // diámetro de cada insignia en px
-    minBadges: 12,    // insignias mínimas: las 3 redes se repiten hasta llegar
-    startAngle: 0,    // rota el reparto sin mover nada más
-    spinDuration: 48, // segundos por vuelta; 0 deja el anillo quieto
-    reverse: false,   // true = sentido antihorario
+  orbs: {
+    width: 380,      // ancho máximo del área en px (en móvil ocupa el 100%)
+    height: 190,     // alto del área en px
+    orbSize: 64,     // diámetro de cada esfera; si no caben, se encogen solas
+    friction: 0.92,  // impulso que conserva entre fotogramas: 1 = no se para
+    bounce: 0.62,    // rebote contra paredes y entre esferas; 0 = sin rebote
+    hint: "Drag them around", // pista bajo el área; null la quita
   },
   copyright: "© 2026 Ian Martinez",
 };

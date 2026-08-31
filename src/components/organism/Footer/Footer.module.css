@@ -26,7 +26,8 @@
      una franja de datos apretada. Es lo que sostiene la composición de dos
      bloques (titular grande a un lado, anillo al otro). */
   padding: clamp(4rem, 9vw, 7rem) 2rem 1.5rem;
-  /* el anillo se sale de su caja al girar y no debe empujar scroll lateral */
+  /* las etiquetas de las esferas asoman de su caja y no deben empujar
+     scroll lateral */
   overflow-x: clip;
 }
 
@@ -35,6 +36,15 @@
   max-width: var(--content-max);
   margin: 0 auto;
   display: grid;
+  /*
+   * `minmax(0, 1fr)` y no la columna implícita (`auto`): una columna `auto`
+   * se agranda hasta el contenido más ancho y NO la recorta el ancho del
+   * padre. El área de esferas mide 380px de fijo, así que en un móvil de
+   * 375 empujaba la columna a 380 y se llevaba por delante el titular. Con
+   * el 1fr la pista mide lo que la banda, y ahí sí el `max-width: 100%` del
+   * área la encoge.
+   */
+  grid-template-columns: minmax(0, 1fr);
   gap: 3rem;
   align-items: center;
   justify-items: center;
@@ -44,13 +54,13 @@
 
 /*
  * lg — la composición de la referencia: el texto ocupa la columna izquierda
- * y el anillo se planta a la derecha. `auto` en la segunda columna para que
- * el anillo pida lo que mide y el titular se quede con el resto.
+ * y las esferas se plantan a la derecha. `auto` en la segunda columna para
+ * que el área pida lo que mide y el titular se quede con el resto.
  *
- * El corte va en 64rem y no en el md de siempre (48rem) porque el anillo
- * mide 416px y no se encoge hasta que 62vw baja de 340: en una tablet de
- * 768px las dos columnas dejaban 256px para un titular de 40px, o sea tres
- * líneas de una palabra. Hasta 1024px es mejor el bloque centrado.
+ * El corte va en 64rem y no en el md de siempre (48rem) porque el área mide
+ * 380px: en una tablet de 768px, quitando el padding y el hueco, al titular
+ * le quedaban ~290px para un cuerpo de 40px, o sea tres líneas de una
+ * palabra. Hasta 1024px es mejor el bloque centrado.
  */
 @media (width >=64rem) {
   .inner {
@@ -165,8 +175,8 @@
   translate: 0.2rem 0;
 }
 
-/* el anillo ya trae su propia caja calculada; aquí solo se centra */
-.ring {
+/* el área ya trae su propia caja calculada; aquí solo se centra */
+.orbs {
   justify-self: center;
 }
 

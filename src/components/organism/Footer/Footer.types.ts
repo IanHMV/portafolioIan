@@ -2,9 +2,9 @@ import type { HeadingProps } from "../../atoms/Heading/Heading.types"
 import type { TextProps } from "../../atoms/Text/Text.types"
 import type { ImageProps } from "../../atoms/Image/Image.types"
 import type {
-  SocialRingItems,
-  SocialRingProps,
-} from "../../molecules/SocialRing/SocialRing.types"
+  SocialOrbItems,
+  SocialOrbsProps,
+} from "../../molecules/SocialOrbs/SocialOrbs.types"
 
 export interface FooterLink {
   label: string
@@ -26,16 +26,16 @@ export interface FooterProps {
   /** Enlaces rápidos a las secciones de la página */
   links?: FooterLink[]
   /**
-   * Redes del anillo. Se reparten en ángulos iguales y la lista se repite
-   * hasta llenarlo (ver `minBadges` en SocialRing).
+   * Redes del área de esferas. Una esfera por red, sin repetir: salen
+   * ordenadas y a partir de ahí las mueve quien visita la página.
    */
-  social: SocialRingItems
+  social: SocialOrbItems
   /**
-   * Ajustes visuales del anillo: todo lo de `SocialRing` menos los datos
-   * (`items`) y lo que decide el propio Footer (`ariaLabel`, `className`).
-   * Lo que no pases se queda en el default del componente.
+   * Ajustes del área: todo lo de `SocialOrbs` menos los datos (`items`) y
+   * lo que decide el propio Footer (`ariaLabel`, `className`). Lo que no
+   * pases se queda en el default del componente.
    */
-  ring?: Omit<SocialRingProps, "items" | "ariaLabel" | "className">
+  orbs?: Omit<SocialOrbsProps, "items" | "ariaLabel" | "className">
   /** Línea inferior — ej. "© 2026 Ian Martinez" */
   copyright: string
 }
