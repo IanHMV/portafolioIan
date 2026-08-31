@@ -298,7 +298,7 @@ export const footer: FooterProps = {
   ],
   // El disco se parte en tantas porciones como redes haya aquí.
   social: [
-    { id: "gmail", href: "mailto:ianvazquez418@gmail.com", label: "Gmail" },
+    { id: "gmail", href: "mailto:ianhmv418@gmail.com", label: "Gmail" },
     { id: "github", href: "https://github.com/IanHMV", label: "GitHub" },
     { id: "linkedin", href: "https://www.linkedin.com/in/ianhmv/", label: "LinkedIn" },
   ],
