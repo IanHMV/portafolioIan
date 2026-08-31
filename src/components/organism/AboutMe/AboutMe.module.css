@@ -1,81 +1,307 @@
-/* Chrome's scroll anchoring tries to "follow" the sliding track and yanks
-   the page scroll when the transition ends; opt this section out of it. */
+/*
+ * About Me — tarjeta de tinta plateada.
+ *
+ * Adaptación de la tarjeta "lazy-shrimp-49" de Javier Roca (uiverse.io,
+ * licencia MIT): cuerpo oscuro, contorno metido hacia dentro, dos manchas
+ * desenfocadas que se apartan al pasar el ratón y un giro sobre la esquina
+ * inferior derecha que descubre la placa de detrás.
+ *
+ * Único cambio de fondo respecto al original: allí todo el acento es azul
+ * cielo (sky-400/700) y aquí se pinta con --color-ink / --color-ink-dim, la
+ * MISMA tinta con la que está escrito el título del hero. Así la sección no
+ * introduce ningún color nuevo y el sitio se lee como una sola paleta.
+ */
+
 .section {
+  /* La tarjeta gira unos grados y se sale de su caja: sin esto podría
+     asomar una barra de scroll horizontal en pantallas estrechas. */
+  overflow-x: clip;
+  /* Chrome intenta "seguir" el contenido que se mueve y da un tirón al
+     scroll cuando termina la transición; esta sección se sale de eso. */
   overflow-anchor: none;
 }
 
-/* Entrance: the card rests lower, smaller and shadowless; when the section
-   comes into view it "lifts off" the page while its shadow grows beneath.
-   Lives on a wrapper so this slow transition never fights the fast tilt. */
-.lift {
-  transform: translateY(3.5rem) scale(0.95);
+/* ── Placa: el respaldo de color ─────────────────────────────────────── */
+/* En el original es un rectángulo azul del mismo tamaño que la tarjeta, que
+   solo asoma cuando esta gira. Aquí hace lo mismo con la tinta plateada y,
+   de paso, aporta el halo que despega el conjunto del fondo de la página. */
+
+.plate {
+  position: relative;
+  width: 100%;
+  max-width: 64rem;
+  border-radius: 1.75rem;
+  background: linear-gradient(150deg,
+      color-mix(in srgb, var(--color-ink) 38%, var(--color-surface)) 0%,
+      color-mix(in srgb, var(--color-ink-dim) 55%, var(--color-surface)) 52%,
+      color-mix(in srgb, var(--color-ink) 10%, var(--color-surface)) 100%);
+  box-shadow:
+    0 30px 60px -30px rgba(0, 0, 0, 0.9),
+    0 0 70px -25px color-mix(in srgb, var(--color-ink) 30%, transparent);
+
+  /* Entrada: la placa descansa más abajo y algo encogida; cuando la sección
+     asoma, sube a su sitio. Va en el envoltorio y no en la tarjeta para que
+     esta transición lenta no pelee con el giro rápido del hover. */
+  transform: translateY(3.5rem) scale(0.96);
   opacity: 0;
   will-change: transform, opacity;
   transition:
     transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.9s ease,
-    box-shadow 0.9s ease;
+    opacity 0.9s ease;
 }
 
-.liftRaised {
+.plateRaised {
   transform: translateY(0) scale(1);
   opacity: 1;
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.8),
-    0 45px 90px -20px rgba(0, 0, 0, 0.55);
 }
 
-/* Floating "detached from the screen" card: subtle 3D tilt driven by
-   --tilt-x / --tilt-y (set from pointer moves). */
+/* ── Tarjeta ─────────────────────────────────────────────────────────── */
+
 .card {
-  height: min(82svh, 44rem);
-  transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform 0.3s ease-out;
-  will-change: transform;
-}
-
-/* Two stacked full-height slides; moving the track -100% reveals slide 2. */
-.track {
-  height: 100%;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.trackDown {
-  transform: translateY(-100%);
-}
-
-.slide {
   position: relative;
-  height: 100%;
+  display: grid;
+  min-height: min(78svh, 40rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border-radius: 1.75rem;
+  background: var(--color-surface-2);
+  /* Contorno metido hacia dentro (`-outline-offset` del original): dibuja un
+     segundo marco fino por dentro del borde, que es lo que le da el aire de
+     ficha impresa. */
+  outline: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+  outline-offset: -0.9rem;
+  /* Recorta las manchas desenfocadas contra el borde de la tarjeta. */
   overflow: hidden;
+  /* Gira desde la esquina inferior derecha, igual que el original. 1.2° y no
+     12°: a este tamaño doce grados tumbarían media pantalla. */
+  transform-origin: bottom right;
+  transition: transform 0.5s ease;
 }
 
-.coverOverlay {
+/* ── Manchas desenfocadas ────────────────────────────────────────────── */
+/* Los dos halos del original (::before y ::after). Aquí son elementos de
+   verdad porque los pseudoelementos ya no caben: el contenido de la tarjeta
+   cambia de una vista a otra y necesitábamos poder ponerlos por detrás. */
+
+.blob {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.3),
-      rgba(0, 0, 0, 0.12) 45%,
-      rgba(0, 0, 0, 0.55));
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.6s ease;
 }
 
-.navButton {
+.blobTop {
+  top: 10%;
+  right: 8%;
+  width: clamp(6rem, 16vw, 11rem);
+  aspect-ratio: 1;
+  background: color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+
+.blobBottom {
+  bottom: 8%;
+  left: 6%;
+  width: clamp(7rem, 20vw, 14rem);
+  aspect-ratio: 1;
+  background: color-mix(in srgb, var(--color-ink-dim) 55%, transparent);
+}
+
+/* Solo donde hay puntero de verdad. En una pantalla táctil el `:hover` se
+   queda pegado después de tocar y la tarjeta se quedaba torcida hasta que
+   tocabas en otro sitio. */
+@media (hover: hover) {
+  .card:hover {
+    transform: rotate(1.2deg);
+  }
+
+  .card:hover .blobTop {
+    transform: translate(-5rem, 3rem);
+  }
+
+  .card:hover .blobBottom {
+    transform: translate(6rem, -2rem);
+  }
+}
+
+/* ── Escenario: las dos vistas ───────────────────────────────────────── */
+
+.stage {
+  position: relative;
+  /* por encima de las manchas */
+  z-index: 1;
+  display: grid;
+  align-items: center;
+}
+
+/* Las dos vistas ocupan la MISMA celda de la rejilla: así la tarjeta mide
+   siempre lo que mide la más alta y no pega un salto al cambiar de una a
+   otra, que es justo lo que rompe un fundido cruzado. */
+.stage>* {
+  grid-area: 1 / 1;
+}
+
+.view {
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s ease;
+}
+
+/* El rótulo se va hacia arriba desenfocándose... */
+.coverHidden {
+  opacity: 0;
+  transform: translateY(-1.5rem) scale(0.97);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* ...y la presentación entra desde abajo, ocupando el hueco que deja. */
+.infoHidden {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* ── Vista 1: el rótulo ──────────────────────────────────────────────── */
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  /* referencia para las unidades cqw de las iniciales: se miden contra el
+     ancho de la tarjeta, no contra el de la ventana */
+  container-type: inline-size;
+}
+
+/* Monograma. Mismo degradado que el título del hero —claro arriba, apagado
+   abajo— para que las dos piezas grandes del sitio compartan acabado. */
+.initials {
+  font-size: clamp(4rem, 26cqw, 14rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: transparent;
+  background-image: linear-gradient(180deg, var(--color-ink) 0%, var(--color-ink-dim) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  user-select: none;
+}
+
+.role {
+  font-size: clamp(1rem, 4cqw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-ink);
+}
+
+/* ── Vista 2: la presentación ────────────────────────────────────────── */
+
+.info {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  text-align: left;
+}
+
+.infoHeading {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: transparent;
+  background-image: linear-gradient(180deg,
+      var(--color-ink) 0%,
+      color-mix(in srgb, var(--color-ink-dim) 65%, var(--color-ink)) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* El texto corrido no va en tinta plena: se mezcla con el fondo hasta un
+   gris plata que sigue pasando de sobra el contraste AA y no deslumbra en
+   párrafos largos. */
+.paragraph {
+  color: color-mix(in srgb, var(--color-ink) 68%, var(--color-surface));
+  line-height: 1.7;
+}
+
+/* El retrato solo aparece cuando hay dos columnas: apilado bajo el texto
+   empujaba la tarjeta hasta el doble de alto. */
+.portrait {
+  display: none;
+}
+
+.portraitImg {
+  width: 100%;
+  max-width: 20rem;
+  max-height: 24rem;
+  object-fit: cover;
+  border-radius: 1rem;
+  /* Marco de la misma tinta, muy rebajado: la foto se apoya en el contorno
+     de la tarjeta en vez de flotar suelta encima. */
+  border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+  box-shadow: 0 25px 50px -20px rgba(0, 0, 0, 0.75);
+}
+
+@media (width >=48rem) {
+  .info {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3rem;
+  }
+
+  .portrait {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* ── Botón de cambio de vista ────────────────────────────────────────── */
+/* El cambio automático es una cortesía, no una cárcel: con este botón se
+   puede adelantar o volver al rótulo en cualquier momento. */
+
+.toggle {
   position: absolute;
+  right: clamp(1rem, 3vw, 2.25rem);
+  bottom: clamp(1rem, 3vw, 2.25rem);
+  z-index: 2;
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
-  color: white;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
   backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.navButton:hover {
-  background: rgba(0, 0, 0, 0.6);
+.toggle:hover {
+  background: color-mix(in srgb, var(--color-ink) 16%, transparent);
+  border-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+/* La flecha mira abajo mientras se ve el rótulo (lleva a la presentación) y
+   arriba cuando ya está abierta. */
+.toggleUp {
+  transform: rotate(180deg);
 }
 
 @keyframes nudge {
@@ -94,21 +320,35 @@
   animation: nudge 2.2s ease-in-out infinite;
 }
 
+/* ── Sin movimiento ──────────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
 
+  .plate,
   .card,
-  .track,
-  .lift {
+  .view,
+  .blob {
     transition: none;
   }
 
-  /* Without motion the card simply appears in its final, lifted state. */
-  .lift {
+  /* Sin animación la placa aparece directamente en su sitio. */
+  .plate {
     transform: none;
     opacity: 1;
-    box-shadow:
-      0 25px 50px -12px rgba(0, 0, 0, 0.8),
-      0 45px 90px -20px rgba(0, 0, 0, 0.55);
+  }
+
+  @media (hover: hover) {
+    .card:hover {
+      transform: none;
+    }
+  }
+
+  /* El desenfoque también es movimiento percibido: la vista oculta se va
+     sin más, sin arrastre ni borrón. */
+  .coverHidden,
+  .infoHidden {
+    transform: none;
+    filter: none;
   }
 
   .bounce {

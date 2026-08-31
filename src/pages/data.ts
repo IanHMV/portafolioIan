@@ -35,19 +35,15 @@ export const hero: HeroSectionProps = {
 
 export const aboutMe: AboutMeProps = {
   id: "about",
-  coverImage: {
-    src: "/img/space.webp",
-    alt: "Scenic cover for the about me section",
-  },
-  coverTitle: {
-    children: "About Me",
-    size: "text-5xl",
-    className: "sm:text-6xl md:text-7xl",
+  // Rótulo de la tarjeta: es lo primero que se ve y se desvanece solo al
+  // llegar a la sección. Los tamaños no se tocan aquí — el CSS los calcula
+  // contra el ancho de la tarjeta.
+  cover: {
+    initials: "IM",
+    role: "Frontend developer",
   },
   heading: {
     children: "Hi, I'm Ian",
-    size: "text-3xl",
-    className: "md:text-4xl",
   },
   paragraphs: [
     "I'm a frontend developer passionate about building interfaces that feel effortless: clean layouts, thoughtful motion and details that make people want to stay.",
