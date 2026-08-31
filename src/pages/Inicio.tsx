@@ -4,11 +4,18 @@ import ProjectSection from "../components/organism/ProjectSection/ProjectSection
 import ExperienceSection from "../components/organism/ExperienceSection/ExperienceSection";
 import SkillsSection from "@/components/organism/SkillsSection/SkillsSection";
 import Footer from "@/components/organism/Footer/Footer";
-import { hero, aboutMe, projectSection, experienceSection, skillSection, footer } from "./data";
+import Navbar from "@/components/organism/Navbar/Navbar";
+import { navbar, hero, aboutMe, projectSection, experienceSection, skillSection, footer } from "./data";
 
 const Inicio = () => {
   return (
     <>
+      {/* Va el primero del documento aunque en pantalla flote encima de
+          todo: así es lo primero que encuentra el tabulador y lo primero
+          que anuncia un lector de pantalla, que es lo que se espera de la
+          navegación de un sitio. Dónde se pinta lo decide su CSS. */}
+      <Navbar {...navbar} />
+
       <HeroSection {...hero} />
 
       <AboutMe {...aboutMe} />

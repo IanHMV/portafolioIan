@@ -160,6 +160,43 @@ body {
 }
 
 /*
+ * ── SITIO PARA EL DOCK ───────────────────────────────────────────────
+ *
+ * La barra de navegación flota fija sobre la página (abajo en móvil, arriba
+ * en escritorio), así que tapa una franja de contenido en cada extremo.
+ * Estas dos reglas son las dos consecuencias de eso, y viven aquí y no en
+ * Navbar.module.css porque las sufre el DOCUMENTO, no el componente.
+ *
+ * 1. En móvil el dock se planta sobre el final de la página: sin este
+ *    colchón, la línea del copyright del footer queda debajo del cristal y
+ *    no hay forma de leerla — el scroll ya no da más de sí.
+ */
+@media (width < 48rem) {
+  body {
+    /* alto del dock (~3rem) + el vuelo de la lente + su separación del
+       borde + el hueco de la barra de gestos del iPhone */
+    padding-bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/*
+ * 2. En escritorio el dock está arriba, y `scroll-behavior: smooth` deja el
+ *    borde superior de la sección justo donde él flota: el rótulo de la
+ *    sección a la que acabas de saltar aparecía tapado. `scroll-margin-top`
+ *    le dice al navegador que frene antes — es el ajuste que existe
+ *    precisamente para las cabeceras fijas, y no mueve nada del layout.
+ */
+@media (width >=48rem) {
+
+  section[id],
+  footer[id] {
+    /* separación del borde + alto del dock + el vuelo de la lente: la
+       sección arranca justo por debajo del cristal, no debajo de él */
+    scroll-margin-top: 6.5rem;
+  }
+}
+
+/*
  * Salta por completo el layout y el pintado de las secciones que están fuera
  * de la pantalla. El navegador solo trabaja en lo que se ve, y como efecto
  * secundario pausa las animaciones `infinite` de SkillsSection y SocialDial
