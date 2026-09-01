@@ -10,7 +10,31 @@
   }
 }
 
+@keyframes sheetItemIn {
+  from {
+    opacity: 0;
+    translate: 0 -10px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 /*
+ * ── DOS NAVEGACIONES, UN COMPONENTE ──────────────────────────────────
+ *
+ * Por debajo de 48rem manda el MENÚ HAMBURGUESA: un botón fijo arriba a la
+ * izquierda y un panel que baja desde el filo superior. De 48rem para
+ * arriba manda el DOCK: la píldora flotante con la lente.
+ *
+ * El corte lo lleva entero el CSS y no un `useMediaQuery`, por lo mismo que
+ * el resto del sitio: el navegador ya sabe cuál de los dos toca antes del
+ * primer pintado, y montarlo desde JS haría aparecer el que no era durante
+ * un fotograma. Del breakpoint el componente solo sabe una cosa
+ * (DESKTOP_QUERY, para cerrar el menú si la ventana crece con él abierto).
+ *
  * ── LA BANDA QUE FIJA EL DOCK ────────────────────────────────────────
  *
  * El centrado NO se hace con `left: 50%` + `translate: -50%`, que es lo
@@ -33,12 +57,16 @@
   pointer-events: none;
 
   /*
-   * ABAJO EN MÓVIL. No es copiar la referencia por copiarla: el pulgar
-   * llega al tercio inferior de la pantalla y no al superior, y esa es la
-   * única zona de un teléfono en la que una barra fija no estorba al leer.
-   * `env(safe-area-inset-bottom)` la sube por encima de la barra de gestos
-   * del iPhone; en cualquier otro sitio el valor de reserva es 0px y no
-   * cambia nada.
+   * ABAJO EN MÓVIL — APARCADO. El dock ya no se pinta por debajo de 48rem
+   * (ver `.dock` más abajo): allí la navegación es la hamburguesa. La
+   * regla se conserva porque es la única memoria de cómo se colocaba, y
+   * devolver el dock al móvil es volver a encenderlo, no reinventarlo.
+   *
+   * Lo que decía: el pulgar llega al tercio inferior de la pantalla y no
+   * al superior, y esa es la única zona de un teléfono en la que una barra
+   * fija no estorba al leer. `env(safe-area-inset-bottom)` la sube por
+   * encima de la barra de gestos del iPhone; en cualquier otro sitio el
+   * valor de reserva es 0px y no cambia nada.
    *
    * La separación se mide contra la LENTE, no contra la píldora: la lente
    * sobresale --lens-over-y por debajo, así que sin sumarlo aquí el cristal
@@ -131,6 +159,29 @@
   --dock-ink-dim: color-mix(in srgb, var(--color-ink) 62%, var(--color-surface));
   --dock-face: color-mix(in srgb, var(--color-surface-2) 82%, transparent);
   --dock-line: color-mix(in srgb, var(--color-ink) 12%, transparent);
+
+  /* ── medidas del menú de móvil ─────────────────────────────────────
+   *
+   * Están aquí arriba, con las del dock, porque las tres se sostienen
+   * entre sí: el panel se abre justo por debajo del botón, y ese hueco es
+   * la suma de las dos primeras. Cambiar el tamaño del botón recoloca el
+   * panel solo.
+   */
+
+  /* 2.75rem = 44px, el mínimo de zona táctil que fija la WCAG (2.5.5) y
+     el tamaño que recomienda Apple en su guía de interfaz. Por debajo de
+     ahí el dedo empieza a fallar el toque. */
+  --burger-size: 2.75rem;
+  /* Cuánto se separa el botón de las dos esquinas. Mismo aire por arriba
+     que por la izquierda: el botón es redondo, y con separaciones
+     distintas la esquina se lee torcida. */
+  --burger-inset: 1rem;
+  /* `env(safe-area-inset-top)` baja el botón por debajo de la muesca y de
+     la barra de estado en un iPhone; en todo lo demás vale 0px. */
+  --burger-top: calc(var(--burger-inset) + env(safe-area-inset-top, 0px));
+  /* Aire entre el pie del botón y el primer ítem de la lista */
+  --sheet-gap: 0.85rem;
+  --sheet-radius: 1.5rem;
 }
 
 /*
@@ -373,18 +424,439 @@
 }
 
 /*
+ * ═══ EL MENÚ DE MÓVIL ════════════════════════════════════════════════
+ *
+ * Tres piezas independientes, cada una con su `position: fixed`: el botón
+ * (arriba a la izquierda), el velo (toda la ventana) y el panel (baja
+ * desde el filo superior). No cuelgan de `.navbar` para colocarse porque
+ * esa banda tiene su propio sitio —el del dock— y heredarlo obligaría a
+ * deshacerlo tres veces.
+ *
+ * `.navbar` no lleva `transform` ni `filter`, así que un hijo `fixed` se
+ * ancla a la VENTANA y no a ella. Es la condición que hace que esto
+ * funcione: si algún día se le añade una de las dos, las tres piezas se
+ * quedarían encerradas dentro de la banda.
+ */
+
+/*
+ * ── EL BOTÓN ─────────────────────────────────────────────────────────
+ *
+ * Arriba a la izquierda, que es el rincón que el pulgar alcanza peor pero
+ * el ojo primero. Se sostiene porque el botón no se usa mientras se lee:
+ * se toca una vez para abrir, y a partir de ahí lo que hay bajo el pulgar
+ * es la lista, que sí cae en la mitad cómoda de la pantalla.
+ *
+ * Misma materia que el dock (cristal esmerilado, borde de luz, sombra
+ * larga): es la misma navegación en otra forma, no otro componente.
+ */
+.burger {
+  position: fixed;
+  top: var(--burger-top);
+  left: var(--burger-inset);
+  /* por encima del panel: el aspa tiene que seguir viéndose sobre él para
+     que cerrar sea el mismo gesto que abrir, en el mismo sitio */
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--burger-size);
+  height: var(--burger-size);
+  padding: 0;
+  border: 1px solid var(--dock-line);
+  border-radius: 999px;
+  background: var(--dock-face);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow:
+    0 16px 36px -20px rgb(0 0 0 / 0.95),
+    inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent);
+  color: var(--dock-ink);
+  cursor: pointer;
+  pointer-events: auto;
+  /* el destello gris de Android no pinta nada aquí: el dedo tapa el botón
+     entero y la respuesta la da el panel al bajar */
+  -webkit-tap-highlight-color: transparent;
+  animation: dockIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.burger:focus-visible {
+  outline: 2px solid var(--dock-ink);
+  outline-offset: 2px;
+}
+
+/* Igual que la píldora: sin desenfoque de fondo el texto de la página se
+   vería moverse por debajo del botón. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .burger {
+    background: color-mix(in srgb, var(--color-surface-2) 97%, var(--color-ink));
+  }
+}
+
+/*
+ * Las tres barras. Se colocan en absoluto dentro de una caja de altura
+ * conocida —y no apiladas con `flex` + `gap`— porque el aspa se dibuja
+ * moviéndolas al CENTRO de esa caja: con una posición conocida, "al
+ * centro" es una resta, y no un número mágico que habría que recalcular
+ * cada vez que cambie el grosor o la separación.
+ */
+.bars {
+  --bar-h: 1.5px;
+  /* la caja de las tres barras: su alto es el que usan las dos de fuera
+     para calcular cuánto tienen que bajar o subir hasta el centro */
+  --bars-h: calc(3 * var(--bar-h) + 0.4rem);
+
+  position: relative;
+  display: block;
+  width: 1.05rem;
+  height: var(--bars-h);
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: var(--bar-h);
+  border-radius: 999px;
+  background: currentColor;
+  /*
+   * `translate` y `rotate` como propiedades sueltas, no como un `transform`
+   * compuesto: el navegador las aplica en orden (primero mueve, después
+   * gira), así que cada barra gira sobre SU centro ya colocado en el medio
+   * de la caja. Con `transform: translateY() rotate()` daría lo mismo,
+   * pero separadas se pueden animar y leer de una en una.
+   */
+  transition:
+    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    rotate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+
+.bar:nth-child(1) {
+  top: 0;
+}
+
+.bar:nth-child(2) {
+  top: calc(50% - var(--bar-h) / 2);
+}
+
+.bar:nth-child(3) {
+  top: calc(100% - var(--bar-h));
+}
+
+/*
+ * Abierto: las dos de fuera se juntan en el centro y se cruzan; la de en
+ * medio se apaga. La distancia que recorren es "hasta el centro de la
+ * caja", escrita como tal — si mañana cambia la altura de `.bars`, el aspa
+ * sigue cerrando.
+ */
+.navbar[data-open="true"] .bar:nth-child(1) {
+  /* del borde de arriba al centro de la caja */
+  translate: 0 calc(var(--bars-h) / 2 - var(--bar-h) / 2);
+  rotate: 45deg;
+}
+
+.navbar[data-open="true"] .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar[data-open="true"] .bar:nth-child(3) {
+  /* la misma distancia, en sentido contrario */
+  translate: 0 calc(var(--bar-h) / 2 - var(--bars-h) / 2);
+  rotate: -45deg;
+}
+
+/*
+ * ── EL VELO ──────────────────────────────────────────────────────────
+ *
+ * Apaga la página de detrás para que el menú no compita con ella, y es la
+ * zona de "tocar fuera para cerrar".
+ *
+ * `visibility` va en la transición junto a `opacity`, con retardo igual a
+ * la duración al cerrar y cero al abrir: así el velo desaparece del todo
+ * cuando termina de desvanecerse, en vez de quedarse como una lámina
+ * transparente que se come los toques de la página.
+ */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /*
+   * El velo tapa la ventana entera, así que arrastrar el dedo sobre él
+   * seguiría desplazando la página de detrás. Se bloquea aquí y NO con un
+   * `overflow: hidden` en el <body>, que es lo habitual, por una razón
+   * concreta: al tocar un enlace del menú el salto del ancla lo hace el
+   * navegador justo después del clic, y si en ese instante el <body>
+   * todavía tuviera el scroll bloqueado el salto se perdería.
+   */
+  touch-action: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+
+/*
+ * ── POR QUÉ EL DESENFOQUE VIVE AQUÍ Y NO EN LA REGLA BASE ────────────
+ *
+ * Porque `backdrop-filter` NO respeta ni `opacity: 0` ni
+ * `visibility: hidden`: el navegador filtra lo que hay detrás del
+ * elemento aunque el elemento no se pinte. Declarado en `.scrim` a secas,
+ * el velo cerrado desenfocaba la página entera de forma permanente — el
+ * sitio se veía apagado y con la tipografía blanda desde el primer
+ * momento, sin que hubiera ningún menú abierto.
+ *
+ * Encenderlo solo con el menú abierto lo arregla, y de paso ahorra tener
+ * un filtro a pantalla completa activo todo el rato, que es de lo más caro
+ * que se le puede pedir a un teléfono.
+ *
+ * El mismo motivo está detrás del desenfoque del panel, unas reglas más
+ * abajo: no toques ninguno de los dos sin leer esto.
+ */
+.navbar[data-open="true"] .scrim {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  transition:
+    opacity 0.3s ease,
+    visibility 0s;
+}
+
+/*
+ * ── EL PANEL ─────────────────────────────────────────────────────────
+ *
+ * Baja desde el filo superior y se queda colgando de él: sin esquinas
+ * arriba y redondeado abajo, para que se lea como una lámina que ASOMA
+ * desde fuera de la pantalla y no como una tarjeta que aparece flotando.
+ *
+ * El relleno de arriba es lo que le hace sitio al botón, que queda posado
+ * encima. Es la suma de dónde empieza el botón, cuánto mide y el aire de
+ * después, así que el primer ítem nunca se le mete debajo por mucho que
+ * crezca la muesca del teléfono.
+ */
+.sheet {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: 1;
+  padding:
+    calc(var(--burger-top) + var(--burger-size) + var(--sheet-gap)) 0.75rem
+    calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--dock-line);
+  border-top: none;
+  border-radius: 0 0 var(--sheet-radius) var(--sheet-radius);
+  background: var(--dock-face);
+  box-shadow:
+    0 24px 48px -24px rgb(0 0 0 / 0.95),
+    inset 0 -1px 0 color-mix(in srgb, #fff 5%, transparent);
+  pointer-events: auto;
+
+  /* Salvavidas: seis ítems caben de sobra, pero con la letra del sistema
+     muy grande o en un teléfono apaisado el panel podría pasarse de alto.
+     `100dvh` cuenta con las barras del navegador; `contain` evita que el
+     rebote al final de la lista arrastre la página de detrás. */
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  opacity: 0;
+  translate: 0 -100%;
+  visibility: hidden;
+  transition:
+    translate 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease,
+    visibility 0s linear 0.38s;
+}
+
+/* El desenfoque, aquí y no en `.sheet`, por lo explicado en el velo:
+   `backdrop-filter` se aplica aunque el elemento esté oculto, y el panel
+   cerrado vive fuera de la pantalla por arriba. */
+.navbar[data-open="true"] .sheet {
+  opacity: 1;
+  translate: 0 0;
+  visibility: visible;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  transition:
+    translate 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease,
+    visibility 0s;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sheet {
+    background: color-mix(in srgb, var(--color-surface-2) 97%, var(--color-ink));
+  }
+}
+
+.sheetList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Los ítems no entran todos a la vez: cada uno arranca un pelo después
+ * que el anterior. No es adorno — el escalonado dibuja el orden de la
+ * lista, y el ojo lo lee de arriba abajo en lugar de encontrarse seis
+ * filas de golpe.
+ *
+ * Se hace con una animación y no con una transición porque solo interesa
+ * a la IDA: al cerrar, el panel entero sube de una pieza y un escalonado
+ * de salida solo alargaría el gesto.
+ */
+.sheetSlot {
+  /* Su turno, que llega desde el componente. El 0 es el valor de reserva:
+     sin él el `calc` sería inválido y el navegador tiraría la regla. */
+  --i: 0;
+  opacity: 0;
+}
+
+.navbar[data-open="true"] .sheetSlot {
+  animation: sheetItemIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) calc(80ms + var(--i) * 45ms) both;
+}
+
+/*
+ * La fila. Alta (3rem) y a todo el ancho del panel a propósito: en un
+ * menú de móvil el blanco que rodea al texto es zona de toque, y una fila
+ * que ocupa el ancho entero no se puede fallar.
+ */
+.sheetItem {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 3rem;
+  padding-inline: 0.85rem;
+  border-radius: 0.9rem;
+  color: var(--dock-ink-dim);
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sheetItem:hover {
+  color: var(--dock-ink);
+}
+
+.sheetItem:focus-visible {
+  outline: 2px solid var(--dock-ink);
+  outline-offset: -2px;
+}
+
+/*
+ * El ítem activo lleva la MISMA materia que la lente del dock: el mismo
+ * velo de tinta más denso arriba y abajo, el mismo filo de luz. Es la
+ * traducción de la lente a una lista — allí el cristal se desliza entre
+ * iconos, aquí se queda quieto sobre la fila en la que estás.
+ *
+ * El borde va como `box-shadow: inset` y no como `border` para no sumar
+ * 2px al alto de la fila: si lo hiciera, la fila activa mediría distinto
+ * que las demás y la lista daría un salto al cambiar de sección.
+ */
+.sheetSlot[data-active="true"] .sheetItem {
+  color: var(--dock-ink);
+  background: linear-gradient(180deg,
+      color-mix(in srgb, var(--color-ink) 12%, transparent) 0%,
+      color-mix(in srgb, var(--color-ink) 4%, transparent) 45%,
+      color-mix(in srgb, var(--color-ink) 10%, transparent) 100%);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 16%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent);
+}
+
+.sheetIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.sheetLabel {
+  font-size: 0.975rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+/*
  * El sistema pide menos movimiento: la lente sigue marcando dónde está el
- * usuario, pero aparece en su sitio en vez de viajar hasta él.
+ * usuario, pero aparece en su sitio en vez de viajar hasta él. En el menú,
+ * lo mismo: el panel sigue apareciendo y desapareciendo —hace falta saber
+ * que se ha abierto— pero sin deslizarse ni escalonar las filas.
  */
 @media (prefers-reduced-motion: reduce) {
-  .dock {
+
+  .dock,
+  .burger {
     animation: none;
   }
 
   .lens,
   .icon,
   .label,
-  .item {
+  .item,
+  .bar,
+  .sheetItem {
     transition-duration: 1ms;
+  }
+
+  .navbar[data-open="true"] .sheetSlot {
+    animation-duration: 1ms;
+    animation-delay: 0s;
+  }
+
+  .scrim,
+  .sheet,
+  .navbar[data-open="true"] .scrim,
+  .navbar[data-open="true"] .sheet {
+    transition:
+      opacity 1ms,
+      visibility 0s;
+  }
+
+  .sheet {
+    translate: 0 0;
+  }
+}
+
+/*
+ * ═══ EL RELEVO ═══════════════════════════════════════════════════════
+ *
+ * Las dos únicas reglas que deciden cuál de las dos navegaciones se ve.
+ * Van juntas, y no repartidas por el archivo, para que se lea de un
+ * vistazo que son excluyentes: nunca hay dos menús a la vez.
+ *
+ * Y van LAS ÚLTIMAS del archivo por una razón que cuesta un rato
+ * descubrir: una consulta de medios NO añade especificidad. `.dock` dentro
+ * de un `@media` y `.dock` a secas pesan lo mismo, así que entre las dos
+ * gana la que esté más abajo. Puestas arriba, el `display: flex` de la
+ * píldora anulaba este `display: none` y el dock seguía saliendo en el
+ * móvil, debajo del menú.
+ *
+ * `display: none` y no `visibility` ni `opacity`: lo que sobra tiene que
+ * salir también del tabulador y del árbol de accesibilidad. Un dock
+ * invisible pero enfocable serían seis paradas fantasma antes de llegar al
+ * contenido.
+ */
+@media (width < 48rem) {
+  .dock {
+    display: none;
+  }
+}
+
+@media (width >=48rem) {
+
+  .burger,
+  .scrim,
+  .sheet {
+    display: none;
   }
 }

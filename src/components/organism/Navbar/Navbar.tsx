@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from "react";
 import styles from "./Navbar.module.css";
 import type { NavbarProps } from "./Navbar.types";
 import { NAV_ICONS } from "./navbar.icons";
+import type { NavIconId } from "./navbar.icons";
 
 /*
  * Banda de vigilancia del observador. Los dos números recortan la ventana
@@ -16,18 +17,65 @@ import { NAV_ICONS } from "./navbar.icons";
  */
 const SPY_BAND = "-45% 0px -50% 0px";
 
+/*
+ * El mismo corte que usa la hoja de estilos para cambiar de hamburguesa a
+ * dock, y que el resto del sitio llama `md`. Aquí hace falta porque el JS
+ * tiene que enterarse de UNA cosa que el CSS no puede arreglar solo: si el
+ * menú se queda abierto y la ventana crece hasta escritorio, el panel
+ * desaparece por CSS pero el estado seguiría en "abierto", y al volver a
+ * móvil reaparecería sin que nadie lo haya pedido.
+ *
+ * Va en rem, igual que el media query: las unidades rem de una consulta de
+ * medios se miden siempre contra el tamaño de letra INICIAL del navegador,
+ * así que los dos cortes caen exactamente en el mismo punto incluso para
+ * quien haya subido la letra por accesibilidad.
+ */
+const DESKTOP_QUERY = "(min-width: 48rem)";
+
+/* El mismo dibujo sirve para el dock y para el panel de móvil: entre los
+   dos solo cambia el tamaño, y eso lo pone la clase. */
+const NavIcon = ({ id, className }: { id: NavIconId; className: string }) => (
+  <svg
+    aria-hidden="true"
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.7"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {NAV_ICONS[id].map((path) => (
+      <path key={path} d={path} />
+    ))}
+  </svg>
+);
+
 const Navbar = ({
   items,
   ariaLabel = "Secciones del sitio",
   defaultIndex = 0,
+  openMenuLabel = "Abrir menú",
+  closeMenuLabel = "Cerrar menú",
   className = "",
 }: NavbarProps) => {
   const [active, setActive] = useState(
     defaultIndex >= 0 && defaultIndex < items.length ? defaultIndex : 0
   );
 
+  /* Solo tiene sentido por debajo de 48rem: de ahí para arriba el botón y
+     el panel están en `display: none` y quien manda es el dock. */
+  const [open, setOpen] = useState(false);
+
   const dockRef = useRef<HTMLUListElement>(null);
   const slotRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const burgerRef = useRef<HTMLButtonElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  /* El botón anuncia con `aria-controls` QUÉ abre, así que el panel
+     necesita un id propio y estable aunque haya dos navbars en la misma
+     página (la del sitio y la de una historia de Storybook, por ejemplo). */
+  const sheetId = useId();
 
   /*
    * Lo único que el CSS no puede deducir solo: dónde empieza el ítem activo
@@ -36,6 +84,22 @@ const Navbar = ({
    * izquierdo del dock.
    */
   const [box, setBox] = useState<{ x: number; w: number } | null>(null);
+
+  /*
+   * Cerrar es lo que más veces se hace y desde más sitios (el aspa, el
+   * velo, Escape, un enlace del panel), así que vive en una sola función.
+   *
+   * `restoreFocus` existe porque no todos los cierres son iguales: con
+   * Escape o con el velo hay que devolver el foco al botón —si no, se
+   * queda posado en un enlace que acaba de volverse `inert` y el siguiente
+   * tabulador empezaría desde el principio del documento—, pero al pulsar
+   * un enlace NO: ahí manda el salto del ancla, y robarle el foco al
+   * destino dejaría al teclado navegando otra vez desde la esquina.
+   */
+  const closeMenu = useCallback((restoreFocus = true) => {
+    setOpen(false);
+    if (restoreFocus) burgerRef.current?.focus();
+  }, []);
 
   /*
    * La medida va en `useLayoutEffect` y no en `useEffect` porque corre
@@ -68,6 +132,11 @@ const Navbar = ({
      * Se vigila el dock y no la ventana: un `resize` no salta cuando lo que
      * cambia es el tamaño de letra del navegador, y eso también mueve las
      * medidas porque todo está en rem.
+     *
+     * De paso resuelve gratis el caso del móvil: allí el dock está en
+     * `display: none` y mide 0x0, así que la medida sale a cero; cuando la
+     * ventana cruza a escritorio y reaparece, el observador salta con ese
+     * cambio de tamaño y la lente se coloca sola.
      */
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
@@ -83,6 +152,10 @@ const Navbar = ({
    * cada medición fuerza al navegador a recalcular el layout en mitad del
    * desplazamiento, que es la receta clásica del scroll a tirones. El
    * observador solo avisa cuando una sección entra o sale de la franja.
+   *
+   * Lo que decide vale para los dos sitios: enciende el ítem del dock en
+   * escritorio y el del panel en móvil, así que al abrir la hamburguesa ya
+   * sale marcado dónde estás.
    */
   useEffect(() => {
     const targets = items
@@ -126,8 +199,196 @@ const Navbar = ({
     return () => observer.disconnect();
   }, [items]);
 
+  /*
+   * ── ESCAPE ───────────────────────────────────────────────────────
+   *
+   * Colgado de `document` y no del <nav>: el foco puede acabar fuera del
+   * menú (un clic en el velo lo deja en el <body>) y allí un manejador del
+   * nav ya no vería la tecla. Solo se engancha mientras está abierto, así
+   * que no queda un oyente global escuchando de por vida.
+   */
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMenu();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, closeMenu]);
+
+  /*
+   * Al abrir, el foco entra en el panel. No se queda en el botón a
+   * propósito: quien navega con teclado o con lector de pantalla acaba de
+   * pedir el menú, y lo que espera después de abrirlo es estar DENTRO, no
+   * tener que tabular a ciegas hasta encontrarlo.
+   *
+   * Va después del pintado (`useEffect`) porque hasta que React no le
+   * quita el `inert` al panel sus enlaces no admiten el foco.
+   */
+  useEffect(() => {
+    if (!open) return;
+    sheetRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+  }, [open]);
+
+  /*
+   * El menú es una pieza de móvil. Si la ventana crece hasta escritorio con
+   * el menú abierto, el CSS lo esconde pero el estado seguiría en
+   * "abierto", y al volver a móvil el panel aparecería solo.
+   *
+   * Sin devolver el foco: en escritorio el botón está en `display: none` y
+   * no admite foco, así que pedírselo solo serviría para dejar el foco
+   * tirado en el <body>.
+   */
+  useEffect(() => {
+    if (!open) return;
+
+    const query = window.matchMedia(DESKTOP_QUERY);
+    const sync = () => {
+      if (query.matches) closeMenu(false);
+    };
+
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, [open, closeMenu]);
+
+  /*
+   * ── EL FOCO NO SE ESCAPA DEL MENÚ ────────────────────────────────
+   *
+   * Mientras el panel está abierto, tabular tiene que dar vueltas entre el
+   * botón y los enlaces en vez de irse a la página de detrás, que está
+   * tapada por el velo: seguir tabulando allí sería mover un cursor
+   * invisible por enlaces que no se ven.
+   *
+   * Es una trampa de foco mínima y puede serlo porque los únicos elementos
+   * enfocables del conjunto son el botón y los enlaces del panel: no hace
+   * falta la consulta genérica de "todo lo que puede recibir foco".
+   */
+  const onNavKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (!open || event.key !== "Tab") return;
+
+    const sheet = sheetRef.current;
+    const burger = burgerRef.current;
+    if (!sheet || !burger) return;
+
+    const stops = [burger, ...sheet.querySelectorAll<HTMLAnchorElement>("a")];
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
-    <nav aria-label={ariaLabel} className={`${styles.navbar} ${className}`}>
+    <nav
+      aria-label={ariaLabel}
+      className={`${styles.navbar} ${className}`}
+      /* Un solo interruptor para toda la hoja de estilos: de él cuelgan las
+         tres barras que se cruzan, el velo que aparece y el panel que baja. */
+      data-open={open ? "true" : "false"}
+      onKeyDown={onNavKeyDown}
+    >
+      {/*
+        ── MÓVIL ──────────────────────────────────────────────────────
+        Botón, velo y panel llevan su propio `position: fixed` en vez de
+        colocarse dentro de la banda del dock: la banda tiene su sitio (el
+        borde superior en escritorio) y estas tres piezas el suyo, y
+        colgarlas de ella obligaría a deshacer su centrado en cada una.
+      */}
+      <button
+        ref={burgerRef}
+        type="button"
+        className={styles.burger}
+        aria-expanded={open}
+        aria-controls={sheetId}
+        /* El nombre cambia con el estado porque la acción cambia: el mismo
+           botón abre y cierra, y un rótulo fijo mentiría la mitad del
+           tiempo. El dibujo (barras o aspa) es decoración y va oculto para
+           los lectores. */
+        aria-label={open ? closeMenuLabel : openMenuLabel}
+        onClick={() => (open ? closeMenu() : setOpen(true))}
+      >
+        <span className={styles.bars} aria-hidden="true">
+          <span className={styles.bar} />
+          <span className={styles.bar} />
+          <span className={styles.bar} />
+        </span>
+      </button>
+
+      {/* Decoración pura: cerrar tocando fuera es un atajo de dedo y de
+          ratón, y el teclado ya tiene Escape y el propio botón. Por eso no
+          es un <button> ni aparece en el árbol de accesibilidad. */}
+      <div
+        className={styles.scrim}
+        aria-hidden="true"
+        onClick={() => closeMenu()}
+      />
+
+      <div
+        ref={sheetRef}
+        id={sheetId}
+        className={styles.sheet}
+        /*
+         * `inert` y no `hidden`: `hidden` es `display: none` y mataría la
+         * animación de bajada, porque no se puede animar lo que no se
+         * pinta. `inert` deja el panel en su sitio, listo para deslizarse,
+         * pero fuera del tabulador y fuera del árbol de accesibilidad
+         * mientras está cerrado.
+         */
+        inert={!open}
+      >
+        <ul className={styles.sheetList}>
+          {items.map((item, index) => {
+            const isActive = index === active;
+
+            return (
+              <li
+                key={item.href}
+                className={styles.sheetSlot}
+                data-active={isActive}
+                /* Su turno en la entrada escalonada. Viaja como número
+                   pelado porque el CSS lo multiplica por un retardo: llevar
+                   aquí los milisegundos repartiría el ritmo de la animación
+                   entre dos archivos. */
+                style={{ "--i": String(index) } as CSSProperties}
+              >
+                <a
+                  href={item.href}
+                  className={styles.sheetItem}
+                  aria-current={isActive ? "true" : undefined}
+                  /*
+                   * Encender el ítem en el mismo fotograma del toque, sin
+                   * esperar a que el scroll suave llegue a la sección y el
+                   * observador se entere — igual que en el dock.
+                   *
+                   * Y cerrar: un menú que se queda abierto tapando la
+                   * sección a la que acabas de saltar es la peor versión de
+                   * esto. El salto lo sigue haciendo el ancla, así que la
+                   * URL guarda la sección y el enlace se puede abrir en
+                   * otra pestaña como cualquier otro.
+                   */
+                  onClick={() => {
+                    setActive(index);
+                    closeMenu(false);
+                  }}
+                >
+                  <NavIcon id={item.icon} className={styles.sheetIcon} />
+                  <span className={styles.sheetLabel}>{item.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* ── ESCRITORIO: el dock de siempre ─────────────────────────── */}
       <ul
         ref={dockRef}
         className={styles.dock}
@@ -180,20 +441,7 @@ const Navbar = ({
                 onClick={() => setActive(index)}
                 aria-current={isActive ? "true" : undefined}
               >
-                <svg
-                  aria-hidden="true"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  {NAV_ICONS[item.icon].map((path) => (
-                    <path key={path} d={path} />
-                  ))}
-                </svg>
+                <NavIcon id={item.icon} className={styles.icon} />
 
                 <span className={styles.label}>{item.label}</span>
               </a>
