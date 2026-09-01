@@ -199,8 +199,12 @@ body {
 /*
  * Salta por completo el layout y el pintado de las secciones que están fuera
  * de la pantalla. El navegador solo trabaja en lo que se ve, y como efecto
- * secundario pausa las animaciones `infinite` de SkillsSection y SocialDial
- * mientras no son visibles.
+ * secundario pausa las animaciones `infinite` de SkillsSection mientras no
+ * son visibles.
+ *
+ * La otra cara: mientras la sección está saltada, todo lo que hay dentro
+ * mide 0. Cualquier componente que se coloque midiendo su caja tiene que
+ * contar con eso (lo hace SocialOrbs, en el footer).
  *
  * `contain-intrinsic-size: auto 100vh` es obligatorio: sin una altura estimada
  * el navegador daría altura 0 a lo no renderizado y la barra de scroll pegaría

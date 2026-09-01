@@ -1,0 +1,9 @@
+# Un portafolio de una sola página: no hay nada que esconder a los
+# rastreadores. La línea que de verdad importa es la del sitemap — es como
+# se entera el buscador de que el sitio existe sin esperar a que alguien lo
+# enlace desde otro sitio.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ianmartinez.dev/sitemap.xml

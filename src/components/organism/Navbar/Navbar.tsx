@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from "react";
 import styles from "./Navbar.module.css";
 import type { NavbarProps } from "./Navbar.types";
+import { useIsomorphicLayoutEffect } from "../../../lib/useIsomorphicLayoutEffect";
 import { NAV_ICONS } from "./navbar.icons";
 import type { NavIconId } from "./navbar.icons";
 
@@ -112,7 +113,7 @@ const Navbar = ({
    * relative`, pero cualquier `filter` o `transform` que se añada mañana
    * por encima cambiaría esa referencia sin avisar.
    */
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const dock = dockRef.current;
     if (!dock) return;
 

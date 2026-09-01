@@ -18,8 +18,63 @@
     rel="stylesheet">
   <script defer src="https://kit.fontawesome.com/82fbe5a20d.js" crossorigin="anonymous"></script>
 
+  <!-- Ficha del sitio. Los rastreadores que dibujan la tarjeta de enlace
+       (WhatsApp, LinkedIn, Slack, Discord) NO ejecutan JavaScript: leen esto
+       y se van. Las URLs van absolutas a propósito — una ruta relativa en
+       og:image no la resuelve ninguno. Si cambia el dominio hay que tocar
+       canonical, og:url, og:image, robots.txt y sitemap.xml.
+       El contenido de la página tampoco depende ya de JS: lo escribe
+       vite-react-ssg en el build (ver src/main.tsx). -->
+  <title>Ian Martínez — Frontend Developer</title>
+  <meta name="description"
+    content="Frontend developer from Colima, México. React, TypeScript and Tailwind. I build web platforms for government and private institutions." />
+  <link rel="canonical" href="https://ianmartinez.dev/" />
+  <!-- color de la barra del navegador en móvil: el mismo --color-surface -->
+  <meta name="theme-color" content="#12141a" />
 
-  <title>portafolioian</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ianmartinez.dev/" />
+  <meta property="og:site_name" content="Ian Martínez" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Ian Martínez — Frontend Developer" />
+  <meta property="og:description"
+    content="React, TypeScript and Tailwind. Web platforms for government and private institutions." />
+  <!-- 1200x630 es la proporción que recortan bien todas las plataformas; el
+       archivo lo genera scripts/make-og.mjs -->
+  <meta property="og:image" content="https://ianmartinez.dev/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Ian Martínez — Frontend Developer" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ian Martínez — Frontend Developer" />
+  <meta name="twitter:description"
+    content="React, TypeScript and Tailwind. Web platforms for government and private institutions." />
+  <meta name="twitter:image" content="https://ianmartinez.dev/og.png" />
+
+  <!-- Ficha de persona para el buscador. Es lo único de esta página que un
+       rastreador puede leer sin ejecutar nada, así que aquí va quién soy,
+       a qué me dedico y dónde encontrarme. -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ian Martínez",
+      "url": "https://ianmartinez.dev/",
+      "jobTitle": "Frontend Developer",
+      "email": "mailto:ianhmv418@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Colima",
+        "addressCountry": "MX"
+      },
+      "knowsAbout": ["React", "TypeScript", "Tailwind CSS", "Frontend Development"],
+      "sameAs": [
+        "https://github.com/IanHMV",
+        "https://www.linkedin.com/in/ianhmv/"
+      ]
+    }
+  </script>
 </head>
 
 <body>

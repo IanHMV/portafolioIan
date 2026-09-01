@@ -1,10 +1,11 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import type {
   CSSProperties,
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
 
+import { useIsomorphicLayoutEffect } from "../../../lib/useIsomorphicLayoutEffect";
 import { SOCIAL_ORB_BRANDS, brandFaceImage } from "./socialOrbs.config";
 import type { SocialOrbsProps } from "./SocialOrbs.types";
 import styles from "./SocialOrbs.module.css";
@@ -293,6 +294,22 @@ export const SocialOrbs = ({
       if (!pit) return;
 
       const { width: w, height: h } = pit.getBoundingClientRect();
+
+      /*
+       * Caja sin medir de verdad. Pasa siempre al cargar: el footer lleva
+       * `content-visibility: auto` (ver styles/index.css), así que mientras
+       * está fuera de pantalla el navegador se salta su layout y esto
+       * devuelve 2px de ancho — los dos bordes, con el contenido a cero.
+       * De ahí el umbral en vez de comparar contra 0: comprometer un
+       * reparto contra esa caja apilaría las tres esferas en la esquina.
+       *
+       * Mientras no hay medida, manda el reparto que hace el CSS con `--i`
+       * y `--n` (la misma fila ordenada), y aquí se vuelve a entrar en
+       * cuanto la caja existe: la trae el observador de tamaño o el de
+       * visibilidad, según quién se entere antes.
+       */
+      if (w < MIN_ORB || h < MIN_ORB) return;
+
       const prev = boxRef.current;
       const { d, homes } = solveLayout(count, w, h, tuneRef.current.orbSize);
       const orbs = orbsRef.current;
@@ -315,6 +332,9 @@ export const SocialOrbs = ({
 
       boxRef.current = { w, h, d };
       pit.style.setProperty("--orb", `${d}px`);
+      /* A partir de aquí manda JS: la marca apaga el reparto de CSS, que
+         solo sirve hasta la primera medida (y para quien no ejecuta JS). */
+      pit.dataset.live = "";
 
       for (let i = 0; i < count; i++) walls(orbs[i], w, h, d / 2, 0, true);
       paint();
@@ -322,7 +342,7 @@ export const SocialOrbs = ({
     [count, paint],
   );
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncMotion = () => {
       calmRef.current = motion.matches;
@@ -332,8 +352,9 @@ export const SocialOrbs = ({
     motion.addEventListener("change", syncMotion);
     measure(true);
 
-    /* El área es fluida (`min(--w, 100%)`), así que su ancho cambia sin que
-       cambie el de la ventana: hay que observar la caja, no el resize. */
+    /* El área es fluida (su ancho sale de `max-width: 100%`), así que cambia
+       sin que cambie el de la ventana: hay que observar la caja, no el
+       resize. */
     const observer =
       typeof ResizeObserver === "undefined"
         ? null
@@ -344,9 +365,29 @@ export const SocialOrbs = ({
     if (observer && pit) observer.observe(pit);
     else window.addEventListener("resize", onResize);
 
+    /*
+     * Y además el de visibilidad. No es redundante: al cargar la página el
+     * footer está saltado por `content-visibility`, la medida de arriba se
+     * descarta y el observador de tamaño NO avisa de que la caja pasó de
+     * saltada a real. Quien sí se entera es este: cuando el área asoma por
+     * la pantalla ya está renderizada y se puede medir.
+     */
+    const visibility =
+      typeof IntersectionObserver === "undefined" || !pit
+        ? null
+        : new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) measure(false);
+          },
+          { threshold: 0 },
+        );
+
+    if (visibility && pit) visibility.observe(pit);
+
     return () => {
       motion.removeEventListener("change", syncMotion);
       observer?.disconnect();
+      visibility?.disconnect();
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(rafRef.current);
       rafRef.current = 0;
@@ -455,7 +496,9 @@ export const SocialOrbs = ({
         aria-label={ariaLabel}
         className={styles.pit}
         ref={pitRef}
-        style={{ "--orb": `${orbSize}px` } as CSSVars}
+        /* `--n` es para el CSS: con el número de esferas puede repartirlas
+           en fila él solo mientras JS no ha medido nada. */
+        style={{ "--orb": `${orbSize}px`, "--n": count } as CSSVars}
       >
         {items.map((item, index) => {
           const brand = SOCIAL_ORB_BRANDS[item.id];
