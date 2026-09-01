@@ -23,4 +23,15 @@ export interface NavbarProps {
    * Por defecto el primero — que es el hero, o sea lo que se ve al entrar.
    */
   defaultIndex?: number
+  /**
+   * Nombre del botón hamburguesa cuando el menú está cerrado. Es el único
+   * texto del botón: dentro solo hay tres barras marcadas como decoración,
+   * así que sin esto un lector de pantalla anunciaría "botón" a secas.
+   *
+   * Son dos props y no una porque la acción cambia con el estado, y un
+   * rótulo fijo ("Menú") mentiría la mitad del tiempo.
+   */
+  openMenuLabel?: string
+  /** Nombre del mismo botón con el menú desplegado */
+  closeMenuLabel?: string
 }

@@ -26,7 +26,12 @@ const items: NavbarItem[] = [
 ];
 
 /*
- * El dock va fijo a la ventana y su ítem activo lo decide un
+ * El componente pinta DOS navegaciones y el corte lo lleva entero el CSS
+ * (48rem): por debajo, el menú hamburguesa; por encima, el dock. Así que
+ * lo que se ve en el canvas depende del ancho del viewport, no de un arg
+ * — de ahí que las historias de móvil solo cambien el `viewport` global.
+ *
+ * La navegación va fija a la ventana y su ítem activo lo decide un
  * IntersectionObserver sobre las secciones de la página. En el canvas de
  * Storybook no hay página, así que la historia monta unas secciones de
  * relleno con los mismos `id`: sin ellas la lente se quedaría clavada en
@@ -72,4 +77,34 @@ export const Default: Story = {
 export const StartOnProjects: Story = {
   ...Default,
   args: { items, defaultIndex: 2 },
+};
+
+/*
+ * ── MÓVIL ────────────────────────────────────────────────────────────
+ *
+ * Por debajo de 48rem el dock desaparece y queda el botón hamburguesa en
+ * la esquina de arriba a la izquierda. El panel se abre al pulsarlo: no
+ * hay forma de arrancar la historia con el menú desplegado porque el
+ * estado es interno del componente, y sacarlo a una prop solo para
+ * Storybook sería ensanchar la API por comodidad del taller.
+ *
+ * Qué mirar aquí:
+ *   · el panel baja desde el filo superior y el botón se queda encima,
+ *     convertido en aspa
+ *   · el ítem de la sección en la que estás sale con el mismo cristal que
+ *     la lente del dock
+ *   · Escape, un toque en el velo o un toque en un enlace lo cierran
+ *   · con el teclado, el tabulador da vueltas dentro del menú y no se
+ *     escapa a la página de detrás
+ */
+export const Mobile: Story = {
+  ...Default,
+  globals: { viewport: { value: "iphoneX", isRotated: false } },
+};
+
+/* El teléfono más estrecho que se sigue vendiendo. Es el ancho en el que
+   se comprueba que ni el botón ni los rótulos del panel se aprietan. */
+export const MobileNarrow: Story = {
+  ...Default,
+  globals: { viewport: { value: "androidMid", isRotated: false } },
 };
