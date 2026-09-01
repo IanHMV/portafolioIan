@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Una sola URL porque el sitio es una sola página: /#about, /#projects y el
+  resto son anclas, no rutas, y un sitemap con anclas se ignora.
+
+  `lastmod` hay que actualizarlo cuando el contenido cambie de verdad
+  (proyectos nuevos, otra experiencia); mentir aquí no acelera nada.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ianmartinez.dev/</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

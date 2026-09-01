@@ -77,8 +77,15 @@
       var(--color-surface-2));
 
   position: absolute;
-  left: 0;
-  top: 0;
+  /*
+   * Reparto de salida SIN JavaScript: la misma fila ordenada que calcula
+   * `solveLayout`, pero en CSS. Es lo que se ve en el HTML prerenderizado
+   * —el footer llega pintado desde el build— y mientras el componente no
+   * ha podido medir su caja. En cuanto mide, `data-live` apaga estas dos
+   * líneas y toma el mando el `transform` que escribe el bucle.
+   */
+  left: calc((var(--i) + 1) * 100% / (var(--n) + 1) - var(--orb) / 2);
+  top: calc(50% - var(--orb) / 2);
   width: var(--orb);
   height: var(--orb);
   display: grid;
@@ -102,6 +109,11 @@
   animation: orbIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   /* las esferas aterrizan una detrás de otra, de izquierda a derecha */
   animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+.pit[data-live] .orb {
+  left: 0;
+  top: 0;
 }
 
 /* Relleno de marca. Va en una capa aparte y no en `background-image` porque

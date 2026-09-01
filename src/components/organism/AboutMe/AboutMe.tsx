@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./AboutMe.module.css";
 import type { AboutMeProps } from "./AboutMe.types";
 import Heading from "../../atoms/Heading/Heading";
@@ -21,10 +21,28 @@ const REVEAL_DELAY_MS = 1600;
 
 type View = "cover" | "info";
 
-/* Se consulta al montar, no dentro del efecto: así el primer pintado ya sale
-   bien y quien pide menos movimiento no llega a ver el rótulo desaparecer. */
-const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/*
+ * La preferencia de movimiento no es estado de React: vive en el sistema
+ * operativo y puede cambiar mientras la página está abierta. Por eso se lee
+ * con `useSyncExternalStore` —el mecanismo que React trae para datos de
+ * fuera— y no con un estado más un efecto.
+ *
+ * Lo que resuelve, además, es el prerenderizado: el tercer argumento es la
+ * respuesta que se da cuando no hay navegador al que preguntar (`false`, o
+ * sea la versión con movimiento), y React se encarga de volver a renderizar
+ * con la preferencia real en cuanto hidrata, sin desajustar el HTML.
+ */
+const MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+const subscribeMotion = (onChange: () => void) => {
+  const query = window.matchMedia(MOTION_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+
+const getMotion = () => window.matchMedia(MOTION_QUERY).matches;
+
+const getMotionOnServer = () => false;
 
 const AboutMe = ({
   id,
@@ -34,11 +52,18 @@ const AboutMe = ({
   contentImage,
   className = "",
 }: AboutMeProps) => {
-  /* Sin movimiento no hay nada que anunciar: la tarjeta nace puesta en su
+  /* Sin movimiento no hay nada que anunciar: la tarjeta se planta en su
      sitio y con la presentación abierta, que es el contenido que importa. */
-  const [staticView] = useState(prefersReducedMotion);
-  const [view, setView] = useState<View>(staticView ? "info" : "cover");
-  const [raised, setRaised] = useState(staticView);
+  const staticView = useSyncExternalStore(
+    subscribeMotion,
+    getMotion,
+    getMotionOnServer,
+  );
+  /* `null` = todavía no ha decidido nadie, así que manda la preferencia de
+     movimiento. En cuanto el visitante toca el botón, este estado toma el
+     mando y puede volver al rótulo si le apetece. */
+  const [view, setView] = useState<View | null>(null);
+  const [raised, setRaised] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const revealTimer = useRef(0);
   /* Una vez que el visitante toca el botón, el cambio automático se retira:
@@ -46,7 +71,10 @@ const AboutMe = ({
      sitio parezca que "se mueve solo". */
   const revealed = useRef(false);
 
-  const showingInfo = view === "info";
+  const showingInfo = view === null ? staticView : view === "info";
+  /* Quien pide menos movimiento no espera al observador: la tarjeta nace
+     puesta en su sitio. */
+  const plateRaised = raised || staticView;
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -82,7 +110,10 @@ const AboutMe = ({
   const toggleView = () => {
     window.clearTimeout(revealTimer.current);
     revealed.current = true;
-    setView((current) => (current === "cover" ? "info" : "cover"));
+    /* Se parte de lo que se está VIENDO, no del estado: la primera vez que
+       se pulsa, `view` todavía es null y hay que darle la vuelta a lo que
+       decidió la preferencia de movimiento. */
+    setView(showingInfo ? "cover" : "info");
   };
 
   return (
@@ -91,7 +122,7 @@ const AboutMe = ({
       id={id}
       className={`${styles.section} flex min-h-svh items-center justify-center bg-surface px-4 py-16 sm:px-8 ${className}`}
     >
-      <div className={`${styles.plate} ${raised ? styles.plateRaised : ""}`}>
+      <div className={`${styles.plate} ${plateRaised ? styles.plateRaised : ""}`}>
         <div className={styles.card}>
           {/* Los dos halos del fondo. Decorativos: se apartan al pasar el
               ratón y no dicen nada, así que se ocultan al lector de pantalla. */}
