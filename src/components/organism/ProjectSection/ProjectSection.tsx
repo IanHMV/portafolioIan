@@ -68,13 +68,23 @@ const requiredWidth = (layout: Layout) =>
 const fitFactor = (stageWidth: number, layout: Layout) =>
   stageWidth > 0 ? Math.min(1, stageWidth / requiredWidth(layout)) : 1;
 
-/* Distancia circular más corta entre una tarjeta y la posición del carrusel */
-const circularOffset = (index: number, position: number, count: number) => {
-  let d = (index - position) % count;
-  if (d > count / 2) d -= count;
-  if (d < -count / 2) d += count;
-  return d;
-};
+/* Distancia (con signo) entre una tarjeta y la posición del carrusel.
+
+   El arco ya NO es circular: tiene principio y final. Antes se buscaba la
+   distancia MÁS CORTA dando la vuelta, así que desde el primer proyecto —el
+   más reciente y el más relevante— el vecino de la izquierda era el último
+   de la lista, el más antiguo, y una sola flecha atrás se saltaba todo lo
+   de en medio. Con la resta directa hay que recorrer los proyectos en el
+   orden en que están escritos en `data.ts`. */
+const slotOffset = (index: number, position: number) => index - position;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
+
+/* La posición descansa en enteros, pero durante el easing arrastra colas de
+   milésimas. Este margen es lo que separa «ya he llegado al extremo» de
+   «me falta un pelo» al decidir si una flecha se apaga. */
+const EDGE_EPSILON = 0.002;
 
 /* Apariencia de un slot según su distancia (continua) al centro del arco:
    se separa, rota hacia el espectador, crece al centro y se desvanece al
@@ -121,11 +131,22 @@ const ProjectSection = ({ id,
 }: ProjectSectionProps) => {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prevArrow = useRef<HTMLButtonElement | null>(null);
+  const nextArrow = useRef<HTMLButtonElement | null>(null);
+  /* Arranca en 0: el primer proyecto de `data.ts` es el que se ve al
+     entrar en la sección. */
   const position = useRef(0);
   const pending = useRef(0);
+  /* Hacia dónde tira el autoplay. Al no haber vuelta circular, en el último
+     proyecto se da la vuelta en lugar de saltar al primero. */
+  const autoDirection = useRef<1 | -1>(1);
   const idle = useRef(0);
   const pausedRef = useRef(false);
   const count = projects.length;
+  /* Último índice al que puede llegar el arco. El `Math.max` es para la
+     lista vacía: sin él el tope quedaría en -1 y `clamp` devolvería una
+     posición negativa. */
+  const lastIndex = Math.max(0, count - 1);
 
   const isMobile = useMatchMedia(MOBILE_QUERY);
   const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
@@ -146,11 +167,21 @@ const ProjectSection = ({ id,
 
   const fit = fitFactor(stageWidth, layout);
 
+  /* La flecha mueve el DESTINO (posición + cola), no la posición a secas, y
+     ese destino se recorta a [0, count - 1]: en el primer proyecto la flecha
+     atrás no hace nada y en el último tampoco la de avanzar. */
   const step = (direction: 1 | -1) => {
-    pending.current = Math.max(
-      -MAX_PENDING,
-      Math.min(MAX_PENDING, pending.current + direction)
+    const target = clamp(
+      position.current + pending.current + direction,
+      0,
+      lastIndex
     );
+    pending.current = clamp(
+      target - position.current,
+      -MAX_PENDING,
+      MAX_PENDING
+    );
+    autoDirection.current = direction;
     idle.current = 0;
   };
 
@@ -177,7 +208,18 @@ const ProjectSection = ({ id,
         idle.current += dt;
         if (idle.current >= STEP_INTERVAL) {
           idle.current = 0;
-          pending.current = 1;
+          /* Al tocar un extremo el autoplay se da la vuelta y recorre el
+             arco en sentido contrario. Antes enlazaba el último con el
+             primero y el visitante podía caer en los proyectos viejos sin
+             haber pasado por los recientes. */
+          if (position.current >= lastIndex) autoDirection.current = -1;
+          else if (position.current <= 0) autoDirection.current = 1;
+          const target = clamp(
+            position.current + autoDirection.current,
+            0,
+            lastIndex
+          );
+          pending.current = target - position.current;
         }
       }
 
@@ -196,11 +238,20 @@ const ProjectSection = ({ id,
         }
       }
 
-      position.current = ((position.current % count) + count) % count;
+      position.current = clamp(position.current, 0, lastIndex);
+
+      /* Las flechas viven fuera del ciclo de render (la posición es un ref
+         para no repintar 60 veces por segundo), así que su estado se escribe
+         aquí mismo, igual que el de los slots: se apaga la que ya no lleva a
+         ningún sitio. */
+      const target = position.current + pending.current;
+      if (prevArrow.current) prevArrow.current.disabled = target <= EDGE_EPSILON;
+      if (nextArrow.current)
+        nextArrow.current.disabled = target >= lastIndex - EDGE_EPSILON;
 
       slotRefs.current.forEach((slot, index) => {
         if (!slot) return;
-        const d = circularOffset(index, position.current, count);
+        const d = slotOffset(index, position.current);
         const { opacity, transform } = arcStyle(d, layout, fit);
         slot.style.opacity = String(opacity);
         slot.style.transform = transform;
@@ -212,7 +263,7 @@ const ProjectSection = ({ id,
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [count, layout, fit]);
+  }, [lastIndex, layout, fit]);
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
@@ -244,9 +295,13 @@ const ProjectSection = ({ id,
       <div className={styles.content}>
         <div className={styles.carousel}>
           <button
+            ref={prevArrow}
             type="button"
             aria-label="Previous project"
             onClick={() => step(-1)}
+            /* Se entra en el primer proyecto, así que atrás no lleva a
+               ninguna parte hasta que el carrusel avance. */
+            disabled
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -264,7 +319,7 @@ const ProjectSection = ({ id,
             onPointerLeave={() => { pausedRef.current = false; }}
           >
             {projects.map((project, index) => {
-              const initial = arcStyle(circularOffset(index, 0, count), layout, fit);
+              const initial = arcStyle(slotOffset(index, 0), layout, fit);
               return (
                 <div
                   key={`${project.title}-${index}`}
@@ -280,9 +335,11 @@ const ProjectSection = ({ id,
           </div>
 
           <button
+            ref={nextArrow}
             type="button"
             aria-label="Next project"
             onClick={() => step(1)}
+            disabled={count <= 1}
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
