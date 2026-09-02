@@ -54,6 +54,23 @@ const LAYOUT = {
 
 type Layout = (typeof LAYOUT)[keyof typeof LAYOUT];
 
+/* Dónde descansa el arco al entrar en la página.
+ *
+ * En escritorio se ven TRES tarjetas: una centrada y una a cada lado. Si el
+ * carrusel arrancara centrado en la primera, el hueco de la izquierda se
+ * quedaría vacío y solo se verían DOS proyectos hasta que el autoplay diera
+ * el primer paso — que es exactamente lo que se veía al refrescar.
+ *
+ * Centrando la SEGUNDA, los tres primeros proyectos están en pantalla desde
+ * el primer fotograma (y desde el HTML prerenderizado, que se pinta antes de
+ * que corra nada de JS). La flecha de atrás pasa a servir para algo: centrar
+ * el primero.
+ *
+ * En móvil solo cabe una tarjeta, así que ahí manda la primera. El `min` es
+ * para las listas de un solo proyecto: no hay segunda que centrar. */
+const startIndex = (layout: Layout, count: number) =>
+  layout.visible === 1 ? 0 : Math.min(1, Math.max(0, count - 1));
+
 /* Ancho que necesita el arco completo a escala 1:1. Con tres visibles mandan
    las laterales (`spacing` + su media anchura proyectada); con una sola
    tarjeta manda la tarjeta misma. */
@@ -133,15 +150,6 @@ const ProjectSection = ({ id,
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevArrow = useRef<HTMLButtonElement | null>(null);
   const nextArrow = useRef<HTMLButtonElement | null>(null);
-  /* Arranca en 0: el primer proyecto de `data.ts` es el que se ve al
-     entrar en la sección. */
-  const position = useRef(0);
-  const pending = useRef(0);
-  /* Hacia dónde tira el autoplay. Al no haber vuelta circular, en el último
-     proyecto se da la vuelta en lugar de saltar al primero. */
-  const autoDirection = useRef<1 | -1>(1);
-  const idle = useRef(0);
-  const pausedRef = useRef(false);
   const count = projects.length;
   /* Último índice al que puede llegar el arco. El `Math.max` es para la
      lista vacía: sin él el tope quedaría en -1 y `clamp` devolvería una
@@ -150,6 +158,16 @@ const ProjectSection = ({ id,
 
   const isMobile = useMatchMedia(MOBILE_QUERY);
   const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
+  /* El arco descansa aquí al entrar; ver `startIndex`. */
+  const start = startIndex(layout, count);
+
+  const position = useRef(start);
+  const pending = useRef(0);
+  /* Hacia dónde tira el autoplay. Al no haber vuelta circular, en el último
+     proyecto se da la vuelta en lugar de saltar al primero. */
+  const autoDirection = useRef<1 | -1>(1);
+  const idle = useRef(0);
+  const pausedRef = useRef(false);
 
   /* El ancho del escenario lo decide la rejilla (las flechas tienen carril
      propio), así que hay que medirlo: de ahí sale la escala del arco. */
@@ -196,10 +214,13 @@ const ProjectSection = ({ id,
     ).matches;
 
     let raf = 0;
-    let last = performance.now();
+    /* El primer fotograma no tiene con qué comparar, así que su `dt` es 0 y
+       a partir de ahí manda el reloj que trae el propio rAF. Sembrarlo con
+       `performance.now()` era pedir la hora dos veces al mismo reloj. */
+    let last = 0;
 
     const frame = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.1);
+      const dt = last === 0 ? 0 : Math.min((now - last) / 1000, 0.1);
       last = now;
 
       /* El hover no corta un paso a medias — dejaría el arco torcido —, solo
@@ -299,9 +320,11 @@ const ProjectSection = ({ id,
             type="button"
             aria-label="Previous project"
             onClick={() => step(-1)}
-            /* Se entra en el primer proyecto, así que atrás no lleva a
-               ninguna parte hasta que el carrusel avance. */
-            disabled
+            /* Apagada solo si el arco descansa ya en el primer proyecto (en
+               móvil). En escritorio arranca centrado en el segundo, así que
+               atrás sí lleva a algún sitio. A partir del primer fotograma
+               este estado lo escribe el bucle. */
+            disabled={start <= 0}
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -319,7 +342,7 @@ const ProjectSection = ({ id,
             onPointerLeave={() => { pausedRef.current = false; }}
           >
             {projects.map((project, index) => {
-              const initial = arcStyle(slotOffset(index, 0), layout, fit);
+              const initial = arcStyle(slotOffset(index, start), layout, fit);
               return (
                 <div
                   key={`${project.title}-${index}`}
