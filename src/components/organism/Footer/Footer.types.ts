@@ -10,6 +10,8 @@ export interface FooterLink {
   label: string
   /** Ancla interna (#projects) o URL externa */
   href: string
+  /** Descarga el destino en vez de navegar a él (ver `LinkProps.download`). */
+  download?: boolean
 }
 
 export interface FooterProps {
@@ -25,6 +27,12 @@ export interface FooterProps {
   action?: FooterLink
   /** Enlaces rápidos a las secciones de la página */
   links?: FooterLink[]
+  /**
+   * Descarga del CV, bajo el área de esferas. Va aquí y no como una esfera
+   * más porque las esferas son enlaces a perfiles —una por red, con su color
+   * de marca— y un PDF no es un perfil ni tiene marca que enseñar.
+   */
+  resume?: FooterLink
   /**
    * Redes del área de esferas. Una esfera por red, sin repetir: salen
    * ordenadas y a partir de ahí las mueve quien visita la página.

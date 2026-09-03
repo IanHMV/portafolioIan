@@ -14,6 +14,7 @@ const Footer = ({
   description,
   action,
   links = [],
+  resume,
   social,
   orbs,
   copyright,
@@ -71,13 +72,43 @@ const Footer = ({
           )}
         </div>
 
-        {/* `orbs` va primero: lo de abajo no se puede sobreescribir desde data */}
-        <SocialOrbs
-          {...orbs}
-          items={social}
-          ariaLabel="Social links"
-          className={styles.orbs}
-        />
+        {/* La columna de contacto: las esferas y, debajo, la descarga del
+            CV. Comparten columna para que en escritorio el CV quede con los
+            enlaces de contacto y no colgando del titular. */}
+        <div className={styles.contact}>
+          {/* `orbs` va primero: lo de abajo no se puede sobreescribir desde data */}
+          <SocialOrbs
+            {...orbs}
+            items={social}
+            ariaLabel="Social links"
+            className={styles.orbs}
+          />
+
+          {resume && (
+            <LinkComponent
+              href={resume.href}
+              download={resume.download}
+              size="text-sm"
+              className={styles.resume}
+            >
+              {/* Bandeja con flecha hacia abajo: el gesto de "esto baja a tu
+                  disco", que es lo que lo separa del CTA de contacto. */}
+              <svg
+                aria-hidden
+                className={styles.resumeIcon}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+              </svg>
+              {resume.label}
+            </LinkComponent>
+          )}
+        </div>
       </div>
 
       <div className={styles.bottom}>
