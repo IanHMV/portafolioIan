@@ -175,9 +175,61 @@
   translate: 0.2rem 0;
 }
 
+/* Columna derecha: esferas arriba, descarga del CV debajo. */
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
 /* el área ya trae su propia caja calculada; aquí solo se centra */
 .orbs {
   justify-self: center;
+}
+
+/*
+ * Descarga del CV. Es el hermano fantasma de `.cta`: mismo cuerpo y mismo
+ * radio, pero solo contorno — el relleno sólido está reservado a la acción
+ * principal del footer (escribirme), y dos botones macizos en la misma
+ * pantalla dejarían de decir cuál es cuál.
+ */
+.resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--footer-line);
+  color: var(--footer-ink);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.resume:hover {
+  background: color-mix(in srgb, var(--footer-ink) 10%, transparent);
+  border-color: color-mix(in srgb, var(--footer-ink) 45%, transparent);
+}
+
+.resume:focus-visible {
+  outline: 2px solid var(--footer-ink);
+  outline-offset: 3px;
+}
+
+/* La flecha baja un pelo al pasar por encima — el mismo recurso que la
+   flecha del CTA, pero en el eje que corresponde a una descarga. */
+.resumeIcon {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  transition: translate 0.2s ease;
+}
+
+.resume:hover .resumeIcon,
+.resume:focus-visible .resumeIcon {
+  translate: 0 0.15rem;
 }
 
 /*

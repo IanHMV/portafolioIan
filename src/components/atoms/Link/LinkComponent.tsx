@@ -6,12 +6,13 @@ const LinkComponent = ({
   href,
   size = "text-base",
   className = "",
+  download,
   children
 }: LinkProps) => {
 
   if (href) {
     return (
-      <a href={href} className={`${size} ${className}`}>{children}</a>
+      <a href={href} download={download} className={`${size} ${className}`}>{children}</a>
     )
   }
 

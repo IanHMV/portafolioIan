@@ -12,6 +12,7 @@ const HeroSection = ({
   description,
   primaryAction,
   secondaryAction,
+  tertiaryAction,
   className = "",
 }: HeroSectionProps) => {
   /*
@@ -125,6 +126,16 @@ const HeroSection = ({
                   className={`${styles.action} ${styles.actionGhost}`}
                 >
                   {secondaryAction.label}
+                </LinkComponent>
+              )}
+
+              {tertiaryAction && (
+                <LinkComponent
+                  href={tertiaryAction.href}
+                  download={tertiaryAction.download}
+                  className={`${styles.action} ${styles.actionGhost}`}
+                >
+                  {tertiaryAction.label}
                 </LinkComponent>
               )}
             </div>

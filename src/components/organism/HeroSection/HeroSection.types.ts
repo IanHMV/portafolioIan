@@ -5,6 +5,8 @@ import type { ImageProps } from "../../atoms/Image/Image.types";
 export interface HeroAction {
   label: string
   href: string
+  /** Descarga el destino en vez de navegar a él (ver `LinkProps.download`). */
+  download?: boolean
 }
 
 export interface HeroSectionProps {
@@ -24,5 +26,11 @@ export interface HeroSectionProps {
   description: Pick<TextProps, "children" | "className">
   primaryAction: HeroAction
   secondaryAction?: HeroAction
+  /**
+   * Tercer botón de la fila, con el mismo trato visual que el secundario.
+   * Existe para el CV: `.actions` es un flex con `wrap`, así que en pantallas
+   * estrechas cae a la línea siguiente en vez de encoger a los otros dos.
+   */
+  tertiaryAction?: HeroAction
   className?: string
 }
