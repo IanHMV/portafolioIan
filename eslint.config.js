@@ -8,7 +8,12 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default defineConfig([globalIgnores(['dist']), {
+export default defineConfig([
+  /* `dist` y `storybook-static` los escribe el build y no se editan a mano.
+     Sin el segundo, `eslint .` analiza los bundles del Storybook compilado y
+     saca 18 errores de código que no es nuestro. */
+  globalIgnores(['dist', 'storybook-static']),
+  {
   files: ['**/*.{ts,tsx}'],
   extends: [
     js.configs.recommended,
