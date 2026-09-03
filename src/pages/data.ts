@@ -176,10 +176,12 @@ export const experienceSection: ExperienceSectionProps = {
       summary: "Built the state anti-corruption platform and its OAuth 2.0 integration with Mexico's National Digital Platform",
       date: "2025 — 2026",
       detail: {
-        heading: "Government Employee",
+        heading: "Full-Stack Developer",
         period: "January 2025 — August 2026 · SESAECOL",
         paragraphs: [
-          "I worked in government managment the diferent systems of the National Digital Plataform. I worked with a physical server and run up different servers there for my government institute, some systems are from the National Digital Plataform and i only adapt this systems. And others systems i developed them from scratch.",
+          "I built and shipped the State Digital Platform, the public-facing system for Colima's anti-corruption transparency obligations, and carried it from the interface all the way to production.",
+          "I also wrote a Node.js microservice, running in Docker, that syncs around 20,000 records to Mexico's National Digital Platform over an OAuth 2.0 API. Swapping an unstable upsert key for a deterministic one is what finally stopped the duplicates.",
+          "The rest was the plumbing underneath: Python ETL pipelines that normalize and load data into MongoDB, and the Linux server itself — five services in Docker behind nginx, plus the documentation the team works from.",
         ],
       },
     },    {
@@ -188,11 +190,11 @@ export const experienceSection: ExperienceSectionProps = {
       summary: "Voting systems, data graphing and zone mapping for a cybersecurity firm",
       date: "2024",
       detail: {
-        heading: "FORENTEC",
-        period: "January — November 2024 · Cybersecurity",
+        heading: "Frontend Developer",
+        period: "January — November 2024 · Forentec",
         paragraphs: [
-          "I worked with another partner in a company of cybersecurity, we develop web pages for companies and government. We developed pages for voting systems, data graphing and localitation of specific zones.",
-          "I managed the graphication of the differents zones, i made that with json files and google.",
+          "I owned the interface layer of a web platform built with Ruby on Rails and JavaScript, working with one other developer on projects for private companies and government — voting systems among them.",
+          "The part I enjoyed most was the geospatial side: plotting zones with Google Maps and GeoJSON so that people without a technical background could read the data at a glance. I also redesigned the flows that got used every day, to take friction out of them.",
         ],
       },
     },
@@ -202,11 +204,11 @@ export const experienceSection: ExperienceSectionProps = {
       summary: "Frontend of a psychometric testing system, alongside a backend team",
       date: "2022 — 2023",
       detail: {
-        heading: "Institute Project",
+        heading: "Frontend Developer",
         period: "January 2022 — December 2023 · TECNM Colima",
         paragraphs: [
-          "I worked for my academic institude for developing a system for psicometric tests. I made the frontend for this page and i worked with another partners and they made the backend in that moment.",
-          "It was a good first experience working with another people, and i learned to use github deeper.",
+          "I built the frontend of a psychometric testing platform used to evaluate students — test delivery, scoring and results — while a teammate took the backend.",
+          "I also collected and analysed the resulting data to support the academic performance initiatives of the institute. It was my first time working alongside other developers, and where I really learned to use Git and GitHub.",
         ],
       },
     },
