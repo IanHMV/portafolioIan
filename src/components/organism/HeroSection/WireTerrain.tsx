@@ -1,3 +1,5 @@
+"use client";
+
 /*
  * GUARDADO PARA REUSO — ahora mismo no se monta en ningún sitio.
  *

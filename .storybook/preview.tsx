@@ -1,11 +1,9 @@
-import type { Preview } from '@storybook/react-vite'
+import type { Preview } from '@storybook/nextjs'
 import { useEffect } from "react";
 import "../src/styles/index.css";
-import { withRouter } from 'storybook-addon-remix-react-router';
 
 const preview: Preview = {
   decorators: [
-    withRouter,
     (Story) => {
       useEffect(() => {
         const script = document.createElement("script")

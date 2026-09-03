@@ -3,13 +3,16 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
 
+/*
+ * Este archivo YA NO construye el sitio: de eso se encarga Next
+ * (next.config.ts). Lo único que queda aquí es la configuración de Vitest,
+ * que trae su propio Vite y necesita el plugin de React para compilar el JSX
+ * de los tests. El plugin de Tailwind se fue con la migración — el CSS ahora
+ * entra por postcss.config.mjs.
+ */
 export default defineConfig({
-  plugins: [
-    react(), // 👈 Asegúrate de tener react() también
-    tailwindcss()
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

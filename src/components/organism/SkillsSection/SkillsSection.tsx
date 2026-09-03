@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import styles from "./SkillsSection.module.css";

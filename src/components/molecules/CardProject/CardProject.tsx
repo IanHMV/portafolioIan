@@ -1,12 +1,12 @@
 import styles from "./CardProject.module.css";
-import type { CardProjectProps } from "./CardProject.types.ts";
+import type { CardProjectProps } from "./CardProject.types";
 
 // ─── Átomos ───────────────────────────────────────────────────────────────
-import Image from "../../atoms/Image/Image.tsx";
-import Text from "../../atoms/Text/Text.tsx";
-import Heading from "../../atoms/Heading/Heading.tsx";
-import Icon from "../../atoms/Icon/Icon.tsx";
-import LinkComponent from "../../atoms/Link/LinkComponent.tsx";
+import Image from "../../atoms/Image/Image";
+import Text from "../../atoms/Text/Text";
+import Heading from "../../atoms/Heading/Heading";
+import Icon from "../../atoms/Icon/Icon";
+import LinkComponent from "../../atoms/Link/LinkComponent";
 
 /*
  * ¿Por qué NO se usa Icon para GitHub?

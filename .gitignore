@@ -8,8 +8,18 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+
+# Salidas del build. `dist`/`dist-ssr` eran de Vite y ya no se generan; se
+# dejan un tiempo para que a nadie con el repo viejo se le cuele una carpeta
+# antigua en un commit.
 dist
 dist-ssr
+.next
+out
+
+# Lo escribe `next build` en cada arranque; no se versiona.
+next-env.d.ts
+
 *.local
 
 # Editor directories and files

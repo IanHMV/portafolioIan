@@ -19,8 +19,10 @@ RUN npm ci
 
 COPY . .
 
-# `npm run build` = tsc -b && vite build: si hay un error de tipos, la imagen
-# no se construye. Es a propósito — mejor que falle aquí que en producción.
+# `npm run build` = next build. Con `output: "export"` en next.config.ts esto
+# no arranca ningún servidor: renderiza las rutas y escribe HTML plano en
+# `out/`. Next hace el type-check dentro del build, así que un error de tipos
+# sigue tumbando la imagen — a propósito: mejor aquí que en producción.
 RUN npm run build
 
 # ---------------------------------------------------------------------------
@@ -29,7 +31,9 @@ RUN npm run build
 FROM nginx:1-alpine AS runtime
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
+# `out/` es la carpeta que genera `output: "export"` (antes era `dist/`,
+# de Vite). El runtime no cambia: nginx sirviendo ficheros estáticos.
+COPY --from=build /app/out /usr/share/nginx/html
 
 EXPOSE 80
 

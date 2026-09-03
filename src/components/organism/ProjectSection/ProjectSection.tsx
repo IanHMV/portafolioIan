@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import styles from "./ProjectSection.module.css";
 import type { ProjectSectionProps } from "./ProjectSection.types";
@@ -68,23 +70,27 @@ const requiredWidth = (layout: Layout) =>
 const fitFactor = (stageWidth: number, layout: Layout) =>
   stageWidth > 0 ? Math.min(1, stageWidth / requiredWidth(layout)) : 1;
 
-/* Distancia (con signo) entre una tarjeta y la posición del carrusel.
+/* Distancia circular más corta entre una tarjeta y la posición del carrusel.
 
-   El arco ya NO es circular: tiene principio y final. Antes se buscaba la
-   distancia MÁS CORTA dando la vuelta, así que desde el primer proyecto —el
-   más reciente y el más relevante— el vecino de la izquierda era el último
-   de la lista, el más antiguo, y una sola flecha atrás se saltaba todo lo
-   de en medio. Con la resta directa hay que recorrer los proyectos en el
-   orden en que están escritos en `data.ts`. */
-const slotOffset = (index: number, position: number) => index - position;
+   EL ARCO DA LA VUELTA, y es a propósito. Hubo una versión en línea recta
+   —la última tarjeta sin enlazar con la primera— para obligar a recorrer
+   los proyectos en orden. Se quitó porque el escenario está dimensionado
+   para TRES tarjetas centradas: en línea recta, en los dos extremos solo
+   hay dos y queda un hueco donde debería ir la tercera. Con seis proyectos
+   eran 2 posiciones de 6; al bajar a cuatro pasaron a ser 2 de 4, o sea la
+   mitad del recorrido con el arco descuadrado, más una flecha apagada en el
+   arranque y un autoplay que rebotaba hacia atrás.
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
-
-/* La posición descansa en enteros, pero durante el easing arrastra colas de
-   milésimas. Este margen es lo que separa «ya he llegado al extremo» de
-   «me falta un pelo» al decidir si una flecha se apaga. */
-const EDGE_EPSILON = 0.002;
+   Lo que aquel cambio buscaba —que lo más reciente se vea primero— lo da el
+   ARRANQUE en la posición 0, no la ausencia de bucle: quien entra ve el
+   primer proyecto de `data.ts` en el centro y avanzando los recorre en su
+   orden. */
+const slotOffset = (index: number, position: number, count: number) => {
+  let d = (index - position) % count;
+  if (d > count / 2) d -= count;
+  if (d < -count / 2) d += count;
+  return d;
+};
 
 /* Apariencia de un slot según su distancia (continua) al centro del arco:
    se separa, rota hacia el espectador, crece al centro y se desvanece al
@@ -107,9 +113,18 @@ const arcStyle = (d: number, layout: Layout, fit: number) => {
 /* matchMedia en vez de un breakpoint de CSS porque aquí el tamaño no cambia
    estilos, cambia el COMPORTAMIENTO (autoplay sí/no) y eso vive en JS. */
 const useMatchMedia = (query: string) => {
-  const [matches, setMatches] = useState(
-    () => typeof window !== "undefined" && window.matchMedia(query).matches
-  );
+  /* Arranca SIEMPRE en false, sin consultar `matchMedia` aquí.
+
+     El inicializador corre durante el render, y desde la migración a Next
+     ese render ocurre dos veces: una en el build —sin `window`, así que
+     `false`— y otra en el navegador al hidratar. Si en la segunda se leía el
+     ancho real, un móvil calculaba el arco con la separación de una tarjeta
+     mientras el HTML traía la de tres, y React abortaba la hidratación de la
+     sección entera con un aviso de desajuste.
+
+     El efecto de abajo ya llama a `sync()` al montar, así que la consulta de
+     verdad ocurre un tick después y sin divergencia. */
+  const [matches, setMatches] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia(query);
@@ -131,22 +146,13 @@ const ProjectSection = ({ id,
 }: ProjectSectionProps) => {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const prevArrow = useRef<HTMLButtonElement | null>(null);
-  const nextArrow = useRef<HTMLButtonElement | null>(null);
-  /* Arranca en 0: el primer proyecto de `data.ts` es el que se ve al
-     entrar en la sección. */
+  /* Arranca en 0: el primer proyecto de `data.ts` —el más reciente— es el
+     que se ve en el centro al entrar en la sección. */
   const position = useRef(0);
   const pending = useRef(0);
-  /* Hacia dónde tira el autoplay. Al no haber vuelta circular, en el último
-     proyecto se da la vuelta en lugar de saltar al primero. */
-  const autoDirection = useRef<1 | -1>(1);
   const idle = useRef(0);
   const pausedRef = useRef(false);
   const count = projects.length;
-  /* Último índice al que puede llegar el arco. El `Math.max` es para la
-     lista vacía: sin él el tope quedaría en -1 y `clamp` devolvería una
-     posición negativa. */
-  const lastIndex = Math.max(0, count - 1);
 
   const isMobile = useMatchMedia(MOBILE_QUERY);
   const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
@@ -167,21 +173,13 @@ const ProjectSection = ({ id,
 
   const fit = fitFactor(stageWidth, layout);
 
-  /* La flecha mueve el DESTINO (posición + cola), no la posición a secas, y
-     ese destino se recorta a [0, count - 1]: en el primer proyecto la flecha
-     atrás no hace nada y en el último tampoco la de avanzar. */
+  /* Las dos flechas están siempre activas: con el arco cerrado, avanzar y
+     retroceder llevan siempre a alguna parte. */
   const step = (direction: 1 | -1) => {
-    const target = clamp(
-      position.current + pending.current + direction,
-      0,
-      lastIndex
-    );
-    pending.current = clamp(
-      target - position.current,
+    pending.current = Math.max(
       -MAX_PENDING,
-      MAX_PENDING
+      Math.min(MAX_PENDING, pending.current + direction)
     );
-    autoDirection.current = direction;
     idle.current = 0;
   };
 
@@ -208,18 +206,10 @@ const ProjectSection = ({ id,
         idle.current += dt;
         if (idle.current >= STEP_INTERVAL) {
           idle.current = 0;
-          /* Al tocar un extremo el autoplay se da la vuelta y recorre el
-             arco en sentido contrario. Antes enlazaba el último con el
-             primero y el visitante podía caer en los proyectos viejos sin
-             haber pasado por los recientes. */
-          if (position.current >= lastIndex) autoDirection.current = -1;
-          else if (position.current <= 0) autoDirection.current = 1;
-          const target = clamp(
-            position.current + autoDirection.current,
-            0,
-            lastIndex
-          );
-          pending.current = target - position.current;
+          /* Siempre +1: el autoplay avanza en un solo sentido. La versión
+             que rebotaba en el último proyecto dejaba media vuelta yendo
+             marcha atrás, y un carrusel que retrocede solo parece roto. */
+          pending.current = 1;
         }
       }
 
@@ -238,20 +228,11 @@ const ProjectSection = ({ id,
         }
       }
 
-      position.current = clamp(position.current, 0, lastIndex);
-
-      /* Las flechas viven fuera del ciclo de render (la posición es un ref
-         para no repintar 60 veces por segundo), así que su estado se escribe
-         aquí mismo, igual que el de los slots: se apaga la que ya no lleva a
-         ningún sitio. */
-      const target = position.current + pending.current;
-      if (prevArrow.current) prevArrow.current.disabled = target <= EDGE_EPSILON;
-      if (nextArrow.current)
-        nextArrow.current.disabled = target >= lastIndex - EDGE_EPSILON;
+      position.current = ((position.current % count) + count) % count;
 
       slotRefs.current.forEach((slot, index) => {
         if (!slot) return;
-        const d = slotOffset(index, position.current);
+        const d = slotOffset(index, position.current, count);
         const { opacity, transform } = arcStyle(d, layout, fit);
         slot.style.opacity = String(opacity);
         slot.style.transform = transform;
@@ -263,7 +244,7 @@ const ProjectSection = ({ id,
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [lastIndex, layout, fit]);
+  }, [count, layout, fit]);
 
   return (
     <section id={id} className={`${styles.section} ${className}`}>
@@ -295,13 +276,9 @@ const ProjectSection = ({ id,
       <div className={styles.content}>
         <div className={styles.carousel}>
           <button
-            ref={prevArrow}
             type="button"
             aria-label="Previous project"
             onClick={() => step(-1)}
-            /* Se entra en el primer proyecto, así que atrás no lleva a
-               ninguna parte hasta que el carrusel avance. */
-            disabled
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -319,7 +296,7 @@ const ProjectSection = ({ id,
             onPointerLeave={() => { pausedRef.current = false; }}
           >
             {projects.map((project, index) => {
-              const initial = arcStyle(slotOffset(index, 0), layout, fit);
+              const initial = arcStyle(slotOffset(index, 0, count), layout, fit);
               return (
                 <div
                   key={`${project.title}-${index}`}
@@ -335,11 +312,9 @@ const ProjectSection = ({ id,
           </div>
 
           <button
-            ref={nextArrow}
             type="button"
             aria-label="Next project"
             onClick={() => step(1)}
-            disabled={count <= 1}
             className={styles.arrow}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

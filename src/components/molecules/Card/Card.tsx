@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useCallback } from "react";
 import Text from "../../atoms/Text/Text";
 import Heading from "../../atoms/Heading/Heading";

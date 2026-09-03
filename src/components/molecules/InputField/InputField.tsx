@@ -1,3 +1,4 @@
+"use client";
 
 import type { InputFieldProps } from "./InputField.types";
 import Label from "../../atoms/Label/Label";

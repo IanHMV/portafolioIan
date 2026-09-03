@@ -1,3 +1,4 @@
+"use client";
 
 import type { ButtonIconProps } from "./ButtonIcon.types";
 

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ButtonProps } from "./Button.types";
 
 const variantMap: Record<NonNullable<ButtonProps["variant"]>, string> = {

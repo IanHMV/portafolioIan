@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+"use client";
+
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./AboutMe.module.css";
 import type { AboutMeProps } from "./AboutMe.types";
 import Heading from "../../atoms/Heading/Heading";
@@ -21,10 +23,32 @@ const REVEAL_DELAY_MS = 1600;
 
 type View = "cover" | "info";
 
-/* Se consulta al montar, no dentro del efecto: así el primer pintado ya sale
-   bien y quien pide menos movimiento no llega a ver el rótulo desaparecer. */
-const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* La preferencia de movimiento del sistema, leída como lo que es: un dato que
+   vive FUERA de React y puede cambiar mientras la página está abierta.
+
+   Antes se consultaba en el inicializador del `useState`, es decir durante el
+   render. Con Vite daba igual, porque el render solo ocurría en el navegador;
+   pero Next renderiza esta página en el build, donde no existe `window`, y el
+   build se caía aquí.
+
+   `useSyncExternalStore` es la herramienta exacta para este caso: se le dan
+   tres cosas —cómo suscribirse, cómo leer en el cliente y qué contestar en el
+   servidor— y React se encarga de usar el valor del servidor al generar el
+   HTML y al hidratar, y de cambiar al real justo después, sin desajuste y sin
+   un `setState` dentro de un efecto. */
+const MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+const subscribeMotion = (onChange: () => void) => {
+  const mql = window.matchMedia(MOTION_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+};
+
+const getMotion = () => window.matchMedia(MOTION_QUERY).matches;
+
+/* En el build no hay preferencia que consultar, así que se asume el caso con
+   movimiento — el mismo que verá la mayoría. */
+const getMotionOnServer = () => false;
 
 const AboutMe = ({
   id,
@@ -34,11 +58,13 @@ const AboutMe = ({
   contentImage,
   className = "",
 }: AboutMeProps) => {
-  /* Sin movimiento no hay nada que anunciar: la tarjeta nace puesta en su
-     sitio y con la presentación abierta, que es el contenido que importa. */
-  const [staticView] = useState(prefersReducedMotion);
-  const [view, setView] = useState<View>(staticView ? "info" : "cover");
-  const [raised, setRaised] = useState(staticView);
+  const staticView = useSyncExternalStore(
+    subscribeMotion,
+    getMotion,
+    getMotionOnServer
+  );
+  const [view, setView] = useState<View>("cover");
+  const [raised, setRaised] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const revealTimer = useRef(0);
   /* Una vez que el visitante toca el botón, el cambio automático se retira:
@@ -46,7 +72,12 @@ const AboutMe = ({
      sitio parezca que "se mueve solo". */
   const revealed = useRef(false);
 
-  const showingInfo = view === "info";
+  /* Sin movimiento no hay nada que anunciar: la tarjeta se planta en su sitio
+     y con la presentación ya abierta, que es el contenido que importa. Se
+     DERIVA de `staticView` en vez de guardarse en su propio estado; así no
+     hace falta un efecto que lo sincronice. */
+  const showingInfo = staticView || view === "info";
+  const isRaised = staticView || raised;
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -91,7 +122,7 @@ const AboutMe = ({
       id={id}
       className={`${styles.section} flex min-h-svh items-center justify-center bg-surface px-4 py-16 sm:px-8 ${className}`}
     >
-      <div className={`${styles.plate} ${raised ? styles.plateRaised : ""}`}>
+      <div className={`${styles.plate} ${isRaised ? styles.plateRaised : ""}`}>
         <div className={styles.card}>
           {/* Los dos halos del fondo. Decorativos: se apartan al pasar el
               ratón y no dicen nada, así que se ocultan al lector de pantalla. */}

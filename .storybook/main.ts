@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/react-vite";
+import type { StorybookConfig } from "@storybook/nextjs";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -6,9 +6,11 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
-    "storybook-addon-remix-react-router",
   ],
-  framework: "@storybook/react-vite",
+  /* Mismo bundler que el sitio: las stories se compilan como los
+     componentes reales, así que `next/link`, `next/image` y las
+     directivas "use client" funcionan sin adaptadores. */
+  framework: "@storybook/nextjs",
   staticDirs: ["../public"],
 };
 

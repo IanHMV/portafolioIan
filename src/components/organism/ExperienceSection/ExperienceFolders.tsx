@@ -1,3 +1,5 @@
+"use client";
+
 /*
  * APARCADO — el archivador de fólders arrastrables.
  *
@@ -8,11 +10,11 @@
  * Trae su propio CSS (ExperienceFolders.module.css) y sus propios tipos
  * (ExperienceFolders.types.ts), así que para devolverlo basta con:
  *
- *   1. importarlo en src/pages/Inicio.tsx en lugar de ExperienceSection, y
+ *   1. importarlo en src/app/page.tsx en lugar de ExperienceSection, y
  *   2. pasarle datos con la forma `folders` de ExperienceFolders.types.ts
  *      (label, color, preview{code,note,date}, sheet{fileNo,heading,period,
  *      paragraphs}). La versión anterior de `experienceSection` en
- *      src/pages/data.ts está en el historial de git — commit fe3e38d.
+ *      src/content/data.ts está en el historial de git — commit fe3e38d.
  *
  * Depende de DraggableCardBody (src/components/ui/draggable-card.tsx), que
  * sigue en uso en otras partes, así que no hay nada más que restaurar.

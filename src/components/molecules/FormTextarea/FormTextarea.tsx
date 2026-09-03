@@ -1,3 +1,5 @@
+"use client";
+
 import Label from "../../atoms/Label/Label";
 import Textarea from "../../atoms/Textarea/Textarea";
 import type { FormTextareaProps } from "./FormTextarea.types";

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Una sola URL porque el sitio es una única página: las secciones
+  (#about, #projects, #experience...) son anclas dentro de ella, y un
+  fragmento no es una URL indexable por separado. Cuando exista la página
+  de caso de la PDN (bloque 7 del brief), esa sí entra aquí como <url>
+  propia.
+
+  `lastmod` hay que subirlo a mano en cada despliegue con contenido nuevo:
+  no hay build step que lo genere.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ianmartinez.dev/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

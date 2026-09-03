@@ -1,3 +1,5 @@
+"use client";
+
 /*
  * GUARDADO PARA REUSO — esta era la sección "About me" hasta ahora y ya no
  * se monta en ningún sitio.
@@ -9,8 +11,8 @@
  * plateada (ver AboutMe.tsx), pero se conserva entera —componente y CSS en
  * AboutMeCover.module.css— por si la portada vuelve.
  *
- * Para recuperarla: importar este archivo en src/pages/Inicio.tsx en lugar
- * de AboutMe y devolver a `aboutMe` (src/pages/data.ts) las props
+ * Para recuperarla: importar este archivo en src/app/page.tsx en lugar
+ * de AboutMe y devolver a `aboutMe` (src/content/data.ts) las props
  * `coverImage` y `coverTitle` que pide la interfaz de aquí abajo.
  */
 import { useEffect, useRef, useState } from "react";

@@ -1,3 +1,4 @@
+"use client";
 
 import type { TextareaProps } from "./Textarea.types";
 

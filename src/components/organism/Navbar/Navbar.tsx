@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from "react";
 import styles from "./Navbar.module.css";

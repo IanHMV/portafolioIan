@@ -198,18 +198,9 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.arrow:hover:not(:disabled) {
+.arrow:hover {
   background-color: var(--color-surface-2);
   border-color: var(--proj-line-hover);
-}
-
-/* Extremos del arco: el carrusel ya no da la vuelta, así que en el primer
-   proyecto la flecha de atrás y en el último la de avanzar no llevan a
-   ninguna parte. Se quedan en su sitio (nada de `display: none`, que haría
-   saltar la rejilla de tres columnas) pero apagadas y sin cursor de mano. */
-.arrow:disabled {
-  opacity: 0.3;
-  cursor: default;
 }
 
 .arrow:focus-visible {

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./ExperienceSection.module.css";
 import Heading from "../../atoms/Heading/Heading";
